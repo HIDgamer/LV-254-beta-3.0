@@ -66,6 +66,57 @@
 	can_hold = list(/obj/item/clothing/mask/luchador)
 	skip_fullness_overlays = TRUE
 
+
+//============================//NON-MARINE BELTS\\==================================\\
+//=======================================================================\\
+
+/obj/item/storage/belt/generic
+
+/obj/item/storage/belt/generic/medical
+	storage_slots = 10
+	max_w_class = SIZE_MEDIUM
+
+	can_hold = list(
+		/obj/item/device/healthanalyzer,
+		/obj/item/reagent_container/dropper,
+		/obj/item/reagent_container/glass/beaker,
+		/obj/item/reagent_container/glass/bottle,
+		/obj/item/reagent_container/pill,
+		/obj/item/reagent_container/syringe,
+		/obj/item/tool/lighter,
+		/obj/item/storage/fancy/cigarettes,
+		/obj/item/storage/pill_bottle,
+		/obj/item/stack/medical,
+		/obj/item/device/flashlight/pen,
+		/obj/item/clothing/mask/surgical,
+		/obj/item/clothing/gloves/latex,
+		/obj/item/storage/syringe_case,
+		/obj/item/device/flashlight/flare,
+		/obj/item/reagent_container/hypospray,
+		/obj/item/bodybag,
+		/obj/item/device/defibrillator,
+		/obj/item/tool/surgery/surgical_line,
+		/obj/item/device/reagent_scanner,
+		/obj/item/device/analyzer/plant_analyzer,
+		/obj/item/roller,
+		/obj/item/tool/surgery/synthgraft,
+		/obj/item/reagent_container/glass/minitank,
+		/obj/item/storage/surgical_case,
+		/obj/item/reagent_container/blood,
+	)
+
+/obj/item/storage/belt/generic/medical/full/fill_preset_inventory()
+	new /obj/item/storage/pill_bottle/bicaridine(src)
+	new /obj/item/storage/pill_bottle/kelotane(src)
+	new /obj/item/storage/pill_bottle/antitox(src)
+	new /obj/item/storage/pill_bottle/tramadol(src)
+	new /obj/item/device/healthanalyzer(src)
+	new /obj/item/device/defibrillator/upgraded(src)
+	new /obj/item/reagent_container/blood/OMinus(src)
+	new /obj/item/reagent_container/blood/OMinus(src)
+	new /obj/item/tool/surgery/synthgraft(src)
+	new /obj/item/tool/surgery/surgical_line(src)
+
 //============================//MARINE BELTS\\==================================\\
 //=======================================================================\\
 

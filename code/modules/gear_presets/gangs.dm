@@ -91,20 +91,20 @@
 	. = ..()
 
 //====Clown-Gangsters====//
-/datum/equipment_preset/gangster/clown
-	name = "Gangster(clown)"
+/datum/equipment_preset/gangster/clown_silly
+	name = "Gangster(clown !!silly!!)"
 	flags = EQUIPMENT_PRESET_EXTRA
 	assignment = JOB_GANGSTER_CLOWN
 	rank = JOB_GANGSTER_CLOWN
 	languages = list(LANGUAGE_FRENCH, LANGUAGE_ENGLISH)
 	skills = /datum/skills/civilian/survivor/prisoner
 
-/datum/equipment_preset/gangster/clown/load_status(mob/living/carbon/human/new_human)
+/datum/equipment_preset/gangster/clown_silly/load_status(mob/living/carbon/human/new_human)
 	new_human.equip_to_slot_or_del(new /obj/item/storage/backpack/clown(new_human), WEAR_BACK)
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset(new_human), WEAR_L_EAR)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/under/rank/clown(new_human), WEAR_BODY)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/shoes/clown_shoes(new_human), WEAR_FEET)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown_hat(new_human), WEAR_FACE)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown(new_human), WEAR_FACE)
 
 	new_human.equip_to_slot(new /obj/item/toy/bikehorn(new_human), WEAR_L_STORE)
 	new_human.equip_to_slot(new /obj/item/device/flashlight(new_human), WEAR_R_STORE)
@@ -118,62 +118,56 @@
 
 //------
 
-/datum/equipment_preset/gangster/clown_elite
-	name = "Gangster elite(clown)"
+/datum/equipment_preset/gangster/clown
+	name = "Gangster(clown)"
 	flags = EQUIPMENT_PRESET_EXTRA
 	assignment = JOB_GANGSTER_CLOWN
 	rank = JOB_GANGSTER_CLOWN
-	languages = list(LANGUAGE_FRENCH, LANGUAGE_ENGLISH)
+	languages = list(LANGUAGE_ENGLISH)
 	skills = /datum/skills/civilian/survivor/prisoner
 
-/datum/equipment_preset/gangster/clown_elite/load_status(mob/living/carbon/human/new_human)
-	new_human.equip_to_slot_or_del(new /obj/item/storage/backpack/clown(new_human), WEAR_BACK)
+/datum/equipment_preset/gangster/clown/load_status(mob/living/carbon/human/new_human)
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset(new_human), WEAR_L_EAR)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/under/suit_jacket/charcoal(new_human), WEAR_BODY)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/vest(new_human), WEAR_JACKET)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/shoes/clown_shoes(new_human), WEAR_FEET)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown_hat(new_human), WEAR_FACE)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/ears/earmuffs/earplugs(new_human), WEAR_R_EAR)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/under/liaison_suit/black(new_human), WEAR_BODY)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/gloves/marine/medical/blue(new_human), WEAR_HANDS)
+	new_human.equip_to_slot_or_del(new /obj/item/clothing/shoes/dress(new_human), WEAR_FEET)
 
-	new_human.equip_to_slot(new /obj/item/toy/bikehorn(new_human), WEAR_L_STORE)
-	new_human.equip_to_slot(new /obj/item/device/flashlight(new_human), WEAR_R_STORE)
-	new_human.equip_to_slot(new /obj/item/weapon/gun/rifle/m16(new_human), WEAR_R_HAND)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/rifle/m16(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/rifle/m16(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/weapon/gun/smg/uzi(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/smg/uzi(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/smg/uzi(new_human), WEAR_IN_BACK)
+// Tie RNG
+
+	if(prob(15))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/gold(new_human), WEAR_L_STORE)
+	if(prob(25))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/red(new_human), WEAR_L_STORE)
+	if(prob(30))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/green(new_human), WEAR_L_STORE)
+	else
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory(new_human), WEAR_L_STORE)
+
+// Mask RNG
+
+	if(prob(15))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang(new_human), WEAR_R_STORE)
+	if(prob(25))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/enforcer(new_human), WEAR_R_STORE)
+	if(prob(30))
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/texas(new_human), WEAR_R_STORE)
+	else
+		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/disturbing(new_human), WEAR_R_STORE)
 	. = ..()
 
+/datum/equipment_preset/gangster/clown/get_antag_clothing_equipment()
+	return list(
+		list("STANDARD EQUIPMENT (TAKE ALL)", 0, null, null, null),
+		list("Makeshift Meal", 0, /obj/item/mre_food_packet/merc, MARINE_CAN_BUY_MRE, VENDOR_ITEM_MANDATORY),
+		list("Flashlight", 0, /obj/item/device/flashlight, MARINE_CAN_BUY_KIT, VENDOR_ITEM_MANDATORY),
 
-//------
-
-/datum/equipment_preset/gangster/clown_leader
-	name = "Gangster Leader(clown)"
-	flags = EQUIPMENT_PRESET_EXTRA
-	assignment = JOB_GANGSTER_CLOWN_LEADER
-	rank = JOB_GANGSTER_CLOWN_LEADER
-	languages = list(LANGUAGE_FRENCH, LANGUAGE_ENGLISH)
-	skills = /datum/skills/civilian/survivor/gangleader
-
-/datum/equipment_preset/gangster/clown_leader/load_status(mob/living/carbon/human/new_human)
-	new_human.equip_to_slot_or_del(new /obj/item/storage/backpack/clown(new_human), WEAR_BACK)
-	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset(new_human), WEAR_L_EAR)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/under/suit_jacket/red(new_human), WEAR_BODY)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/shoes/clown_shoes(new_human), WEAR_FEET)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown_hat(new_human), WEAR_FACE)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/head/beret(new_human), WEAR_HEAD)
-
-	new_human.equip_to_slot(new /obj/item/toy/bikehorn(new_human), WEAR_L_STORE)
-	new_human.equip_to_slot(new /obj/item/device/flashlight(new_human), WEAR_R_STORE)
-	new_human.equip_to_slot(new /obj/item/weapon/gun/shotgun/pump(new_human), WEAR_L_HAND)
-	new_human.equip_to_slot(new /obj/item/weapon/gun/pistol/t73/leader(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/pistol/t73_impact(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/pistol/t73(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/pistol/t73(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/handful/shotgun/buckshot(new_human), WEAR_IN_BACK)
-	new_human.equip_to_slot(new /obj/item/ammo_magazine/handful/shotgun/buckshot(new_human), WEAR_IN_BACK)
-	. = ..()
+		list("GEAR KIT (CHOOSE 1)", 0, null, null, null),
+		list("Mastermind", 0, /obj/effect/essentials_set/random/clf_belt, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_REGULAR),
+		list("Technician", 0, /obj/item/storage/belt/utility/full, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_REGULAR),
+		list("Enforcer", 0, /obj/item/storage/belt/utility/full, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_REGULAR),
+		list("Fugitive", 0, /obj/item/storage/belt/utility/full, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_REGULAR),
+	)
 
 //====BackBiter-Gangster====//
 /datum/equipment_preset/gangster/backbiter

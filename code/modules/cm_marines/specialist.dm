@@ -221,3 +221,10 @@
 	if(SSticker && MODE_HAS_MODIFIER(/datum/gamemode_modifier/heavy_specialists))
 		available_vendor_num = 4
 		available_kit_num = 5
+
+/datum/specialist_set/mastermind
+	name = "Mastermind Set"
+	role_name = "Mastermind"
+	skill_to_give = SKILL_SPEC_DEFAULT
+	trait_to_give = "mastermind"
+	kit_typepath = /obj/item/storage/box/spec/mastermind

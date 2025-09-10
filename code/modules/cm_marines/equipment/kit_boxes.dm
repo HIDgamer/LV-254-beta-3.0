@@ -346,6 +346,54 @@
 	new /obj/item/weapon/gun/rifle/sniper/svd(src)
 	new /obj/item/facepaint/sniper(src)
 
+//------------------CLOWN KITS-------------------
+
+// Mastermind
+
+/obj/item/storage/box/spec/mastermind
+	name = "\improper Mastermind equipment case"
+	desc = "A large case containing a special pre-prepared kit focused on team support.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
+	kit_overlay = "clown"
+	kit_name = "mastermind"
+
+/obj/item/storage/box/spec/mastermind/fill_preset_inventory()
+	new /obj/item/storage/backpack/satchel/med (src)
+	new /obj/item/clothing/accessory/storage/surg_vest/drop_black/equipped (src)
+	new /obj/item/storage/firstaid/adv (src)
+	new /obj/item/weapon/gun/smg/p90 (src)
+	new /obj/item/clothing/suit/armor/clown/medium (src)
+	new /obj/item/clothing/accessory/stethoscope (src)
+	new /obj/item/storage/belt/generic/medical/full (src)
+	new /obj/item/clothing/glasses/hud/health/basic (src)
+	new /obj/item/storage/pouch/magazine/large/p90/mixed (src)
+	new /obj/item/storage/pouch/pistol (src)
+	new /obj/item/weapon/gun/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //-----------------SPEC KIT BOX------------------
 //For events/WO, allows the user to choose a specalist kit out of available ones in spec_kit_boxes_left list in gloabl_lists.dm
 
