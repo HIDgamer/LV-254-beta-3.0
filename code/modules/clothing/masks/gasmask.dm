@@ -138,7 +138,7 @@
 	item_state = "clown_america"
 
 	armor_melee = CLOTHING_ARMOR_MEDIUMLOW
-	armor_bullet = CLOTHING_ARMOR_MEDIUMLOW
+	armor_bullet = CLOTHING_ARMOR_HIGH
 	armor_laser = CLOTHING_ARMOR_VERYLOW
 	armor_energy = CLOTHING_ARMOR_VERYLOW
 	armor_bomb = CLOTHING_ARMOR_LOW
@@ -148,6 +148,7 @@
 	flags_inventory = COVERMOUTH
 	flags_inv_hide = HIDEFACE
 	flags_equip_slot = SLOT_FACE
+	flags_armor_protection = BODY_FLAG_FACE|BODY_FLAG_HEAD|BODY_FLAG_EYES
 
 /obj/item/clothing/mask/gas/clown/gang/enforcer
 	name = "clown gang mask"

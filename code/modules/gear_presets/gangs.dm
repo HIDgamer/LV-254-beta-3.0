@@ -1,7 +1,7 @@
 /datum/equipment_preset/gangster
 	name = "gangster"
 	faction = FACTION_MERCENARY
-	faction_group = FACTION_LIST_HUMANOID
+	faction_group = FACTION_LIST_MERCENARY
 	languages = list(LANGUAGE_ENGLISH, LANGUAGE_RUSSIAN, LANGUAGE_JAPANESE)
 	idtype = /obj/item/card/id/lanyard
 	skills = /datum/skills/civilian
@@ -124,37 +124,17 @@
 	assignment = JOB_GANGSTER_CLOWN
 	rank = JOB_GANGSTER_CLOWN
 	languages = list(LANGUAGE_ENGLISH)
-	skills = /datum/skills/civilian/survivor/prisoner
+	skills = /datum/skills/clown/spec
 
 /datum/equipment_preset/gangster/clown/load_status(mob/living/carbon/human/new_human)
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset(new_human), WEAR_L_EAR)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/ears/earmuffs/earplugs(new_human), WEAR_R_EAR)
-	new_human.equip_to_slot_or_del(new /obj/item/clothing/under/liaison_suit/black(new_human), WEAR_BODY)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/gloves/marine/medical/blue(new_human), WEAR_HANDS)
 	new_human.equip_to_slot_or_del(new /obj/item/clothing/shoes/dress(new_human), WEAR_FEET)
-
-// Tie RNG
-
-	if(prob(15))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/gold(new_human), WEAR_L_STORE)
-	if(prob(25))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/red(new_human), WEAR_L_STORE)
-	if(prob(30))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory/green(new_human), WEAR_L_STORE)
-	else
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/accessory(new_human), WEAR_L_STORE)
-
-// Mask RNG
-
-	if(prob(15))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang(new_human), WEAR_R_STORE)
-	if(prob(25))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/enforcer(new_human), WEAR_R_STORE)
-	if(prob(30))
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/texas(new_human), WEAR_R_STORE)
-	else
-		new_human.equip_to_slot_or_del(new /obj/item/clothing/mask/gas/clown/gang/disturbing(new_human), WEAR_R_STORE)
-	. = ..()
+	spawn_random_suit(new_human) //suit
+	spawn_random_tie(new_human) //tie
+	spawn_random_mask(new_human) //mask
+	spawn_random_jacket(new_human) //jacket
 
 /datum/equipment_preset/gangster/clown/get_antag_clothing_equipment()
 	return list(

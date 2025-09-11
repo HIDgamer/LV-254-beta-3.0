@@ -1,0 +1,33 @@
+/*
+------------------------------
+Clown Gang
+------------------------------
+*/
+
+/datum/skills/clown
+	name = "Apprentice"
+	skills = list(
+		SKILL_FIREMAN = SKILL_FIREMAN_TRAINED,
+		SKILL_VEHICLE = SKILL_VEHICLE_DEFAULT,
+		SKILL_CQC = SKILL_CQC_SKILLED,
+		SKILL_CONSTRUCTION = SKILL_CONSTRUCTION_TRAINED,
+		SKILL_ENGINEER = SKILL_ENGINEER_NOVICE,
+		SKILL_MELEE_WEAPONS = SKILL_MELEE_TRAINED,
+		SKILL_ENDURANCE = SKILL_ENDURANCE_TRAINED,
+	)
+
+/datum/skills/clown/spec
+	name = "Jester"
+	skills = list(
+		SKILL_SPEC_WEAPONS = SKILL_SPEC_TRAINED,
+	)
+
+/datum/skills/clown/leader
+	name = "Ringmaster"
+	skills = list(
+		SKILL_LEADERSHIP = SKILL_LEAD_MASTER,
+		SKILL_MEDICAL = SKILL_MEDICAL_DOCTOR,
+		SKILL_SURGERY = SKILL_SURGERY_NOVICE,
+		SKILL_VEHICLE = SKILL_VEHICLE_SMALL,
+		SKILL_EXECUTION = SKILL_EXECUTION_TRAINED, //can BE people
+	)

@@ -267,7 +267,7 @@
 	slowdown = SLOWDOWN_ARMOR_VERY_HEAVY
 	flags_armor_protection = BODY_FLAG_ALL_BUT_HEAD
 	armor_melee = CLOTHING_ARMOR_MEDIUM
-	armor_bullet = CLOTHING_ARMOR_ULTRAHIGHPLUS
+	armor_bullet = CLOTHING_ARMOR_ULTRAHIGH
 	armor_bomb = CLOTHING_ARMOR_HIGH
 	armor_internaldamage = CLOTHING_ARMOR_VERYHIGH
 	movement_compensation = SLOWDOWN_ARMOR_VERY_HEAVY

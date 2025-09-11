@@ -66,57 +66,6 @@
 	can_hold = list(/obj/item/clothing/mask/luchador)
 	skip_fullness_overlays = TRUE
 
-
-//============================//NON-MARINE BELTS\\==================================\\
-//=======================================================================\\
-
-/obj/item/storage/belt/generic
-
-/obj/item/storage/belt/generic/medical
-	storage_slots = 10
-	max_w_class = SIZE_MEDIUM
-
-	can_hold = list(
-		/obj/item/device/healthanalyzer,
-		/obj/item/reagent_container/dropper,
-		/obj/item/reagent_container/glass/beaker,
-		/obj/item/reagent_container/glass/bottle,
-		/obj/item/reagent_container/pill,
-		/obj/item/reagent_container/syringe,
-		/obj/item/tool/lighter,
-		/obj/item/storage/fancy/cigarettes,
-		/obj/item/storage/pill_bottle,
-		/obj/item/stack/medical,
-		/obj/item/device/flashlight/pen,
-		/obj/item/clothing/mask/surgical,
-		/obj/item/clothing/gloves/latex,
-		/obj/item/storage/syringe_case,
-		/obj/item/device/flashlight/flare,
-		/obj/item/reagent_container/hypospray,
-		/obj/item/bodybag,
-		/obj/item/device/defibrillator,
-		/obj/item/tool/surgery/surgical_line,
-		/obj/item/device/reagent_scanner,
-		/obj/item/device/analyzer/plant_analyzer,
-		/obj/item/roller,
-		/obj/item/tool/surgery/synthgraft,
-		/obj/item/reagent_container/glass/minitank,
-		/obj/item/storage/surgical_case,
-		/obj/item/reagent_container/blood,
-	)
-
-/obj/item/storage/belt/generic/medical/full/fill_preset_inventory()
-	new /obj/item/storage/pill_bottle/bicaridine(src)
-	new /obj/item/storage/pill_bottle/kelotane(src)
-	new /obj/item/storage/pill_bottle/antitox(src)
-	new /obj/item/storage/pill_bottle/tramadol(src)
-	new /obj/item/device/healthanalyzer(src)
-	new /obj/item/device/defibrillator/upgraded(src)
-	new /obj/item/reagent_container/blood/OMinus(src)
-	new /obj/item/reagent_container/blood/OMinus(src)
-	new /obj/item/tool/surgery/synthgraft(src)
-	new /obj/item/tool/surgery/surgical_line(src)
-
 //============================//MARINE BELTS\\==================================\\
 //=======================================================================\\
 
@@ -269,6 +218,26 @@
 	new /obj/item/stack/medical/splint(src)
 	new /obj/item/stack/medical/advanced/bruise_pack(src)
 	new /obj/item/stack/medical/advanced/ointment(src)
+
+/obj/item/storage/belt/medical/civilian
+	name = "\improper medical response belt"
+	desc = "A civilian replica of the M276 pattern medical rig, useful for storing medical supplies. Holds slightly less than its military counterpart."
+	icon_state = "medicalbelt"
+	item_state = "medical"
+	storage_slots = 10
+	max_w_class = SIZE_MEDIUM
+
+/obj/item/storage/belt/medical/civilian/full/fill_preset_inventory()
+	new /obj/item/storage/pill_bottle/bicaridine(src)
+	new /obj/item/storage/pill_bottle/kelotane(src)
+	new /obj/item/storage/pill_bottle/antitox(src)
+	new /obj/item/storage/pill_bottle/tramadol(src)
+	new /obj/item/device/healthanalyzer(src)
+	new /obj/item/device/defibrillator/upgraded(src)
+	new /obj/item/reagent_container/blood/OMinus(src)
+	new /obj/item/reagent_container/blood/OMinus(src)
+	new /obj/item/roller/surgical(src)
+	new /obj/item/roller(src)
 
 /obj/item/storage/belt/medical/verb/toggle_mode() //A verb that can (should) only be used if in hand/equipped
 	set category = "Object"
@@ -979,6 +948,26 @@
 		var/random_shell_type = pick(GLOB.shotgun_handfuls_12g)
 		new random_shell_type(src)
 
+/obj/item/storage/belt/shotgun/civilian
+	name = "\improper shotgun shell rig"
+	desc = "A civilian replica of the M276 shotgun ammunition rig designed to hold shotgun shells or individual bullets."
+
+/obj/item/storage/belt/shotgun/civilian/mixed/fill_preset_inventory()
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/buckshot(src)
+	new /obj/item/ammo_magazine/handful/shotgun/slug(src)
+	new /obj/item/ammo_magazine/handful/shotgun/slug(src)
+	new /obj/item/ammo_magazine/handful/shotgun/slug(src)
+	new /obj/item/ammo_magazine/handful/shotgun/flechette(src)
+	new /obj/item/ammo_magazine/handful/shotgun/flechette(src)
+	new /obj/item/ammo_magazine/handful/shotgun/flechette(src)
+	new /obj/item/ammo_magazine/handful/shotgun/flechette(src)
+
 /obj/item/storage/belt/shotgun/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/ammo_magazine/shotgun))
 		var/obj/item/ammo_magazine/shotgun/M = W
@@ -1184,7 +1173,6 @@
 	max_storage_space = 24
 	can_hold = list(/obj/item/explosive/grenade)
 
-
 /obj/item/storage/belt/grenade/full/fill_preset_inventory()
 	new /obj/item/explosive/grenade/incendiary(src)
 	new /obj/item/explosive/grenade/incendiary(src)
@@ -1206,6 +1194,27 @@
 	new /obj/item/explosive/grenade/incendiary(src)
 	new /obj/item/explosive/grenade/incendiary(src)
 	new /obj/item/explosive/grenade/incendiary(src)
+
+/obj/item/storage/belt/grenade/civilian
+	name= "\improper grenade rig"
+	desc= "A civilian replica of the M276 pattern grenade rig. This version is designed to carry bulk quantities of grenades."
+	storage_slots = 14
+
+/obj/item/storage/belt/grenade/civilian/full/fill_preset_inventory()
+	new /obj/item/explosive/grenade/high_explosive/impact(src)
+	new /obj/item/explosive/grenade/high_explosive/impact(src)
+	new /obj/item/explosive/grenade/high_explosive/impact(src)
+	new /obj/item/explosive/grenade/high_explosive/impact(src)
+	new /obj/item/explosive/grenade/high_explosive/impact(src)
+	new /obj/item/explosive/grenade/incendiary/impact(src)
+	new /obj/item/explosive/grenade/incendiary/impact(src)
+	new /obj/item/explosive/grenade/incendiary/impact(src)
+	new /obj/item/explosive/grenade/incendiary/impact(src)
+	new /obj/item/explosive/grenade/incendiary/impact(src)
+	new /obj/item/explosive/grenade/high_explosive/airburst/buckshot(src)
+	new /obj/item/explosive/grenade/high_explosive/airburst/buckshot(src)
+	new /obj/item/explosive/grenade/high_explosive/airburst/buckshot(src)
+	new /obj/item/explosive/grenade/high_explosive/airburst/buckshot(src)
 
 /obj/item/storage/belt/grenade/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/storage/box/nade_box) || istype(W, /obj/item/storage/backpack/marine/grenadepack))

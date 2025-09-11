@@ -1222,6 +1222,10 @@
 	integrated.Attach(src)
 	update_attachable(integrated.slot)
 
+/obj/item/weapon/gun/rifle/m16/grenadier/ext
+	current_mag = /obj/item/ammo_magazine/rifle/m16/ext
+	random_spawn_chance = 0
+
 //-------------------------------------------------------
 //XM177 carbine
 //awesome vietnam era special forces carbine version of the M16

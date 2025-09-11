@@ -664,6 +664,7 @@
 #include "code\datums\redis\callbacks\asay.dm"
 #include "code\datums\skills\civilian.dm"
 #include "code\datums\skills\clf.dm"
+#include "code\datums\skills\clown.dm"
 #include "code\datums\skills\cmb.dm"
 #include "code\datums\skills\commando.dm"
 #include "code\datums\skills\contractor.dm"
