@@ -360,7 +360,7 @@
 	desc = "A large case containing a special pre-prepared kit focused on team support.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
 	kit_name = "mastermind"
 
-/obj/item/storage/box/spec/mastermind/fill_preset_inventory()
+/obj/item/storage/box/spec/clown/mastermind/fill_preset_inventory()
 	new /obj/item/storage/backpack/satchel/med (src)
 	new /obj/item/clothing/accessory/storage/surg_vest/drop_black/equipped/improved (src)
 	new /obj/item/storage/firstaid/adv (src)
@@ -384,7 +384,7 @@
 	desc = "A large case containing a special pre-prepared kit focused on engineering.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
 	kit_name = "technician"
 
-/obj/item/storage/box/spec/technician/fill_preset_inventory()
+/obj/item/storage/box/spec/clown/technician/fill_preset_inventory()
 	new /obj/item/storage/backpack/satchel/eng (src)
 	new /obj/item/weapon/gun/shotgun/pump/full (src)
 	new /obj/item/clothing/suit/armor/clown/medium (src)
@@ -408,14 +408,19 @@
 	desc = "A large case containing a special pre-prepared kit focused on heavy weapons and durability.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
 	kit_name = "enforcer"
 
-/obj/item/storage/box/spec/enforcer/fill_preset_inventory()
+/obj/item/storage/box/spec/clown/enforcer/fill_preset_inventory()
 	new /obj/item/storage/backpack/satchel/norm (src)
 	new /obj/item/weapon/gun/m60 (src)
 	new /obj/item/clothing/suit/armor/clown/ultra (src)
 	new /obj/item/clothing/accessory/storage/droppouch(src)
-	new /obj/item/storage/belt (src)
-	new /obj/item/storage/pouch/magazine/large/m60 (src)
-	new /obj/item/storage/pouch/general/medium (src)
+	new /obj/item/storage/belt/marine/smartgunner/m60/full (src)
+	new /obj/item/storage/pouch/pistol (src)
+	new /obj/item/storage/pouch/general/large (src)
+	new /obj/item/weapon/gun/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
 	new	/obj/item/storage/box/packet/smoke (src)
 	new	/obj/item/storage/box/packet/smoke (src)
 
@@ -426,14 +431,36 @@
 	desc = "A large case containing a special pre-prepared kit focused on explosive demolition.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
 	kit_name = "fugitive"
 
-/obj/item/storage/box/spec/fugitive/fill_preset_inventory()
+/obj/item/storage/box/spec/clown/fugitive/fill_preset_inventory()
 	new /obj/item/storage/backpack/satchel/norm (src)
 	new /obj/item/weapon/gun/rifle/m16/grenadier/ext (src)
 	new /obj/item/clothing/suit/armor/clown/heavy (src)
-	new /obj/item/clothing/accessory/storage/webbing/black/equipped(src)
+	new /obj/item/clothing/accessory/storage/webbing/black/m16ext(src)
 	new /obj/item/storage/belt/grenade/civilian/full (src)
 	new /obj/item/storage/pouch/magazine/large/m16/mixed (src)
 	new /obj/item/storage/pouch/explosive/mixed (src)
+
+// Ghost
+
+/obj/item/storage/box/spec/clown/ghost
+	name = "\improper Ghost equipment case"
+	desc = "A large case containing a special pre-prepared kit focused on speed and scouting.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
+	kit_name = "dgost"
+
+/obj/item/storage/box/spec/clown/ghost/fill_preset_inventory()
+	new /obj/item/storage/backpack/satchel/norm (src)
+	new /obj/item/weapon/gun/rifle/mar40/carbine/dmr (src)
+	new /obj/item/clothing/suit/armor/clown (src)
+	new /obj/item/clothing/accessory/storage/webbing/black/mar40(src)
+	new /obj/item/storage/belt/marine/mar40 (src)
+	new /obj/item/storage/pouch/pistol (src)
+	new /obj/item/weapon/gun/pistol/m1911 (src)
+	new /obj/item/storage/pouch/explosive/smoke (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/ammo_magazine/pistol/m1911 (src)
+	new /obj/item/device/binoculars/civ (src)
 
 //-----------------SPEC KIT BOX------------------
 //For events/WO, allows the user to choose a specalist kit out of available ones in spec_kit_boxes_left list in gloabl_lists.dm

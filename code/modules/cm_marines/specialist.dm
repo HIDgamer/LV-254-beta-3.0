@@ -227,25 +227,32 @@
 	role_name = "Mastermind"
 	skill_to_give = SKILL_SPEC_DEFAULT
 	trait_to_give = "mastermind"
-	kit_typepath = /obj/item/storage/box/spec/mastermind
+	kit_typepath = /obj/item/storage/box/spec/clown/mastermind
 
 /datum/specialist_set/technician
 	name = "Technician Set"
 	role_name = "Technician"
 	skill_to_give = SKILL_SPEC_DEFAULT
 	trait_to_give = "technician"
-	kit_typepath = /obj/item/storage/box/spec/technician
+	kit_typepath = /obj/item/storage/box/spec/clown/technician
 
 /datum/specialist_set/enforcer
 	name = "Enforcer Set"
 	role_name = "Enforcer"
 	skill_to_give = SKILL_SPEC_DEFAULT
 	trait_to_give = "enforcer"
-	kit_typepath = /obj/item/storage/box/spec/enforcer
+	kit_typepath = /obj/item/storage/box/spec/clown/enforcer
 
 /datum/specialist_set/fugitive
 	name = "Fugitive Set"
 	role_name = "Fugitive"
 	skill_to_give = SKILL_SPEC_DEFAULT
 	trait_to_give = "fugitive"
-	kit_typepath = /obj/item/storage/box/spec/fugitive
+	kit_typepath = /obj/item/storage/box/spec/clown/fugitive
+
+/datum/specialist_set/ghost
+	name = "Ghost Set"
+	role_name = "Ghost"
+	skill_to_give = SKILL_SPEC_DEFAULT
+	trait_to_give = "ghost"
+	kit_typepath = /obj/item/storage/box/spec/clown/ghost

@@ -715,9 +715,16 @@
 	for(var/i = 1 to storage_slots)
 		new /obj/item/ammo_magazine/rifle/m16/ap (src)
 
+/obj/item/storage/belt/marine/mar40
+	name = "ammo load rig"
+	desc = "Good for carrying around extra ammo in the heat of battle."
+
 /obj/item/storage/belt/marine/mar40/fill_preset_inventory() // Mar40
-	for(var/i = 1 to storage_slots)
-		new /obj/item/ammo_magazine/rifle/mar40 (src)
+	new /obj/item/ammo_magazine/rifle/mar40 (src)
+	new /obj/item/ammo_magazine/rifle/mar40 (src)
+	new /obj/item/ammo_magazine/rifle/mar40 (src)
+	new /obj/item/ammo_magazine/rifle/mar40 (src)
+	new /obj/item/ammo_magazine/rifle/mar40/ap (src)
 
 /obj/item/storage/belt/marine/mar40/drum/fill_preset_inventory()
 	for(var/i = 1 to storage_slots)
@@ -785,12 +792,16 @@
 	new /obj/item/ammo_magazine/rifle/xm99a(src)
 
 /obj/item/storage/belt/marine/smartgunner/full/fill_preset_inventory()
-	new /obj/item/ammo_magazine/smartgun(src)
-	new /obj/item/ammo_magazine/smartgun(src)
-	new /obj/item/ammo_magazine/smartgun(src)
-	new /obj/item/ammo_magazine/smartgun(src)
-	new /obj/item/ammo_magazine/smartgun(src)
-	new /obj/item/ammo_magazine/smartgun(src)
+	for(var/i = 1 to storage_slots)
+		new /obj/item/ammo_magazine/smartgun(src)
+
+/obj/item/storage/belt/marine/smartgunner/m60
+	name = "\improper heavy gunner rig"
+	desc = "A civilian replica of the M280 pattern smartgunner rig designed to hold several large drums."
+
+/obj/item/storage/belt/marine/smartgunner/m60/full/fill_preset_inventory()
+	for(var/i = 1 to storage_slots)
+		new /obj/item/ammo_magazine/m60(src)
 
 /obj/item/storage/belt/marine/smartgunner/xm_limited
 	name = "\improper M280 pattern plasmagunner belt"

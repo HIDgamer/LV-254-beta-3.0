@@ -151,22 +151,24 @@
 	flags_armor_protection = BODY_FLAG_FACE|BODY_FLAG_HEAD|BODY_FLAG_EYES
 
 /obj/item/clothing/mask/gas/clown/gang/enforcer
-	name = "clown gang mask"
-	desc = "A modified ballistic mask, professionally made to resemble a unique clown, provides a decent amount of face protection."
 	icon_state = "clown_enforcer"
 	item_state = "clown_enforcer"
 
 /obj/item/clothing/mask/gas/clown/gang/texas
-	name = "clown gang mask"
-	desc = "A modified ballistic mask, professionally made to resemble a unique clown, provides a decent amount of face protection."
 	icon_state = "clown_texas"
 	item_state = "clown_texas"
 
 /obj/item/clothing/mask/gas/clown/gang/disturbing
-	name = "clown gang mask"
-	desc = "A modified ballistic mask, professionally made to resemble a unique clown, provides a decent amount of face protection."
 	icon_state = "clown_disturbing"
 	item_state = "clown_disturbing"
+
+/obj/item/clothing/mask/gas/clown/gang/england
+	icon_state = "clown_england"
+	item_state = "clown_england"
+
+/obj/item/clothing/mask/gas/clown/gang/hockey
+	icon_state = "clown_hockey"
+	item_state = "clown_hockey"
 
 /obj/item/clothing/mask/gas/fake_mustache
 	name = "fake mustache"
