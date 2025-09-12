@@ -5,13 +5,10 @@
 	languages = list(LANGUAGE_ENGLISH, LANGUAGE_RUSSIAN, LANGUAGE_JAPANESE)
 	idtype = /obj/item/card/id/lanyard
 	skills = /datum/skills/civilian
+	access = list(ACCESS_LIST_COLONIAL_ALL)
 
 /datum/equipment_preset/gangster/load_status(mob/living/carbon/human/new_human)
 	new_human.nutrition = NUTRITION_NORMAL
-
-/datum/equipment_preset/gangster/New()
-	. = ..()
-	access = get_access(ACCESS_LIST_COLONIAL_ALL)
 
 //====Generic-Gangsters====//
 
@@ -125,6 +122,7 @@
 	rank = JOB_GANGSTER_CLOWN
 	languages = list(LANGUAGE_ENGLISH)
 	skills = /datum/skills/clown/spec
+	access = list(ACCESS_LIST_COLONIAL_ALL, ACCESS_ILLEGAL_CLOWN)
 
 /datum/equipment_preset/gangster/clown/load_status(mob/living/carbon/human/new_human)
 	new_human.equip_to_slot_or_del(new /obj/item/device/radio/headset(new_human), WEAR_L_EAR)
