@@ -1073,7 +1073,6 @@
 #include "code\game\machinery\vending\vendor_types\wo_vendors.dm"
 #include "code\game\machinery\vending\vendor_types\antag\antag_clothing.dm"
 #include "code\game\machinery\vending\vendor_types\antag\antag_gear.dm"
-#include "code\game\machinery\vending\vendor_types\antag\clown.dm"
 #include "code\game\machinery\vending\vendor_types\antag\antag_guns_snowflake.dm"
 #include "code\game\machinery\vending\vendor_types\antag\antag_guns_sorted.dm"
 #include "code\game\machinery\vending\vendor_types\antag\antag_predator.dm"
