@@ -109,8 +109,8 @@
 	clearance_req = 4
 	item_reference = /obj/item/tool/surgery/scalpel/manager
 
-/datum/research_upgrades/item/incision_management
-	name = "Incision Management System"
+/datum/research_upgrades/item/multi-function
+	name = "Multi-Function Surgical Suite"
 	desc = "A true extension of the surgeon's body, this marvel uses technology from the failed laser scapel test trials, allowing the surgeon to cauterize incisions as they cut."
 	value_upgrade = 4000
 	behavior = RESEARCH_UPGRADE_ITEM
