@@ -110,7 +110,7 @@ update_flag
 	return src.attack_hand(user)
 
 /obj/structure/machinery/portable_atmospherics/canister/attack_hand(mob/user as mob)
-	return
+	return src.ui_interact(user)
 
 /obj/structure/machinery/portable_atmospherics/canister/phoron/New()
 	..()
