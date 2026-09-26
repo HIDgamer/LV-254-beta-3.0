@@ -692,17 +692,14 @@ GLOBAL_LIST_INIT(allowed_helmet_items, list(
 	if(!active_visor)
 		return
 
-	var/mob/living/carbon/human/human_user = user
-	if(user == loc && human_user && human_user.head == src)
-		toggle_visor(user, silent = TRUE)
+	if(user != loc)
 		return
 
-	// Not worn on this mob's head anymore, so clear active_visor too - its effects were already torn down above.
-	active_visor = null
-	update_icon()
-	var/datum/action/item_action/cycle_helmet_huds/cycle_action = locate() in actions
-	if(cycle_action)
-		cycle_action.set_default_overlay()
+	var/mob/living/carbon/human/human_user = user
+	if(!human_user || human_user.head != src)
+		return
+
+	toggle_visor(user, silent = TRUE)
 
 /// Toggles the specified visor, if nothing specified then the active visor, if the visor is the active visor and the helmet is on the user's head it will turn on, if it is not the active visor it will turn off
 /obj/item/clothing/head/helmet/marine/proc/toggle_visor(mob/user, obj/item/device/helmet_visor/current_visor, silent = FALSE)
@@ -1050,7 +1047,6 @@ GLOBAL_LIST_INIT(allowed_helmet_items, list(
 
 /obj/item/clothing/head/helmet/marine/pilottex
 	name = "\improper Tex's M30 tactical helmet"
-	icon = 'icons/obj/items/clothing/hats/hats_by_faction/UA.dmi'
 	desc = "The M30 tactical helmet has a left eyepiece filter used to filter tactical data. It is required to fly the dropships manually and in safety. This one belonged to Tex: the craziest sum'bitch pilot the Almayer ever had. He's not dead or anything, but he did get a medical discharge after he was hit by a car on shore leave last year."
 	icon_state = "helmetp_tex"
 	item_state = "helmetp_tex"

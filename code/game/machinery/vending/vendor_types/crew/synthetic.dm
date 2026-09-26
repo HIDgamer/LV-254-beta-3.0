@@ -204,15 +204,7 @@ GLOBAL_LIST_INIT(cm_vending_clothing_synth, list(
 	vendor_role = list(JOB_SYNTH, JOB_SYNTH_SURVIVOR, JOB_UPP_SUPPORT_SYNTH, JOB_CMB_SYN, JOB_CMB_RSYN, JOB_PMC_SYNTH)
 
 /obj/structure/machinery/cm_vending/clothing/synth/get_listed_products(mob/user)
-	if(!user)
-		// Registration-time call (cm_build_inventory(), null user) - the vending spritesheet builder
-		// only ever registers icons for types reachable from THIS call, so Sam's Token needs to be
-		// referenced here too, alongside (not replacing) the normal item, or it never gets a sprite
-		// and shows broken/blank the one time it's actually displayed below.
-		var/list/all_products = GLOB.cm_vending_clothing_synth.Copy()
-		all_products += list(list("Sam's Token", 0, /obj/item/coin/marine/synth/sam, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_MANDATORY))
-		return all_products
-	if(user.ckey == "hidgamer")
+	if(user?.ckey == "hidgamer")
 		var/list/sam_products = GLOB.cm_vending_clothing_synth.Copy()
 		sam_products[2] = list("Sam's Token", 0, /obj/item/coin/marine/synth/sam, MARINE_CAN_BUY_ESSENTIALS, VENDOR_ITEM_MANDATORY)
 		return sam_products

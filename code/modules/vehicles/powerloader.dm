@@ -284,12 +284,7 @@
 		load_target_tag = "big_crate"
 
 	else if(istype(target, /obj/structure/pallet))
-		var/obj/structure/pallet/P = target
-		// A heavy pallet auto-anchors itself specifically because it needs a powerloader to move -
-		// only a deliberate manual anchor (while light) should actually block the grab here.
-		if(P.anchored && !P.heavy)
-			to_chat(user, SPAN_WARNING("\The [src] can't grab \the [target] as it appears to be anchored to the ground."))
-			return
+		//var/obj/structure/pallet/PD = target
 		load_target_tag = "big_crate"
 
 	else if(istype(target, /obj/structure/reagent_dispensers))

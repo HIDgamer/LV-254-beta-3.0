@@ -264,7 +264,6 @@
 	icon_state = "webbing"
 	item_state = "webbing"
 	storage_slots = 12
-	valid_accessory_slots = list(ACCESSORY_SLOT_PONCHO)
 	allowed = list(
 		/obj/item/weapon/baton,
 		/obj/item/restraint/handcuffs,
@@ -297,7 +296,6 @@
 	item_icons = list(
 		WEAR_JACKET = 'icons/mob/humans/onmob/clothing/suits/vests_aprons.dmi'
 	)
-	valid_accessory_slots = list(ACCESSORY_SLOT_PONCHO)
 	allowed = list(
 		/obj/item/weapon/baton,
 		/obj/item/restraint/handcuffs,

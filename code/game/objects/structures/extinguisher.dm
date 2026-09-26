@@ -21,7 +21,7 @@
 	icon_state = "extinguisher"
 
 /obj/structure/extinguisher_cabinet/alt
-	icon_state = "extinguisher_"
+	icon_state = "extinguisher_alt"
 
 /obj/structure/extinguisher_cabinet/attackby(obj/item/item, mob/user)
 	if(istype(item, /obj/item/tool/extinguisher))
