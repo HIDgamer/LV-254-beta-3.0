@@ -16,6 +16,7 @@
 	var/list/viruses
 	var/basecolor= "#830303" // Color when wet.
 	var/amount = 1
+	var/mud = FALSE
 	var/drying_time = 30 SECONDS
 	var/dry_start_time // If this dries, track the dry start time for footstep drying
 	var/randomized = TRUE

@@ -6,6 +6,9 @@
 	///Used for isx(y) checking of species groups
 	var/group
 
+	/// Whether this species offers the special body type options in character setup
+	var/special_body_types = FALSE
+
 	var/name  // Species name.
 	var/name_plural
 

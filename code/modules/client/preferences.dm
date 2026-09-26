@@ -40,6 +40,15 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 	/// regenerate-a-flat-snapshot approach.
 	var/preview_dir = SOUTH
 
+	/// Character setup pickers opened from the legacy menu / loadout prompt. They're stateless (they read
+	/// everything from the user's prefs at call time), so one instance each is created on demand and reused.
+	var/datum/hair_picker/hair_picker
+	var/datum/body_picker/body_picker
+	var/datum/traits_picker/traits_picker
+	var/datum/loadout_picker/loadout_picker
+	/// Body type presentation chosen for this character - falls back to gender when unset (see get_body_presentation())
+	var/body_presentation
+
 	//doohickeys for savefiles
 	var/path
 	var/default_slot = 1 //Holder so it doesn't default to slot 1, rather the last one used
@@ -2547,6 +2556,8 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 	if(!loadout_for_role)
 		if(!timeout)
 			if(tgui_alert(owner, "You have not selected any loadout for this role. Do you want to select this now?", "Loadout", list("Yes", "No")) == "Yes")
+				if(!loadout_picker)
+					loadout_picker = new()
 				loadout_picker.tgui_interact(owner)
 				return FALSE
 		return TRUE

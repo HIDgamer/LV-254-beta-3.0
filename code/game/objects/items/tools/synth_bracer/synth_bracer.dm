@@ -37,8 +37,10 @@
 	var/list/ability_chips = list()
 	var/ability_chips_max = 3
 
-	/// Faction minimap shown by the Live Tactical Map upgrade chip's tacmap component.
+	/// Faction minimap shown by the Live Tactical Map upgrade chip's tacmap.
 	var/minimap_flag = MINIMAP_FLAG_USCM
+	/// The tacmap the Live Tactical Map upgrade chip provides (the same one the CIC tablet opens). Null until the chip is slotted in.
+	var/datum/tacmap/live_tacmap
 	/// Whether this bracer model exposes the Dropship Flight Computer tab at all.
 	var/has_dropship_control = TRUE
 
@@ -113,6 +115,9 @@
 
 /obj/item/clothing/gloves/synth/Destroy()
 	. = ..()
+	if(live_tacmap)
+		SStgui.close_uis(live_tacmap)
+		QDEL_NULL(live_tacmap)
 	QDEL_NULL_LIST(actions_list_actions)
 	QDEL_NULL(internal_transmitter)
 	QDEL_NULL(internal_camera_console)
@@ -228,8 +233,11 @@
 				upgrade_binos()
 			if(istype(new_chip, /obj/item/device/simi_chip/battery_upgrade))
 				battery_charge_max = SMARTPACK_MAX_POWER_STORED * 2
-			if(istype(new_chip, /obj/item/device/simi_chip/live_tactical_map))
-				AddComponent(/datum/component/tacmap, FALSE, minimap_flag, FALSE, FALSE)
+			if(istype(new_chip, /obj/item/device/simi_chip/live_tactical_map) && !live_tacmap)
+				if(minimap_flag == MINIMAP_FLAG_USCM)
+					live_tacmap = new /datum/tacmap/drawing(src, minimap_flag)
+				else
+					live_tacmap = new /datum/tacmap(src, minimap_flag) // Non-drawing version
 			if(user.gloves && (user.gloves == src))
 				update_actions(SIMI_ACTIONS_RELOAD, user)
 			else
@@ -265,12 +273,9 @@
 			if(battery_removed)
 				battery_charge_max = SMARTPACK_MAX_POWER_STORED
 				battery_charge = min(battery_charge, battery_charge_max)
-			if(live_tacmap_removed)
-				var/datum/component/tacmap/tc = GetComponent(/datum/component/tacmap)
-				if(tc)
-					for(var/mob/M in tc.interactees.Copy())
-						tc.on_unset_interaction(M)
-					qdel(tc)
+			if(live_tacmap_removed && live_tacmap)
+				SStgui.close_uis(live_tacmap)
+				QDEL_NULL(live_tacmap)
 			if(user.gloves && (user.gloves == src))
 				update_actions(SIMI_ACTIONS_RELOAD, user)
 			else

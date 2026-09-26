@@ -112,7 +112,7 @@
 		if ("Ghosts")
 			targets = GLOB.observer_list + GLOB.dead_mob_list
 		if ("All In View Range")
-			var/list/atom/ranged_atoms = urange(owner.view, get_turf(owner.mob))
+			var/list/atom/ranged_atoms = long_range(owner.view, get_turf(owner.mob))
 			for (var/mob/receiver in ranged_atoms)
 				targets += receiver
 		if ("Single Mob")

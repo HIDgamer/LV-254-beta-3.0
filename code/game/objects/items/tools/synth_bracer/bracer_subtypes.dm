@@ -14,7 +14,7 @@
 
 /obj/item/clothing/gloves/synth/wy/pmc
 	faction = FACTION_PMC
-	minimap_flag = MINIMAP_FLAG_PMC
+	minimap_flag = MINIMAP_FLAG_WY
 	has_dropship_control = FALSE
 
 /obj/item/clothing/gloves/synth/wy/pmc/preset

@@ -302,8 +302,6 @@ GLOBAL_LIST_INIT(ai_evolve_priority_castes, list(
 			return /datum/xeno_ai_controller/carrier
 		if(XENO_CASTE_SPITTER)
 			return /datum/xeno_ai_controller/ranged/spitter
-		if(XENO_CASTE_DESPOILER)
-			return /datum/xeno_ai_controller/ranged/despoiler
 		if(XENO_CASTE_SENTINEL)
 			return /datum/xeno_ai_controller/ranged/sentinel
 		if(XENO_CASTE_BOILER)

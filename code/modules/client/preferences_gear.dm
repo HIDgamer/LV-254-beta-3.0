@@ -1161,22 +1161,22 @@ GLOBAL_LIST_EMPTY(roles_with_gear)
 /datum/gear/misc/fingerless_gloves
 	display_name = "fingerless combat gloves"
 	path = /obj/item/clothing/gloves/marine/fingerless
-	cost = 2
+	fluff_cost = 2
 
 /datum/gear/misc/grey_boots
 	display_name = "grey combat boots"
 	path = /obj/item/clothing/shoes/marine/grey
-	cost = 2
+	fluff_cost = 2
 
 /datum/gear/misc/urban_boots
 	display_name = "Urban pattern combat boots"
 	path = /obj/item/clothing/shoes/marine/urban
-	cost = 2
+	fluff_cost = 2
 
 /datum/gear/misc/grey_gloves
 	display_name = "grey combat gloves"
 	path = /obj/item/clothing/gloves/marine/grey
-	cost = 2
+	fluff_cost = 2
 
 /datum/gear/misc/pdt_kit
 	display_name = "PDT/L kit"

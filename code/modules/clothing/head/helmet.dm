@@ -933,13 +933,13 @@ GLOBAL_LIST_INIT(allowed_helmet_items, list(
 	icon_state = "sl_helmet"
 	armor_bio = CLOTHING_ARMOR_MEDIUMHIGH
 	specialty = "M11 pattern marine"
-	flags_atom = NO_SNOW_TYPE
+	flags_atom = NO_GAMEMODE_SKIN
 
 /obj/item/clothing/head/helmet/marine/leader/mod
 	name = "\improper M11-R pattern helmet"
 	desc = "A variant of the M11 pattern, the 'R' platform features an older, external-style comms module and leather banding. Those who use it swear it has a better signal, but nobody knows for sure."
 	icon_state = "vsl_helmet"
-	flags_atom = NO_SNOW_TYPE
+	flags_atom = NO_GAMEMODE_SKIN
 
 /obj/item/clothing/head/helmet/marine/rto
 	name = "\improper M12 pattern dust helmet"

@@ -1113,20 +1113,6 @@ SUBSYSTEM_DEF(minimaps)
 	distribute_current_map_png(faction)
 	last_update_time = world.time
 
-/atom/movable/screen/minimap_tool/popout
-	icon_state = "popout"
-	desc = "Pop the minimap to a window"
-	screen_loc = "15,4"
-
-/atom/movable/screen/minimap_tool/popout/clicked(location, list/modifiers)
-	owner.popout()
-
-	return TRUE
-
-/atom/movable/screen/minimap_tool/popout/set_zlevel(zlevel, minimap_flag)
-	x_offset = SSminimaps.minimaps_by_z["[zlevel]"] ? SSminimaps.minimaps_by_z["[zlevel]"].x_offset : 0
-	y_offset = SSminimaps.minimaps_by_z["[zlevel]"] ? SSminimaps.minimaps_by_z["[zlevel]"].y_offset : 0
-
 /datum/proc/send_tacmap_assets_latejoin(mob/user)
 	if(!user.client)
 		return
@@ -1137,9 +1123,6 @@ SUBSYSTEM_DEF(minimaps)
 		var/datum/flattened_tacmap/latest = GLOB.uscm_flat_tacmap_data[length(GLOB.uscm_flat_tacmap_data)]
 		if(latest)
 			SSassets.transport.send_assets(user.client, latest.asset_key)
-		var/datum/drawing_data/latest_draw_data = GLOB.uscm_drawing_tacmap_data[length(GLOB.uscm_drawing_tacmap_data)]
-		if(latest_draw_data)
-			SSassets.transport.send_assets(user.client, latest_draw_data.asset_key)
 
 	var/mob/living/carbon/xenomorph/xeno = user
 	if((is_observer || istype(xeno) && xeno.hivenumber == XENO_HIVE_NORMAL) && length(GLOB.xeno_flat_tacmap_data))
@@ -1147,9 +1130,6 @@ SUBSYSTEM_DEF(minimaps)
 		var/datum/flattened_tacmap/latest = GLOB.xeno_flat_tacmap_data[length(GLOB.xeno_flat_tacmap_data)]
 		if(latest)
 			SSassets.transport.send_assets(user.client, latest.asset_key)
-		var/datum/drawing_data/latest_draw_data = GLOB.xeno_drawing_tacmap_data[length(GLOB.xeno_drawing_tacmap_data)]
-		if(latest_draw_data)
-			SSassets.transport.send_assets(user.client, latest_draw_data.asset_key)
 
 /// Gets the MINIMAP_FLAG for the provided faction or hivenumber if one exists
 /proc/get_minimap_flag_for_faction(faction)

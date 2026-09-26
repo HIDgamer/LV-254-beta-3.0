@@ -12,6 +12,8 @@
 #define FACEHUGGER_LEAP_DURATION 2 SECONDS
 /// The duration it takes a player controlled facehugger to hug a target lying down by clicking on it
 #define FACEHUGGER_CLIMB_DURATION 1 SECONDS
+/// The duration it takes a player controlled facehugger to leap or hug adjacently
+#define FACEHUGGER_WINDUP_DURATION 1 SECONDS
 
 // Defines for action types and click delays used by xenomorph/unarmedattack() and attack_alien().
 

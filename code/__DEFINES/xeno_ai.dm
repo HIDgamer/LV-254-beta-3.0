@@ -422,8 +422,6 @@
 #define AI_HIVELORD_BUILD_CHANCE 12
 /// Health fraction below which a Carrier disengages - higher than the population default since she has no offensive tools to actually win a fight she's already losing.
 #define AI_CARRIER_FLEE_HEALTH_PERCENT 0.35
-/// How long an AI Despoiler holds her Acid Barrage charge before firing - well under the ability's own 3-second max charge (despoiler_abilities.dm) so she stays responsive to a moving fight instead of always committing to the longest possible windup.
-#define AI_DESPOILER_BARRAGE_CHARGE_TIME 2 SECONDS
 /// Percent chance per idle tick that a xeno with no better order gravitates toward a nearby idle ally instead of wandering solo - "stick together sometimes in a group."
 #define AI_PACK_COHESION_CHANCE 20
 /// How close counts as "already sticking together" for pack cohesion - stops short of stacking exactly on the buddy's tile.

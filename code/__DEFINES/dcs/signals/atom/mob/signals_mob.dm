@@ -67,6 +67,8 @@
 	#define COMPONENT_OVERRIDE_VIEW (1<<0)
 
 #define COMSIG_MOB_POST_CLICK "mob_post_click"
+///from mob/dead/observer/ClickOn(): (atom/A, params)
+#define COMSIG_OBSERVER_CLICKON "observer_clickon"
 ///Called in /mob/reset_view(): (atom/A)
 #define COMSIG_MOB_RESET_VIEW "mob_reset_view"
 //Machine Guns (m56D, M2C)

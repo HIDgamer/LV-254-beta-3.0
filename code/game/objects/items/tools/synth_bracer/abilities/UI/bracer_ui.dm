@@ -126,7 +126,7 @@ GLOBAL_LIST_INIT(APOLLO_ACTION_TRANSLATION, list(
 
 	data["has_dropship_control"] = has_dropship_control
 	data["has_tactical_map"] = !!(locate(/obj/item/device/simi_chip/tactical_map) in ability_chips)
-	data["has_live_tacmap"] = !!GetComponent(/datum/component/tacmap)
+	data["has_live_tacmap"] = !!live_tacmap
 	data["live_tacmap_ref"] = null
 	if(data["has_live_tacmap"])
 		var/datum/action/human_action/synth_bracer/live_tactical_map/live_action = locate() in actions_list_actions
