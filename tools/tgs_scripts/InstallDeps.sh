@@ -34,6 +34,9 @@ fi
 
 # install or update youtube-dl when not present, or if it is present with pip3,
 # which we assume was used to install it
+# Newer distros (PEP 668, e.g. Debian 12+) refuse pip installs into the system
+# environment, so retry with --break-system-packages, which as a non-root user
+# just installs to ~/.local. Older pip rejects that flag, hence trying without first.
 if ! [ -x "$has_youtubedl" ]; then
 	echo "Installing youtube-dl with pip3..."
 	if ! [ -x "$has_sudo" ]; then
@@ -43,8 +46,8 @@ if ! [ -x "$has_youtubedl" ]; then
 		sudo apt-get update
 		sudo apt-get install -y python3 python3-pip
 	fi
-	pip3 install youtube-dl
+	pip3 install youtube-dl || pip3 install youtube-dl --break-system-packages
 elif [ -x "$has_pip3" ]; then
 	echo "Ensuring youtube-dl is up-to-date with pip3..."
-	pip3 install youtube-dl -U
+	pip3 install youtube-dl -U || pip3 install youtube-dl -U --break-system-packages
 fi
