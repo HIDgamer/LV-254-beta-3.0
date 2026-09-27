@@ -929,6 +929,8 @@ GLOBAL_LIST_INIT(whitelisted_client_procs, list(
 	var/success = FALSE
 	if(!player_data)
 		load_player_data()
+	if(!player_data)
+		return FALSE
 	for(var/bitfield in flags_to_check)
 		success = player_data.check_whitelist_status(bitfield)
 		if(success)

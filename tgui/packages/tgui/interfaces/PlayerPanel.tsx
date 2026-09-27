@@ -1,4 +1,3 @@
-import type { BooleanLike } from 'common/react';
 import { useState } from 'react';
 import { useBackend } from 'tgui/backend';
 import {
@@ -135,68 +134,6 @@ const PAGES: Page[] = [
     },
   },
 ];
-
-type ClientData = {
-  client_key: string;
-  client_ckey: string;
-  client_muted: number;
-  client_age: number;
-  first_join: string;
-  client_rank: string;
-  client_name_banned_status: BooleanLike;
-};
-
-type StatusFlags = {
-  Stun: number;
-  Knockdown: number;
-  Knockout: number;
-  Push: number;
-  Slow: number;
-  Daze: number;
-  Godmode: number;
-  'No Permanent Damage': number;
-};
-
-type MobLimbs = {
-  Head: string;
-  'Left leg': string;
-  'Right leg': string;
-  'Left arm': string;
-  'Right arm': string;
-};
-
-type TransformEntry = { name: String; key: string; color: string };
-
-type Data = {
-  mob_type: string;
-  is_human: BooleanLike;
-  is_xeno: BooleanLike;
-  glob_status_flags: StatusFlags;
-  glob_limbs: MobLimbs;
-  glob_hives: Record<string, number>;
-  glob_mute_bits: { name: string; bitflag: number }[];
-  glob_pp_actions: {
-    name: string;
-    avtion_tag: string;
-    permissions_required: BooleanLike;
-  }[];
-  glob_span: { name: string; span: string }[];
-  glob_pp_transformables: {
-    Humanoid: TransformEntry[];
-    'Alien Tier 1': TransformEntry[];
-    'Alien Tier 2': TransformEntry[];
-    'Alien Tier 3': TransformEntry[];
-    'Alien Tier 4': TransformEntry[];
-    Miscellaneous: TransformEntry[];
-  };
-  mob_name: string;
-  mob_sleeping: number;
-  mob_frozen: BooleanLike;
-  mob_speed: number;
-  mob_status_flags: number;
-  mob_feels_pain: BooleanLike;
-  current_permissions: number;
-} & Partial<ClientData>;
 
 export const PlayerPanel = (props) => {
   const { act, data } = useBackend<Data>();
@@ -350,175 +287,32 @@ export const PlayerPanel = (props) => {
         </Section>
         <Stack grow={1}>
           <Stack.Item>
-            <Section>
-              <Stack>
-                <Stack.Item width="80px" color="label">
-                  Name:
-                </Stack.Item>
-                <Stack.Item grow align="right">
-                  {(!!hasPermission(data, 'set_name') && (
-                    <Input
-                      width={25}
-                      value={mob_name}
-                      onChange={(e, value) => act('set_name', { name: value })}
-                    />
-                  )) ||
-                    mob_name}
-                </Stack.Item>
-              </Stack>
-              <Stack mt={1}>
-                <Stack.Item width="80px" color="label">
-                  Mob Type:
-                </Stack.Item>
-                <Stack.Item grow align="right">
-                  {mob_type}
-                </Stack.Item>
-                <Stack.Item align="right">
-                  <Button
-                    icon="window-restore"
-                    disabled={!hasPermission(data, 'access_variables')}
-                    onClick={() => act('access_variables')}
-                  >
-                    Access Variables
-                  </Button>
-                </Stack.Item>
-                <Stack.Item>
-                  <Button
-                    icon="window-restore"
-                    disabled={!hasPermission(data, 'show_notes')}
-                    onClick={() => act('access_playtimes')}
-                  >
-                    View Playtimes
-                  </Button>
-                </Stack.Item>
-              </Stack>
-              <Stack mt={1}>
-                <Stack.Item width="80px" color="label">
-                  Client:
-                </Stack.Item>
-                <Stack.Item grow align="left">
-                  {((canModifyCkey || !client_key) &&
-                    hasPermission(data, 'set_ckey') && (
-                      <Input
-                        value={client_ckey}
-                        onChange={(e, value) =>
-                          act('set_ckey', { ckey: value })
-                        }
-                      />
-                    )) || <Box inline>{client_key}</Box>}
-                </Stack.Item>
-                {!!client_ckey && (
-                  <Stack.Item align="right">
-                    {!!hasPermission(data, 'set_name') && (
-                      <Button
-                        ml={1}
-                        icon={canModifyCkey ? 'lock-open' : 'lock'}
-                        onClick={() => setModifyCkey(!canModifyCkey)}
-                        color={canModifyCkey ? 'average' : 'good'}
-                      >
-                        {canModifyCkey ? 'Unlocked' : 'Locked'}
-                      </Button>
-                    )}
-                    <Button
-                      ml={1}
-                      icon="comment-dots"
-                      disabled={!hasPermission(data, 'private_message')}
-                      onClick={() => act('private_message')}
+            <Section fitted>
+              <Tabs vertical>
+                {PAGES.map((page, i) => {
+                  if (page.canAccess && !page.canAccess(data)) {
+                    return;
+                  }
+
+                  return (
+                    <Tabs.Tab
+                      key={i}
+                      color={page.color}
+                      selected={i === pageIndex}
+                      icon={page.icon}
+                      onClick={() => setPageIndex(i)}
                     >
-                      Private Message
-                    </Button>
-                    <Button
-                      ml={1}
-                      icon="phone-alt"
-                      disabled={!hasPermission(data, 'subtle_message')}
-                      onClick={() => act('subtle_message')}
-                    >
-                      Subtle Message
-                    </Button>
-                  </Stack.Item>
-                )}
-              </Stack>
-              {client_rank && (
-                <Stack mt={1}>
-                  <Stack.Item width="80px" color="label">
-                    Rank:
-                  </Stack.Item>
-                  <Stack.Item grow align="left">
-                    <Button
-                      icon="window-restore"
-                      disabled={!hasPermission(data, 'access_admin_datum')}
-                      onClick={() => act('access_admin_datum')}
-                    >
-                      {client_rank}
-                    </Button>
-                  </Stack.Item>
-                  <Stack.Item align="right">
-                    <Button
-                      ml={1}
-                      icon="exclamation-triangle"
-                      disabled={!hasPermission(data, 'alert_message')}
-                      onClick={() => act('alert_message')}
-                    >
-                      Alert Message
-                    </Button>
-                  </Stack.Item>
-                </Stack>
-              )}
-              {client_age && (
-                <Stack mt={1}>
-                  <Stack.Item width="80px" color="label">
-                    Account age:
-                  </Stack.Item>
-                  <Stack.Item grow align="right">
-                    {client_age}
-                  </Stack.Item>
-                </Stack>
-              )}
-              {first_join && (
-                <Stack mt={1}>
-                  <Stack.Item width="80px" color="label">
-                    <Tooltip content="This is estimated, and depending on database integrity, may not be accurate to a user's first join date.">
-                      <Box position="relative">First join:</Box>
-                    </Tooltip>
-                  </Stack.Item>
-                  <Stack.Item grow align="right">
-                    {first_join}
-                  </Stack.Item>
-                </Stack>
-              )}
+                      {page.title}
+                    </Tabs.Tab>
+                  );
+                })}
+              </Tabs>
             </Section>
           </Stack.Item>
-          <Stack.Item grow>
-            <Stack fill>
-              <Stack.Item>
-                <Section fitted>
-                  <Tabs vertical>
-                    {PAGES.map((page, i) => {
-                      if (page.canAccess && !page.canAccess(data)) {
-                        return;
-                      }
-
-                      return (
-                        <Tabs.Tab
-                          key={i}
-                          color={page.color}
-                          selected={i === pageIndex}
-                          icon={page.icon}
-                          onClick={() => setPageIndex(i)}
-                        >
-                          {page.title}
-                        </Tabs.Tab>
-                      );
-                    })}
-                  </Tabs>
-                </Section>
-              </Stack.Item>
-              <Stack.Item position="relative" grow basis={0} ml={1}>
-                <Section fill scrollable>
-                  <PageComponent />
-                </Section>
-              </Stack.Item>
-            </Stack>
+          <Stack.Item position="relative" grow basis={0} ml={1}>
+            <Section fill scrollable>
+              <PageComponent />
+            </Section>
           </Stack.Item>
         </Stack>
       </Window.Content>
