@@ -310,9 +310,7 @@ export const PlayerPanel = (props) => {
             </Section>
           </Stack.Item>
           <Stack.Item position="relative" grow basis={0} ml={1}>
-            <Section fill scrollable>
-              <PageComponent />
-            </Section>
+            <PageComponent />
           </Stack.Item>
         </Stack>
       </Window.Content>

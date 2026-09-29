@@ -75,7 +75,7 @@
 		qdel(src)
 		return
 
-	if(player.mob || HAS_TRAIT(player.mob, TRAIT_IN_TUTORIAL))
+	if(player.mob && HAS_TRAIT(player.mob, TRAIT_IN_TUTORIAL))
 		return ..()
 
 	for(var/atom/movable/screen/text/screen_text/command_order/tutorial/tutorial_message in player.screen_texts)

@@ -37,6 +37,10 @@ SUBSYSTEM_DEF(quadtree)
 			var/turf/T = get_turf(npc_xeno)
 			if(T?.z && T.z <= world.maxz)
 				active_z[T.z] = TRUE
+		for(var/mob/living/npc_zombie as anything in GLOB.ai_zombie_list)
+			var/turf/T = get_turf(npc_zombie)
+			if(T?.z && T.z <= world.maxz)
+				active_z[T.z] = TRUE
 
 		// Only rebuild trees for z-levels that have players; clear the rest
 		for(var/i in 1 to world.maxz)
@@ -82,6 +86,26 @@ SUBSYSTEM_DEF(quadtree)
 		var/datum/coords/qtplayer/p_coords = new
 		p_coords.is_npc_hostile = TRUE
 		p_coords.npc_mob = npc_xeno
+		p_coords.x_pos = T.x
+		p_coords.y_pos = T.y
+		p_coords.z_pos = T.z
+		QT.insert_player(p_coords)
+		if(MC_TICK_CHECK)
+			return
+
+	// Mirrors the ai_xeno_list pass above - AI-piloted zombies are the same "no client" case.
+	for(var/mob/living/npc_zombie as anything in GLOB.ai_zombie_list)
+		if(QDELETED(npc_zombie) || npc_zombie.stat == DEAD)
+			continue
+		var/turf/T = get_turf(npc_zombie)
+		if(!T?.z || length(new_quadtrees) < T.z)
+			continue
+		var/datum/quadtree/QT = new_quadtrees[T.z]
+		if(!QT)
+			continue
+		var/datum/coords/qtplayer/p_coords = new
+		p_coords.is_npc_hostile = TRUE
+		p_coords.npc_mob = npc_zombie
 		p_coords.x_pos = T.x
 		p_coords.y_pos = T.y
 		p_coords.z_pos = T.z

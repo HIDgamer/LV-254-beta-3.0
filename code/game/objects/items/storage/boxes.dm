@@ -807,6 +807,8 @@
 	base_icon = icon_state
 
 /obj/item/storage/box/nade_box/fill_preset_inventory()
+	if(!ispath(grenade_type, /obj/item))
+		return
 	for(var/i = 1 to storage_slots)
 		new grenade_type(src)
 

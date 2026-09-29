@@ -96,7 +96,7 @@
 	var/list/turf/fort_gate_approach_tiles = list()
 
 	/// turf -> in-flight reservation count, for every build_resin() call currently mid-do_after anywhere in the hive (reserve_build_turf()/unreserve_build_turf(), called from Powers.dm regardless of whether the builder is AI or a human player). A wall/door's density doesn't flip until the build actually completes, so two AI builders evaluating would_block_passage() during each other's multi-second build window would otherwise both see the same pre-build turf state and both pass, even though the finished pair of walls jointly seals the hive - this registry is what lets one of them see the other's build as already "as good as built" instead. Counted (not boolean) so an edge-case double-reservation of the same turf can't be undone by one early unreserve.
-	var/list/turf/pending_build_reservations = list()
+	var/list/pending_build_reservations = list()
 
 	var/tier_slot_multiplier = 1
 	var/larva_gestation_multiplier = 1
@@ -454,6 +454,7 @@
  * subtracts the calling pilot's own contribution back out afterward, cheaply.
  */
 /datum/hive_status/proc/get_cached_pack_assault_status(atom/movable/target)
+	RETURN_TYPE(/list)
 	var/list/cached_entry = cached_pack_assault_status[target]
 	if(cached_entry && world.time < cached_entry["time"] + AI_HIVE_SCAN_CACHE_INTERVAL)
 		return cached_entry

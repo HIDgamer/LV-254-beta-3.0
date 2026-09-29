@@ -209,14 +209,16 @@ Defined in conflicts.dm of the #defines folder.
 		// Remove bullet traits of attachment from gun's current projectile
 		detaching_gun.in_chamber._RemoveElement(L)
 
-	// Remove any leftover reference to the bullet trait
-	for(var/list/trait_list in detaching_gun.in_chamber.bullet_traits)
-		trait_list.Remove(traits_to_give)
-		if(!length(trait_list))
-			detaching_gun.in_chamber.bullet_traits.Remove(list(trait_list))
+	// Remove any leftover reference to the bullet trait - in_chamber is null for an unloaded gun,
+	// same as the loop just above; nothing chambered means nothing to clean up here either.
+	if(detaching_gun.in_chamber)
+		for(var/list/trait_list in detaching_gun.in_chamber.bullet_traits)
+			trait_list.Remove(traits_to_give)
+			if(!length(trait_list))
+				detaching_gun.in_chamber.bullet_traits.Remove(list(trait_list))
 
-	if(!length(detaching_gun.in_chamber.bullet_traits))
-		detaching_gun.in_chamber.bullet_traits = null
+		if(!length(detaching_gun.in_chamber.bullet_traits))
+			detaching_gun.in_chamber.bullet_traits = null
 
 /obj/item/attachable/ui_action_click(mob/living/user, obj/item/weapon/gun/G)
 	activate_attachment(G, user)

@@ -171,12 +171,12 @@
 	var/list/obj/item/item_types
 
 /obj/structure/machinery/cm_vending/clothing/super_snowflake/get_listed_products(mob/user)
-	//If we don't have an object type, we ask the user to supply it
+	// Never prompts (see ensure_item_types_selected()) - cm_vending/Initialize() calls
+	// get_listed_products() with no user, and that call chain must not sleep. dreamchecker's
+	// must_not_sleep check follows virtual dispatch, so a runtime "if(!user) return" guard
+	// here wouldn't satisfy it; the prompt has to live in a proc Initialize() never calls.
 	if(!item_types)
-		var/obj/item/chosen = get_item_category_from_user()
-		if(!chosen)
-			return
-		item_types = list(chosen)
+		return
 
 	if(!items)
 		items = list()
@@ -184,6 +184,20 @@
 			add_items(item_type)
 
 	return items
+
+/// Prompts the user for an item category if we don't have one yet. Only ever called from
+/// tgui_interact() (a real interactive context), never from Initialize()'s inventory pre-build.
+/obj/structure/machinery/cm_vending/clothing/super_snowflake/proc/ensure_item_types_selected(mob/user)
+	if(item_types || !user)
+		return
+	var/obj/item/chosen = get_item_category_from_user()
+	if(!chosen)
+		return
+	item_types = list(chosen)
+
+/obj/structure/machinery/cm_vending/clothing/super_snowflake/tgui_interact(mob/user, datum/tgui/ui)
+	ensure_item_types_selected(user)
+	return ..()
 
 /obj/structure/machinery/cm_vending/clothing/super_snowflake/proc/get_item_category_from_user()
 	var/item = tgui_input_text(usr,"What item to stock?", "Stock Vendor","")

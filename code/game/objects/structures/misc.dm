@@ -305,16 +305,10 @@
 	RegisterSignal(loc, COMSIG_TURF_ENTERED, PROC_REF(on_turf_entered))
 
 /obj/structure/stairs/multiz/proc/on_turf_entered(turf/source, atom/movable/enterer)
-	if(!istype(enterer, /mob))
-
-		RegisterSignal(enterer, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(on_premove))
-		RegisterSignal(enterer, COMSIG_MOVABLE_MOVED, PROC_REF(on_leave))
-	if(!istype(enterer, /obj/vehicle))
-
-		RegisterSignal(enterer, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(on_premove))
-		RegisterSignal(enterer, COMSIG_MOVABLE_MOVED, PROC_REF(on_leave))
-	else
+	if(istype(enterer, /obj/vehicle))
 		return
+	RegisterSignal(enterer, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(on_premove))
+	RegisterSignal(enterer, COMSIG_MOVABLE_MOVED, PROC_REF(on_leave))
 
 /obj/structure/stairs/multiz/proc/on_leave(atom/movable/mover, atom/oldloc, newDir)
 	SIGNAL_HANDLER

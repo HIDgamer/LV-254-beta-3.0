@@ -163,8 +163,6 @@
 #define TRAIT_TEMPORARILY_MUTED "temporarily_muted"
 /// Mob wont get hit by stray projectiles
 #define TRAIT_NO_STRAY "trait_no_stray"
-/// When a Xeno hauls us. We can take out our knife or gun if hauled even though we are immobilized. Also Shieleded from most damage
-#define TRAIT_HAULED "hauled"
 // only used by valkyrie
 #define TRAIT_VALKYRIE_ARMORED "trait_valkyrie_armored"
 /// Prevents mob from riding mobs when buckled onto something
@@ -248,7 +246,8 @@
 #define TRAIT_CLOAKED "t_cloaked"
 /// If the mob is being carried by another mob
 #define TRAIT_CARRIED "t_carried"
-/// If the mob is being hauled (dragged)
+/// If the mob is being hauled (dragged). Also lets them draw a knife or gun despite being
+/// immobilized, and shields them from most damage - see the HAS_TRAIT(..., TRAIT_HAULED) checks.
 #define TRAIT_HAULED "t_hauled"
 /// If the mob claimed a specialist set from a vendor
 #define TRAIT_SPEC_VENDOR "t_spec_vendor"
