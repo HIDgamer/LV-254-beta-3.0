@@ -321,7 +321,7 @@
 	VAN.update_icon()
 
 /obj/effect/vehicle_spawner/box_van/clown/decrepit/load_hardpoints(obj/vehicle/multitile/box_van/clown/V)
-	V.add_hardpoint(new /obj/item/hardpoint/locomotion/van_wheels)
+	V.add_hardpoint(new /obj/item/hardpoint/support/locomotion)
 
 //PRESET: wheels installed
 /obj/effect/vehicle_spawner/box_van/clown/fixed/spawn_vehicle()
