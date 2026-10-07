@@ -327,6 +327,12 @@
 	name = "red armband"
 	desc = "A fancy red armband!"
 	icon_state = "red"
+	icon = 'icons/obj/items/clothing/accessory/armbands.dmi'
+	inv_overlay_icon = 'icons/obj/items/clothing/accessory/inventory_overlays/armbands.dmi'
+	accessory_icons = list(
+		WEAR_BODY = 'icons/mob/humans/onmob/clothing/accessory/armbands.dmi',
+		WEAR_JACKET = 'icons/mob/humans/onmob/clothing/accessory/armbands.dmi'
+	)
 	slot = ACCESSORY_SLOT_ARMBAND
 	jumpsuit_hide_states = (UNIFORM_SLEEVE_CUT|UNIFORM_JACKET_REMOVED)
 
