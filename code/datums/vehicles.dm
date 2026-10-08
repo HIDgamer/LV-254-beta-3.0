@@ -127,3 +127,6 @@
 	interior_id = "clf_van"
 
 //misc
+/datum/map_template/interior/trailer
+	name = "trailer"
+	interior_id = "trailer"

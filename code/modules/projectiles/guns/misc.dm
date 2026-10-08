@@ -93,13 +93,10 @@
 	flags_gun_features = GUN_WIELDED_FIRING_ONLY|GUN_CAN_POINTBLANK|GUN_AUTO_EJECT_CASINGS
 	gun_category = GUN_CATEGORY_HEAVY
 	attachable_allowed = list(
-		/obj/item/attachable/m60barrel,
 		/obj/item/attachable/bipod/m60,
 	)
 	starting_attachment_types = list(
-		/obj/item/attachable/m60barrel,
 		/obj/item/attachable/bipod/m60,
-		/obj/item/attachable/stock/m60,
 	)
 	start_semiauto = FALSE
 	start_automatic = TRUE
@@ -116,14 +113,14 @@
 
 /obj/item/weapon/gun/m60/set_gun_config_values()
 	..()
-	set_fire_delay(FIRE_DELAY_TIER_11)
+	set_fire_delay(FIRE_DELAY_TIER_SMG)
 	set_burst_amount(BURST_AMOUNT_TIER_5)
 	set_burst_delay(FIRE_DELAY_TIER_LMG)
 	accuracy_mult = BASE_ACCURACY_MULT
 	accuracy_mult_unwielded = BASE_ACCURACY_MULT
-	scatter = SCATTER_AMOUNT_TIER_10
+	scatter = SCATTER_AMOUNT_TIER_9
 	burst_scatter_mult = SCATTER_AMOUNT_TIER_8
-	scatter_unwielded = SCATTER_AMOUNT_TIER_10
+	scatter_unwielded = SCATTER_AMOUNT_TIER_8
 	damage_mult = BASE_BULLET_DAMAGE_MULT
 	recoil = RECOIL_AMOUNT_TIER_5
 	empty_sound = 'sound/weapons/gun_empty.ogg'

@@ -145,7 +145,7 @@
 	armor_bio = CLOTHING_ARMOR_VERYLOW
 	armor_rad = CLOTHING_ARMOR_VERYLOW
 	armor_internaldamage = CLOTHING_ARMOR_LOW
-	flags_inventory = COVERMOUTH
+	flags_inventory = COVERMOUTH | COVEREYES | ALLOWINTERNALS | BLOCKGASEFFECT | ALLOWREBREATH | ALLOWCPR
 	flags_inv_hide = HIDEFACE
 	flags_equip_slot = SLOT_FACE
 	flags_armor_protection = BODY_FLAG_FACE|BODY_FLAG_HEAD|BODY_FLAG_EYES

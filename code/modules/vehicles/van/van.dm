@@ -299,3 +299,50 @@
 
 /obj/effect/vehicle_spawner/van/fixed/load_hardpoints(obj/vehicle/multitile/van/V)
 	V.add_hardpoint(new /obj/item/hardpoint/support/locomotion)
+
+
+
+/obj/vehicle/multitile/trailer
+	name = "Covered trailer"
+	desc = "A rather old hunk of metal with four wheels, you know what to do. Entrance on the back and sides."
+	layer = ABOVE_XENO_LAYER
+
+	icon = 'icons/obj/vehicles/trailer.dmi'
+	icon_state = "trailer"
+	pixel_x = -16
+	pixel_y = -16
+
+	bound_width = 64
+	bound_height = 64
+
+	bound_x = 0
+	bound_y = 0
+
+	interior_map = /datum/map_template/interior/trailer
+
+	entrances = list(
+		"back_left" = list(1, 2),
+		"back_right" = list(0, 2)
+	)
+
+	vehicle_flags = VEHICLE_CLASS_WEAK
+
+	passengers_slots = 9
+	xenos_slots = 2
+
+	misc_multipliers = list(
+		"move" = 0, // fucking annoying how this is the only way to modify speed
+		"accuracy" = 1,
+		"cooldown" = 1
+	)
+
+	movement_sound = 'sound/vehicles/tank_driving.ogg'
+	honk_sound = 'sound/vehicles/honk_2_truck.ogg'
+
+	vehicle_light_range = 8
+
+	move_max_momentum = 3
+
+	hardpoints_allowed = list(
+		/obj/item/hardpoint/support/locomotion,
+	)

@@ -27,7 +27,7 @@
 		"rear" = list(0, 2)
 	)
 
-	movement_sound = 'sound/vehicles/jeep_driving.mp3'
+	movement_sound = 'sound/vehicles/jeep_driving.ogg'
 	honk_sound = 'sound/vehicles/honk_4_light.ogg'
 	passengers_slots = 7
 	xenos_slots = 4

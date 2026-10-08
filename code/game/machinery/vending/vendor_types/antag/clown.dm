@@ -37,7 +37,7 @@ GLOBAL_LIST_INIT(cm_vending_gear_clown, list(
 		list("Surplus Welding Tank", 20, /obj/item/tool/weldpack/minitank, null, VENDOR_ITEM_REGULAR),
 		list("Folding Barricades (x3)", 20, /obj/item/stack/folding_barricade/three, null, VENDOR_ITEM_REGULAR),
 		list("First Aid Kit", 20, /obj/item/storage/firstaid/adv, null, VENDOR_ITEM_REGULAR),
-		list("Mini-Sentry", 40, /obj/structure/machinery/defenses/sentry/mini/clown, null, VENDOR_ITEM_REGULAR),
+		list("Mini-Sentry", 40, /obj/item/defenses/handheld/sentry/mini/clown, null, VENDOR_ITEM_REGULAR),
 		list("Spare Van Wheels", 0, /obj/item/hardpoint/support/locomotion, null, VENDOR_ITEM_REGULAR),
 ))
 

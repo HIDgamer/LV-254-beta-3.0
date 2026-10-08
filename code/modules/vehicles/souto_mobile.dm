@@ -6,7 +6,7 @@
 	buckling_y = 4
 	layer = ABOVE_LYING_MOB_LAYER //Allows it to drive over people, but is below the driver.
 	//Sound to play when moving
-	var/movement_sound = 'sound/vehicles/jeep_driving.mp3'
+	var/movement_sound = 'sound/vehicles/jeep_driving.ogg'
 	//Cooldown for next sound to play
 	var/move_next_sound_play = 0
 

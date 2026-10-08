@@ -482,7 +482,7 @@
 	var/zoom = 0 // 0 is it doesn't zoom, 1 is that it zooms.
 	var/damage_state = M56D_DMG_NONE
 
-	var/gun_noise = 'sound/weapons/gun_rifle.ogg' // Variations for gun noises for M56D, M2C, the auto one, uses a different set of sounds. emergency_cooling
+	var/gun_noise = "gun_smartgun"// Variations for gun noises for M56D, M2C, the auto one, uses a different set of sounds. emergency_cooling
 	var/empty_alarm = 'sound/weapons/smg_empty_alarm.ogg'
 
 	// Muzzle Flash Offsets

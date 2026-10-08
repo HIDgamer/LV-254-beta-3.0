@@ -465,6 +465,7 @@
 	if(!target) //No targets, don't bother firing
 		return
 
+	new /obj/effect/warning/explosive/target_lock(target.loc, 0.5 SECONDS)
 	fire(target)
 
 /obj/structure/machinery/defenses/sentry/premade

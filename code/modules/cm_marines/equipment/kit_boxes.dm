@@ -531,7 +531,6 @@
 	desc = "A large case containing a telephone, portable faxmachine, crew tracker, and other important equipment for a Military Police dispatcher.\nDrag this sprite onto yourself to open it up! NOTE: You cannot put items back inside this case."
 	kit_overlay = "+jtac"
 	kit_name = "mp dispatcher"
-	kit_name = "dispatcher"
 
 /obj/item/storage/box/spec/mp_dispatcher/fill_preset_inventory()
 
@@ -550,7 +549,7 @@
 	new /obj/item/device/binoculars/range/designator(src)
 	new /obj/item/device/encryptionkey/jtac(src)
 	new /obj/item/storage/backpack/marine/satchel/rto(src)
-	new /obj/structure/machinery/faxmachine/backpack(src)
+	new /obj/item/device/fax_backpack(src)
 	new /obj/item/storage/pouch/document(src)
 	new /obj/item/notepad(src)
 	new /obj/item/tool/pen(src)

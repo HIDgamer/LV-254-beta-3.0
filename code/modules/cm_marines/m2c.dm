@@ -20,7 +20,7 @@
 	icon = 'icons/obj/items/weapons/guns/ammo_by_faction/USCM/machineguns.dmi'
 	icon_state = "m2c"
 	item_state = "m2c"
-	max_rounds = 125
+	max_rounds = 200
 	default_ammo = /datum/ammo/bullet/machinegun/auto
 	gun_type = null
 

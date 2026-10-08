@@ -178,8 +178,8 @@
 	name = "heavy machinegun bullet"
 
 	accurate_range = 10
-	damage =  50
-	penetration = ARMOR_PENETRATION_TIER_6
+	damage =  75
+	penetration = ARMOR_PENETRATION_TIER_8
 	shell_speed = AMMO_SPEED_TIER_3
 	max_range = 15
 	effective_range_max = 9
@@ -199,8 +199,8 @@
 	name = "medium machinegun bullet"
 
 	accurate_range = 10
-	damage =  50
-	penetration = ARMOR_PENETRATION_TIER_6
+	damage =  75
+	penetration = ARMOR_PENETRATION_TIER_8
 	accuracy = -HIT_ACCURACY_TIER_2 // 75 accuracy
 	shell_speed = AMMO_SPEED_TIER_2
 	max_range = 15
