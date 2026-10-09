@@ -47,6 +47,12 @@
 	area_has_base_lighting = FALSE
 
 /area/proc/add_base_lighting()
+	// Already lit: do nothing. Loading a vehicle interior calls this on every area under it, and the void
+	// turfs of each interior belong to /area/space, so without this guard all ~350k space turfs got the same
+	// overlay appended again for every interior (slow, and it stacked identical overlays on every space turf).
+	// update_base_lighting() calls remove_base_lighting() first, so deliberate refreshes still re-light.
+	if(area_has_base_lighting)
+		return
 	lighting_effect = mutable_appearance('icons/effects/alphacolors.dmi', "white")
 	lighting_effect.plane = LIGHTING_PLANE
 	lighting_effect.layer = LIGHTING_PRIMARY_LAYER
