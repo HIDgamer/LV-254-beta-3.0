@@ -38,6 +38,8 @@
 	var/projectile_override_flags = NONE
 	/// Flags for behaviors of the projectile itself
 	var/projectile_flags = NONE
+	/// Whether this projectile is counted in GLOB.active_shrapnel (set by create_shrapnel(), cleared in Destroy())
+	var/shrapnel_counted = FALSE
 
 	/// How much time has the projectile carried for fractional movement, in seconds (delta_time format)
 	var/time_carry = 0
@@ -98,6 +100,9 @@
 	firer = cause_data?.resolve_mob()
 
 /obj/projectile/Destroy()
+	if(shrapnel_counted)
+		shrapnel_counted = FALSE
+		GLOB.active_shrapnel--
 	speed = 0
 	ammo = null
 	shot_from = null

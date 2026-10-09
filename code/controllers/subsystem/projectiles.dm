@@ -83,6 +83,10 @@ SUBSYSTEM_DEF(projectiles)
 	. = projectile.process(delta_time)
 	sleepers -= projectile // Recover from sleep
 
+/// Whether any projectile is currently being handled by the subsystem
+/datum/controller/subsystem/projectiles/proc/has_projectiles()
+	return length(projectiles) > 0
+
 /datum/controller/subsystem/projectiles/proc/queue_projectile(obj/projectile/projectile)
 	projectiles |= projectile
 /datum/controller/subsystem/projectiles/proc/stop_projectile(obj/projectile/projectile)

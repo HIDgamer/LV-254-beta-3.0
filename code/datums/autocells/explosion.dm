@@ -31,6 +31,11 @@
 		or weakened explosion
 */
 
+/// Live cells of all explosions that are still spreading, see EXPLOSION_CELLS_SOFT_LIMIT
+GLOBAL_VAR_INIT(active_explosion_cells, 0)
+/// world.time before which another "explosions are being culled" message is not logged
+GLOBAL_VAR_INIT(explosion_cull_log_time, 0)
+
 /datum/automata_cell/explosion
 	// Explosions only spread outwards and don't need to know their neighbors to propagate properly
 	neighbor_type = NEIGHBORS_NONE
@@ -63,9 +68,16 @@
 
 	var/obj/effect/particle_effect/shockwave/shockwave = null
 
+	// Whether this cell is currently counted in GLOB.active_explosion_cells
+	var/counted = FALSE
+
 // If we're on a fake z teleport, teleport over
 /datum/automata_cell/explosion/birth()
-	shockwave = new(in_turf)
+	GLOB.active_explosion_cells++
+	counted = TRUE
+	// Past the soft limit the per-cell shockwave atoms are skipped, they are purely cosmetic
+	if(GLOB.active_explosion_cells <= EXPLOSION_CELLS_SOFT_LIMIT)
+		shockwave = new(in_turf)
 
 	var/obj/effect/step_trigger/teleporter_vector/V = locate() in in_turf
 	if(!V)
@@ -75,6 +87,9 @@
 	transfer_turf(new_turf)
 
 /datum/automata_cell/explosion/death()
+	if(counted)
+		counted = FALSE
+		GLOB.active_explosion_cells--
 	if(shockwave)
 		qdel(shockwave)
 
@@ -264,6 +279,19 @@ as having entered the turf.
 
 	falloff = max(falloff, power/100)
 
+	// Self-heal: with no automata cell alive at all the live-cell counter cannot be anything but zero
+	if(!length(GLOB.cellauto_cells))
+		GLOB.active_explosion_cells = 0
+
+	// Circuit breaker: when too many explosion cells are already live, weak new explosions are dropped so the
+	// backlog can drain instead of growing (SScellauto cannot keep up with it anyway, see the soft limit too)
+	if(power < EXPLOSION_CULL_EXEMPT_POWER && GLOB.active_explosion_cells > EXPLOSION_CELLS_HARD_LIMIT)
+		if(world.time >= GLOB.explosion_cull_log_time)
+			GLOB.explosion_cull_log_time = world.time + 10 SECONDS
+			msg_admin_niche("Explosions are being culled: [GLOB.active_explosion_cells] live explosion cells, over the limit of [EXPLOSION_CELLS_HARD_LIMIT].")
+		return
+	var/cull_cosmetics = GLOB.active_explosion_cells > EXPLOSION_CELLS_SOFT_LIMIT
+
 	var/obj/causing_obj = explosion_cause_data?.resolve_cause()
 	var/mob/causing_mob = explosion_cause_data?.resolve_mob()
 	msg_admin_attack("Explosion with Power: [power], Falloff: [falloff], Shape: [falloff_shape],[causing_obj ? " from [causing_obj]" : ""][causing_mob ? " by [key_name(causing_mob)]" : ""] in [epicenter.loc.name] ([epicenter.x],[epicenter.y],[epicenter.z]).", epicenter.x, epicenter.y, epicenter.z)
@@ -279,7 +307,7 @@ as having entered the turf.
 	if(QDELETED(E))
 		return
 
-	if(power >= 150) //shockwave for anything over 150 power
+	if(power >= 150 && !cull_cosmetics) //shockwave for anything over 150 power
 		new /obj/effect/shockwave(epicenter, power/60)
 
 	E.power = power
@@ -288,7 +316,7 @@ as having entered the turf.
 	E.direction = direction
 	E.explosion_cause_data = explosion_cause_data
 
-	if(power >= 100) // powerful explosions send out some special effects
+	if(power >= 100 && !cull_cosmetics) // powerful explosions send out some special effects
 		epicenter = get_turf(epicenter) // the ex_acts might have changed the epicenter
 		new /obj/shrapnel_effect(epicenter)
 

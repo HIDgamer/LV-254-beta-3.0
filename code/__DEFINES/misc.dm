@@ -35,6 +35,21 @@
 
 #define EXPLOSION_MAX_POWER 5000
 
+// Explosion culling, see cell_explosion(). "Live cells" are the wavefront cells of every explosion that is still spreading;
+// one big (power 300) explosion peaks at ~40 of them.
+/// Above this many live cells, new explosions skip their purely cosmetic effects (a shockwave atom per cell, the shockwave and shrapnel particle effects)
+#define EXPLOSION_CELLS_SOFT_LIMIT 600
+/// Above this many live cells, new explosions weaker than EXPLOSION_CULL_EXEMPT_POWER are dropped
+#define EXPLOSION_CELLS_HARD_LIMIT 1200
+/// Explosions at least this strong are never dropped
+#define EXPLOSION_CULL_EXEMPT_POWER 250
+
+// Shrapnel culling, see create_shrapnel().
+/// Once this many fragments are in flight, new bursts are thinned to what is left of the budget
+#define SHRAPNEL_ACTIVE_LIMIT 600
+/// A thinned burst never throws fewer fragments than this (or fewer than it asked for)
+#define SHRAPNEL_MIN_BURST 3
+
 //area flags
 
 /// used to make mobs skip bioscans
