@@ -2,6 +2,10 @@
 node_modules
 *.log
 
+## Leftovers of a pre-Bun yarn install (safe to delete locally)
+/.pnp.*
+/.yarn
+
 ## Build artifacts
 /public/**/*
 !/public/*.html
