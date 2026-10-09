@@ -546,9 +546,11 @@
 /// See https://docs.rs/chrono/latest/chrono/format/strftime/index.html for documentation on the formatting syntax.
 #define rustg_formatted_timestamp_tz(format, offset) RUSTG_CALL(RUST_G, "formatted_timestamp")(format, offset)
 
-/// Returns the timestamp as a string
+/// Returns the unix timestamp as a NUMBER.
+/// Local divergence from rust-g 7.0.0, whose wrapper returns the raw string: log_category.dm and
+/// log_holder.dm rely on a number (big_number_to_text()/timestamp arithmetic), as with the previous wrapper.
 /proc/rustg_unix_timestamp()
-	return RUSTG_CALL(RUST_G, "unix_timestamp")()
+	return text2num(RUSTG_CALL(RUST_G, "unix_timestamp")())
 
 #define rustg_raw_read_toml_file(path) json_decode(RUSTG_CALL(RUST_G, "toml_file_to_json")(path) || "null")
 
