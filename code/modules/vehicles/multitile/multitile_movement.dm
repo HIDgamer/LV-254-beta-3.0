@@ -73,7 +73,7 @@
 	// Driving off a staircase takes the vehicle to another level instead of one tile along
 	var/turf/stairs_destination = get_stairs_destination(direction)
 	if(stairs_destination)
-		if(!can_use_stairs(stairs_destination))
+		if(!can_use_stairs(stairs_destination, direction))
 			return FALSE
 	else if(!can_move(direction) || !can_tow_move(direction))
 		return FALSE
@@ -180,31 +180,32 @@
 			return stairs.get_destination_turf()
 	return null
 
-/// Whether the whole vehicle fits at the destination of a staircase. Crashes like any other blocked move when it does not
-/obj/vehicle/multitile/proc/can_use_stairs(turf/destination)
+/// Whether something at a staircase destination stops the vehicle standing there when it arrives driving in the given direction
+/obj/vehicle/multitile/proc/stairs_blocked_at(turf/destination, direction)
+	var/turf/min_turf = locate(destination.x + bound_x / world.icon_size, destination.y + bound_y / world.icon_size, destination.z)
+	if(!min_turf)
+		return TRUE
+
+	// turf.Enter() cannot be used here: it compares directions with get_dir(), which is 0 between two z-levels, and
+	// then lets everything through. Ask the dense things in the way directly, the way Enter() would. Railings and
+	// platforms only stop what drives across their edge, and the top of a staircase is lined with them.
+	for(var/turf/T as anything in CORNER_BLOCK(min_turf, bound_width / world.icon_size, bound_height / world.icon_size))
+		if(T.density)
+			return TRUE
+		for(var/atom/movable/blocker in T)
+			if(blocker == src || !blocker.density || !blocker.can_block_movement)
+				continue
+			if(blocker.BlockedPassDirs(src, direction) & direction)
+				return TRUE
+	return FALSE
+
+/// Whether the whole vehicle fits at the destination of a staircase, arriving while driving in the given direction. Crashes like any other blocked move when it does not
+/obj/vehicle/multitile/proc/can_use_stairs(turf/destination, direction)
 	if(towing || towed_mob)
 		tow_message(SPAN_WARNING("\The [src] can't take the stairs while towing."))
 		return FALSE
 
-	var/bound_width_tiles = bound_width / world.icon_size
-	var/bound_height_tiles = bound_height / world.icon_size
-	var/turf/min_turf = locate(destination.x + bound_x / world.icon_size, destination.y + bound_y / world.icon_size, destination.z)
-
-	// turf.Enter() cannot be used here: it compares directions with get_dir(), which is 0 between two z-levels, and
-	// then lets everything through. Check for dense turfs and dense things in the way directly instead.
-	var/fits = !!min_turf
-	if(fits)
-		for(var/turf/T as anything in CORNER_BLOCK(min_turf, bound_width_tiles, bound_height_tiles))
-			if(T.density)
-				fits = FALSE
-				break
-			for(var/atom/movable/blocker in T)
-				if(blocker.density && blocker.can_block_movement)
-					fits = FALSE
-					break
-			if(!fits)
-				break
-
+	var/fits = !stairs_blocked_at(destination, direction)
 	if(!fits)
 		move_momentum = floor(move_momentum/2)
 		update_next_move()
