@@ -444,17 +444,14 @@
 	return flags
 
 /area/proc/reg_in_areas_in_z()
-	if(!length(contents))
+	// locate() stops at the first turf; length(contents) + for(in contents) builds the area's whole
+	// contents list first, which is hundreds of thousands of entries for the big outdoor/space areas.
+	var/turf/first_turf = locate(/turf) in src
+	if(!first_turf)
 		return
 
 	var/list/areas_in_z = SSmapping.areas_in_z
-	var/z
-	for(var/i in contents)
-		var/atom/thing = i
-		if(!thing)
-			continue
-		z = thing.z
-		break
+	var/z = first_turf.z
 	if(!z)
 		WARNING("No z found for [src]")
 		return
