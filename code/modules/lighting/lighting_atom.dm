@@ -140,6 +140,7 @@
 /atom/proc/set_light_range(new_range)
 	if(new_range == light_range)
 		return
+	ensure_light_component()
 	SEND_SIGNAL(src, COMSIG_ATOM_SET_LIGHT_RANGE, new_range)
 	. = light_range
 	light_range = new_range
@@ -148,6 +149,7 @@
 /atom/proc/set_light_power(new_power)
 	if(new_power == light_power)
 		return
+	ensure_light_component()
 	SEND_SIGNAL(src, COMSIG_ATOM_SET_LIGHT_POWER, new_power)
 	. = light_power
 	light_power = new_power
@@ -156,6 +158,7 @@
 /atom/proc/set_light_color(new_color)
 	if(new_color == light_color)
 		return
+	ensure_light_component()
 	SEND_SIGNAL(src, COMSIG_ATOM_SET_LIGHT_COLOR, new_color)
 	. = light_color
 	light_color = new_color
@@ -164,15 +167,22 @@
 /atom/proc/set_light_on(new_value)
 	if(new_value == light_on)
 		return
+	ensure_light_component()
 	SEND_SIGNAL(src, COMSIG_ATOM_SET_LIGHT_ON, new_value)
 	. = light_on
 	light_on = new_value
 
 
+/// Hook for atoms that create their overlay_lighting component lazily (see /obj/item). Called by the
+/// light setters right before they signal, so a freshly made component receives that signal.
+/atom/proc/ensure_light_component()
+	return
+
 /// Setter for the light flags of this atom.
 /atom/proc/set_light_flags(new_value)
 	if(new_value == light_flags)
 		return
+	ensure_light_component()
 	SEND_SIGNAL(src, COMSIG_ATOM_SET_LIGHT_FLAGS, new_value)
 	. = light_flags
 	light_flags = new_value

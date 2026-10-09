@@ -1141,3 +1141,16 @@
 ///Called by /mob/living/carbon/swap_hand() when hands are swapped
 /obj/item/proc/hands_swapped(mob/living/carbon/swapper_of_hands)
 	return
+
+/// Almost every item has light_system = MOVABLE_LIGHT but never emits light (~100k items on a map).
+/// A light component costs an image, several signal registrations and a range setup per item, so items
+/// without any light only get theirs when a light setter is first used (ensure_light_component()).
+/obj/item/needs_light_component_at_init()
+	return light_range > 0
+
+/obj/item/ensure_light_component()
+	if(light_system != MOVABLE_LIGHT && light_system != DIRECTIONAL_LIGHT)
+		return
+	if(QDELETED(src) || GetComponent(/datum/component/overlay_lighting))
+		return
+	AddComponent(/datum/component/overlay_lighting, is_directional = (light_system == DIRECTIONAL_LIGHT) ? TRUE : null)
