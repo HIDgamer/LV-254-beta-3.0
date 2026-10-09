@@ -53,7 +53,13 @@
 /datum/controller/subsystem/mapping/proc/get_turf_below(turf/T)
 	if (!T)
 		return
-	var/offset = level_trait(T.z, ZTRAIT_DOWN)
+	var/offset
+	var/list/levels = z_list
+	if (T.z >= 1 && T.z <= length(levels))
+		var/datum/space_level/S = levels[T.z]
+		offset = S.traits[ZTRAIT_DOWN]
+	else
+		offset = level_trait(T.z, ZTRAIT_DOWN) // unmanaged z: keep the original handling
 	if (!offset)
 		return
 	return locate(T.x, T.y, T.z + offset)
@@ -62,7 +68,13 @@
 /datum/controller/subsystem/mapping/proc/get_turf_above(turf/T)
 	if (!T)
 		return
-	var/offset = level_trait(T.z, ZTRAIT_UP)
+	var/offset
+	var/list/levels = z_list
+	if (T.z >= 1 && T.z <= length(levels))
+		var/datum/space_level/S = levels[T.z]
+		offset = S.traits[ZTRAIT_UP]
+	else
+		offset = level_trait(T.z, ZTRAIT_UP) // unmanaged z: keep the original handling
 	if (!offset)
 		return
 	return locate(T.x, T.y, T.z + offset)
