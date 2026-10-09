@@ -305,7 +305,10 @@
 	RegisterSignal(loc, COMSIG_TURF_ENTERED, PROC_REF(on_turf_entered))
 
 /obj/structure/stairs/multiz/proc/on_turf_entered(turf/source, atom/movable/enterer)
-	if(istype(enterer, /obj/vehicle))
+	// Multitile vehicles drive with forceMove(), which never fires the pre-move signal registered below, so they
+	// ask the staircase themselves (see /obj/vehicle/multitile/proc/get_stairs_destination()). Trains drag their
+	// trailers along with Move() and would leave them behind on the old level.
+	if(istype(enterer, /obj/vehicle/multitile) || istype(enterer, /obj/vehicle/train))
 		return
 	RegisterSignal(enterer, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(on_premove))
 	RegisterSignal(enterer, COMSIG_MOVABLE_MOVED, PROC_REF(on_leave))
@@ -322,12 +325,7 @@
 	if(direction == UP && get_dir(src, newLoc) != dir || direction == DOWN && get_dir(src, newLoc) != REVERSE_DIR(dir))
 		return
 
-	var/turf/target_turf = get_step(src, direction == UP ? dir : REVERSE_DIR(dir))
-	var/turf/actual_turf
-	if(direction == UP)
-		actual_turf = SSmapping.get_turf_above(target_turf)
-	else
-		actual_turf = SSmapping.get_turf_below(target_turf)
+	var/turf/actual_turf = get_destination_turf()
 
 	if(actual_turf)
 		if(istype(mover, /mob))
@@ -339,6 +337,17 @@
 			mover.setDir(direction == UP ? dir : REVERSE_DIR(dir))
 
 	return COMPONENT_CANCEL_MOVE
+
+/// The direction something has to move off this staircase in to take it
+/obj/structure/stairs/multiz/proc/get_stairs_dir()
+	return direction == UP ? dir : REVERSE_DIR(dir)
+
+/// The turf taking these stairs leads to, or null when there is no level in that direction
+/obj/structure/stairs/multiz/proc/get_destination_turf()
+	var/turf/target_turf = get_step(src, get_stairs_dir())
+	if(direction == UP)
+		return SSmapping.get_turf_above(target_turf)
+	return SSmapping.get_turf_below(target_turf)
 
 /obj/structure/stairs/multiz/up
 	direction = UP

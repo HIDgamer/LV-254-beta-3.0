@@ -70,7 +70,12 @@
 	if(towed_by)
 		return towed_by.try_move(direction, force)
 
-	if(!can_move(direction) || !can_tow_move(direction))
+	// Driving off a staircase takes the vehicle to another level instead of one tile along
+	var/turf/stairs_destination = get_stairs_destination(direction)
+	if(stairs_destination)
+		if(!can_use_stairs(stairs_destination))
+			return FALSE
+	else if(!can_move(direction) || !can_tow_move(direction))
 		return FALSE
 
 	if(!force)
@@ -82,7 +87,7 @@
 
 	var/turf/old_turf = get_turf(src)
 	var/list/old_center = towing ? get_center2() : null
-	forceMove(get_step(src, direction))
+	forceMove(stairs_destination || get_step(src, direction))
 
 	var/turf/current_loc = get_turf(src)
 	for(var/obj/item/hardpoint/H in hardpoints)
@@ -163,6 +168,48 @@
 	next_move = world.time + move_delay * move_momentum_build_factor * anti_build_factor * misc_multipliers["move"] * get_tow_slowdown()
 	l_move_time = world.time
 
+
+/// The turf the vehicle arrives on if moving in direction takes the staircase under its origin, or null when it does not
+/obj/vehicle/multitile/proc/get_stairs_destination(direction)
+	var/turf/origin = get_turf(src)
+	if(!origin)
+		return null
+	for(var/obj/structure/stairs/multiz/stairs in origin)
+		if(direction == stairs.get_stairs_dir())
+			return stairs.get_destination_turf()
+	return null
+
+/// Whether the whole vehicle fits at the destination of a staircase. Crashes like any other blocked move when it does not
+/obj/vehicle/multitile/proc/can_use_stairs(turf/destination)
+	if(towing || towed_mob)
+		tow_message(SPAN_WARNING("\The [src] can't take the stairs while towing."))
+		return FALSE
+
+	var/bound_width_tiles = bound_width / world.icon_size
+	var/bound_height_tiles = bound_height / world.icon_size
+	var/turf/min_turf = locate(destination.x + bound_x / world.icon_size, destination.y + bound_y / world.icon_size, destination.z)
+
+	// turf.Enter() cannot be used here: it compares directions with get_dir(), which is 0 between two z-levels, and
+	// then lets everything through. Check for dense turfs and dense things in the way directly instead.
+	var/fits = !!min_turf
+	if(fits)
+		for(var/turf/T as anything in CORNER_BLOCK(min_turf, bound_width_tiles, bound_height_tiles))
+			if(T.density)
+				fits = FALSE
+				break
+			for(var/atom/movable/blocker in T)
+				if(blocker.density && blocker.can_block_movement)
+					fits = FALSE
+					break
+			if(!fits)
+				break
+
+	if(!fits)
+		move_momentum = floor(move_momentum/2)
+		update_next_move()
+		interior_crash_effect()
+
+	return fits
 
 // This just checks if the vehicle can physically move in the given direction
 /obj/vehicle/multitile/proc/can_move(direction)
