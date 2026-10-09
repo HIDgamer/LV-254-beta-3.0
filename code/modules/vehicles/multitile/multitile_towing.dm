@@ -8,9 +8,11 @@
 /obj/vehicle/multitile/proc/get_center_offset2()
 	return list(2 * bound_x / world.icon_size + bound_width / world.icon_size - 1, 2 * bound_y / world.icon_size + bound_height / world.icon_size - 1)
 
-//Footprint centre in half tiles, so even sized vehicles stay on whole numbers
-/obj/vehicle/multitile/proc/get_center2()
+//Footprint centre in half tiles, so even sized vehicles stay on whole numbers, as it is with the origin on the given turf
+/obj/vehicle/multitile/proc/get_center2(turf/origin)
 	var/list/offset = get_center_offset2()
+	if(origin)
+		return list(2 * origin.x + offset[1], 2 * origin.y + offset[2])
 	return list(2 * x + offset[1], 2 * y + offset[2])
 
 //The turfs the vehicle covers when its origin is on the given turf
@@ -137,8 +139,8 @@
 	var/reach = ceil((bound_width + trailer.bound_width) / (2 * world.icon_size))
 	return 2 * reach - 1
 
-//Joins the trailer to this vehicle, laying down the trail it will be dragged along from where it sits now
-/obj/vehicle/multitile/proc/tow_hook(obj/vehicle/multitile/trailer)
+//Lays down the trail from the trailer's centre to this vehicle's, a point for every tile of the way between
+/obj/vehicle/multitile/proc/tow_lay_trail(obj/vehicle/multitile/trailer)
 	var/list/mine = get_center2()
 	var/list/theirs = trailer.get_center2()
 	var/dx2 = theirs[1] - mine[1]
@@ -146,11 +148,15 @@
 	var/along_x = abs(dx2) >= abs(dy2)
 	var/apart = max(ceil(max(abs(dx2), abs(dy2)) / 2), 1)
 	var/sign = ((along_x ? dx2 : dy2) >= 0) ? 1 : -1
-	tow_lag = get_tow_lag(trailer)
-	trailer.tow_reversed = trailer.dir == REVERSE_DIR(dir)
 	tow_trail = list(theirs.Copy())
 	for(var/i = apart - 1, i >= 1, i--)
 		tow_trail += list(along_x ? list(mine[1] + 2 * i * sign, mine[2]) : list(mine[1], mine[2] + 2 * i * sign))
+
+//Joins the trailer to this vehicle, laying down the trail it will be dragged along from where it sits now
+/obj/vehicle/multitile/proc/tow_hook(obj/vehicle/multitile/trailer)
+	tow_lag = get_tow_lag(trailer)
+	trailer.tow_reversed = trailer.dir == REVERSE_DIR(dir)
+	tow_lay_trail(trailer)
 	tow_trailer_turf = get_turf(trailer)
 	towing = trailer
 	trailer.towed_by = src
@@ -202,6 +208,11 @@
 		return FALSE
 	if(!tow_link_intact())
 		return TRUE
+	// Backing up into the trailer shoves it along, backing up along the trail only uses up the slack
+	if(tow_overlaps(get_step(src, direction), towing))
+		return can_tow_push(direction)
+	if(tow_retraces(get_center2(get_step(src, direction))))
+		return TRUE
 	if(towing.clamped)
 		tow_message(SPAN_WARNING("The wheel clamp on \the [towing] holds it in place."))
 		return FALSE
@@ -213,11 +224,47 @@
 		return FALSE
 	return TRUE
 
+//Whether the given centre is the last point of this vehicle's trail, which it only is when backing up along the way it came
+/obj/vehicle/multitile/proc/tow_retraces(list/center)
+	var/last = length(tow_trail)
+	if(last < 2)
+		return FALSE
+	var/list/point = tow_trail[last]
+	return point[1] == center[1] && point[2] == center[2]
+
+//Whether the trailer can be shoved a tile in the direction by this vehicle backing into it
+/obj/vehicle/multitile/proc/can_tow_push(direction)
+	if(towing.clamped)
+		tow_message(SPAN_WARNING("The wheel clamp on \the [towing] holds it in place."))
+		return FALSE
+	if(towing.tow_blocked_at(get_step(towing, direction), src))
+		tow_message(SPAN_WARNING("\The [towing] is wedged against something and can't be pushed back."))
+		move_momentum = floor(move_momentum / 2)
+		update_next_move()
+		return FALSE
+	return TRUE
+
+//Shoves the trailer a tile along if this vehicle is about to step into it, returns whether it had to
+/obj/vehicle/multitile/proc/tow_make_room(direction)
+	if(!towing || !tow_overlaps(get_step(src, direction), towing))
+		return FALSE
+	towing.tow_shift(direction)
+	return TRUE
+
 //Drags the trailer a tile towards the point of the tower's trail it hangs back at, given where the tower's centre was before it stepped
-/obj/vehicle/multitile/proc/tow_advance(list/old_center, turf/old_origin)
+/obj/vehicle/multitile/proc/tow_advance(list/old_center, turf/old_origin, shoved = FALSE)
 	if(towed_mob && old_origin)
 		tow_advance_mob(old_origin)
 	if(!towing || !old_center)
+		return
+	if(shoved)
+		// The trailer was pushed off the trail, so lay it down again from where the two stand now
+		tow_lay_trail(towing)
+		tow_trailer_turf = get_turf(towing)
+		return
+	if(tow_retraces(get_center2()))
+		// Backed up along the trail, so the trailer stays where it is and the slack just grows
+		tow_trail.Cut(length(tow_trail))
 		return
 	tow_trail += list(old_center)
 	var/index = length(tow_trail) - tow_lag + 1
@@ -264,6 +311,10 @@
 	if(dir != facing && can_rotate(turning_angle(dir, facing)))
 		do_rotate(turning_angle(dir, facing))
 		update_icon()
+	tow_shift(direction)
+
+//Moves this trailer a tile along without turning it, either dragged behind the tower or shoved by it backing up
+/obj/vehicle/multitile/proc/tow_shift(direction)
 	var/turf/old_turf = get_turf(src)
 	forceMove(get_step(src, direction))
 	var/turf/current_loc = get_turf(src)

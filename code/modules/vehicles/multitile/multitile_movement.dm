@@ -48,8 +48,8 @@
 	var/success = FALSE
 
 	if(dir == turn(direction, 180) || dir == direction)
-		if((towing || towed_mob) && dir != direction)
-			tow_message(SPAN_WARNING("\The [src] can't reverse with \the [towing] hooked on. Release Tow first."))
+		if(towed_mob && dir != direction)
+			tow_message(SPAN_WARNING("\The [src] can't reverse with [towed_mob] hooked on. Release Tow first."))
 			return FALSE
 		var/old_dir = dir
 		success = try_move(direction)
@@ -87,13 +87,14 @@
 
 	var/turf/old_turf = get_turf(src)
 	var/list/old_center = towing ? get_center2() : null
+	var/shoved = tow_make_room(direction)
 	forceMove(stairs_destination || get_step(src, direction))
 
 	var/turf/current_loc = get_turf(src)
 	for(var/obj/item/hardpoint/H in hardpoints)
 		H.on_move(old_turf, current_loc, direction)
 
-	tow_advance(old_center, old_turf)
+	tow_advance(old_center, old_turf, shoved)
 
 	if(movement_sound && world.time > move_next_sound_play)
 		playsound(src, movement_sound, vol = 20, sound_range = 30)
