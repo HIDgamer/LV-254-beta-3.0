@@ -126,7 +126,7 @@
 	base_icon_state = "almayer_pdoor"
 	openspeed = 4
 	/// Whether this can be destroyed by a vehicle bump
-	var/vehicle_resistant = TRUE
+	vehicle_resistant = TRUE
 
 /obj/structure/machinery/door/poddoor/hybrisa/open_shutters/Initialize()
 	. = ..()

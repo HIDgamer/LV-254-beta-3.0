@@ -35,6 +35,7 @@
 	/// Resistance to masterkey
 	var/masterkey_resist = FALSE
 	var/masterkey_mod = 0.1
+	var/vehicle_resistant = FALSE
 
 /obj/structure/machinery/door/Initialize(mapload, ...)
 	. = ..()
