@@ -1237,6 +1237,7 @@
 #include "code\game\objects\items\devices\scanners.dm"
 #include "code\game\objects\items\devices\taperecorder.dm"
 #include "code\game\objects\items\devices\teleportation.dm"
+#include "code\game\objects\structures\pos_drill.dm"
 #include "code\game\objects\items\devices\transfer_valve.dm"
 #include "code\game\objects\items\devices\vulture_spotter.dm"
 #include "code\game\objects\items\devices\walkman.dm"
