@@ -90,9 +90,19 @@
 	name = "Secure Airlock"
 	icon = 'icons/obj/structures/doors/Door2x1_secure.dmi'
 	openspeed = 34
+
 /obj/structure/machinery/door/airlock/multi_tile/secure/colony
 	req_access = null
 	req_one_access = list(ACCESS_CIVILIAN_PUBLIC)
+
+/obj/structure/machinery/door/airlock/multi_tile/secure/colony/bank
+	req_access = null
+	req_one_access = list(ACCESS_CIVILIAN_BRIG)
+	health = 100000000
+	damage_cap = 100000000
+	masterkey_resist = TRUE
+	no_panel = TRUE
+	vehicle_resistant = TRUE
 
 /obj/structure/machinery/door/airlock/multi_tile/secure2
 	name = "Secure Airlock"

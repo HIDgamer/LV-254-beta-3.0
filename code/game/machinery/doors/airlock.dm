@@ -562,6 +562,8 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 /obj/structure/machinery/door/airlock/attackby(obj/item/attacking_item, mob/user)
 	if(SEND_SIGNAL(attacking_item, COMSIG_ITEM_ATTACK_AIRLOCK, src, user) & COMPONENT_CANCEL_AIRLOCK_ATTACK)
 		return
+	if(istype(attacking_item, /obj/item/thermal_drill))
+		return
 
 	if(istype(attacking_item, /obj/item/weapon/twohanded/breacher))
 		var/obj/item/weapon/twohanded/breacher/current_hammer = attacking_item
