@@ -258,6 +258,15 @@
 	},
 /turf/open/void/vehicle,
 /area/space)
+"V" = (
+/obj/effect/vehicle_roof/box_van{
+	icon_state = "roof_4"
+	},
+/obj/item/thermal_drill,
+/obj/item/thermal_drill,
+/obj/item/tool/wrench,
+/turf/open/shuttle/vehicle/med/slate,
+/area/interior/vehicle/clown_van)
 "X" = (
 /obj/structure/bed/chair/vehicle/white{
 	pixel_x = -8;
@@ -300,7 +309,7 @@ U
 a
 S
 u
-c
+V
 J
 l
 "}

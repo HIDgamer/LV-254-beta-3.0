@@ -7,7 +7,7 @@
 	id = 1
 	dir = NORTH
 	unslashable = TRUE
-	health = 0
+	health = 200
 	layer = PODDOOR_CLOSED_LAYER
 	open_layer = PODDOOR_OPEN_LAYER
 	closed_layer = PODDOOR_CLOSED_LAYER

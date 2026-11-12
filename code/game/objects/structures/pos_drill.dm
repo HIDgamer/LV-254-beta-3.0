@@ -1,7 +1,7 @@
 /obj/structure/prop/pos_drill
 	name = "thermal drill"
 	desc = "An old mining drill, seemingly used for mining. And possibly drilling."
-	icon = 'icons/obj/structures/props/industrial/drill.dmi'
+	icon = 'icons/obj/items/pos_drill.dmi'
 	icon_state = "drill"
 	bound_height = 96
 	var/on = FALSE//if this is set to on by default, the drill will start on, doi
@@ -14,11 +14,21 @@
 	. = ..()
 	if(isxeno(user))
 		return
-	else if (ishuman(user) && HAS_TRAIT(W, TRAIT_TOOL_WRENCH))
-		on = !on
-		visible_message("You wrench the controls of \the [src]. The drill jumps to life." , "[user] wrenches the controls of \the [src]. The drill jumps to life.")
-
-		update()
+	else
+		if(HAS_TRAIT(W, TRAIT_TOOL_WRENCH))
+			if(user.action_busy)
+				return
+			else
+				user.visible_message(SPAN_NOTICE("[user] starts activating[src]."), \
+				SPAN_NOTICE("You start activating [src]."))
+			if(!do_after(user, 30, INTERRUPT_NO_NEEDHAND, BUSY_ICON_FRIENDLY))
+				user.visible_message(SPAN_WARNING("[user] stops dismantling [src]."), \
+					SPAN_WARNING("You stop removing [src]."))
+				return
+			user.visible_message(SPAN_NOTICE("[user] springs to life[src]."), \
+			SPAN_NOTICE("You finish activating [src]."))
+			on = !on
+			update()
 
 /obj/structure/prop/pos_drill/proc/update()
 	drill_cycle++
@@ -39,18 +49,24 @@
 		playsound(src, 'sound/machines/turbine_off.ogg')
 	return
 
-/obj/structure/prop/pos_drill/proc/emit_sparks(amount = 3)
+/obj/structure/prop/pos_drill/proc/emit_sparks(amount = 3, atom/target = src)
 	var/datum/effect_system/spark_spread/sparks = new /datum/effect_system/spark_spread
-	sparks.set_up(amount, TRUE, src)
+	sparks.set_up(amount, TRUE, target)
 	sparks.start()
 	return
 
 /obj/structure/prop/pos_drill/proc/drill_door(expected_cycle)
 	if(!src || !on || drill_cycle != expected_cycle)
 		return
+	playsound(src, 'sound/effects/drill.ogg', 60, FALSE)
+	var/turf/target_turf = get_step(src, dir)
+	var/obj/structure/machinery/door/target_door = target_turf ? locate() in target_turf : null
 	var/seconds_left = max(0, round((drill_time - work_progress) / 1 SECONDS))
-	visible_message("[src] beeps: [seconds_left/100] seconds remaining.")
 	work_progress = min(drill_time, work_progress + 1 SECONDS)
+	if(!(work_progress % (10 SECONDS)))
+		visible_message("[src] beeps: [seconds_left/100] seconds remaining.")
+	if(target_door)
+		emit_sparks(1, target_door)
 	if(prob(break_chance))
 		emit_sparks(3)
 		playsound(src, 'sound/machines/terminal_shutdown.ogg', 60, FALSE)
@@ -63,13 +79,11 @@
 		spawn(min(1 SECONDS, max(1, drill_time - work_progress)))
 			drill_door(current_cycle)
 		return
-	var/turf/target_turf = get_step(src, dir)
 	if(!target_turf)
 		return
-	var/obj/structure/machinery/door/target_door = locate() in target_turf
 	if(target_door)
 		target_door.deconstruct(disassembled = FALSE)
-		playsound(loc, 'sound/effects/metal_shatter.ogg', 40, 1)
+		playsound(loc, 'sound/effects/metal_crash.ogg', 40, 1)
 		new /obj/item/thermal_drill(get_turf(src))
 		qdel(src)
 
@@ -80,9 +94,10 @@
 
 
 /obj/item/thermal_drill
-	icon = 'icons/obj/structures/machinery/defenses/sentry.dmi'
-	icon_state = "Normal uac_sentry_handheld"
-
+	name = "portable thermal drill"
+	icon = 'icons/obj/items/pos_drill.dmi'
+	icon_state = "duffle"
+	desc = "Use on vault doors to break them open"
 
 /obj/item/thermal_drill/afterattack(atom/target, mob/user, proximity_flag, click_parameters)
 	. = ..()
