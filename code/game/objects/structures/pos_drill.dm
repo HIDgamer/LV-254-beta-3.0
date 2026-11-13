@@ -38,7 +38,7 @@
 		if(target_turf)
 			var/obj/structure/machinery/door/target_door = locate() in target_turf
 			if(target_door)
-				drill_time = min(target_door.health * 10, 360 SECONDS)
+				drill_time = target_door.health ? min(target_door.health * 10, 360 SECONDS) : 360 SECONDS
 		set_light(3)
 		playsound(src, 'sound/machines/turbine_on.ogg')
 		var/current_cycle = drill_cycle
@@ -54,6 +54,15 @@
 	sparks.set_up(amount, TRUE, target)
 	sparks.start()
 	return
+
+/obj/structure/prop/pos_drill/MouseDrop(atom/over_object, src_location, over_location, src_control, over_control, params)
+	. = ..()
+	if(!ismob(over_object) || !usr || !Adjacent(usr))
+		return
+	if(alert(usr, "Do you want to pack up the thermal drill?", "Pack Up Thermal Drill", "Yes", "No") != "Yes")
+		return
+	new /obj/item/thermal_drill(get_turf(src))
+	qdel(src)
 
 /obj/structure/prop/pos_drill/proc/drill_door(expected_cycle)
 	if(!src || !on || drill_cycle != expected_cycle)
