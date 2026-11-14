@@ -204,6 +204,8 @@
 		return//We want to equip them with custom stuff second, after they are equipped with everything else.
 	for(var/gear_type in new_human.client.prefs.gear)
 		var/datum/gear/current_gear = GLOB.gear_datums_by_type[gear_type]
+		if(!current_gear)
+			continue
 		current_gear.equip_to_user(new_human)
 
 	//Gives ranks to the ranked

@@ -209,6 +209,8 @@
 
 	for(var/gear_type in gear_to_preview)
 		var/datum/gear/gear = GLOB.gear_datums_by_type[gear_type]
+		if(!gear)
+			continue
 		gear.equip_to_user(preview_dummy, override_checks = TRUE, drop_instead_of_del = FALSE)
 
 	arm_equipment(preview_dummy, J, FALSE, FALSE, owner, show_job_gear)
