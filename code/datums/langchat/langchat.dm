@@ -89,6 +89,8 @@
 	langchat_image.appearance_flags |= RESET_ALPHA
 
 /atom/proc/langchat_speech(message, list/listeners, language, override_color, skip_language_check = FALSE, animation_style = LANGCHAT_DEFAULT_POP, list/additional_styles = list("langchat"))
+	if(SSlag_switch.measures[DISABLE_LANGCHAT])
+		return
 	langchat_drop_image()
 	langchat_make_image(override_color)
 	var/image/r_icon

@@ -282,6 +282,7 @@ GLOBAL_LIST_INIT(whitelisted_client_procs, list(
 		return null
 
 	GLOB.clients += src
+	SSlag_switch.client_connected()
 	GLOB.directory[ckey] = src
 
 	if(byond_version >= 516) // Enable 516 compat browser storage mechanisms

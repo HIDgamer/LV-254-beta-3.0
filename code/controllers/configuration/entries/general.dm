@@ -683,3 +683,8 @@ This maintains a list of ip addresses that are able to bypass topic filtering.
 /datum/config_entry/string/repo_name
 
 /datum/config_entry/string/org
+
+/datum/config_entry/number/auto_lag_switch_pop
+	config_entry_value = 0
+	integer = TRUE
+	min_val = 0

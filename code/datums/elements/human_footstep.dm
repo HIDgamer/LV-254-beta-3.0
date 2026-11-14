@@ -17,6 +17,8 @@
 
 /datum/element/human_footstep/proc/on_moved(mob/living/carbon/human/source, atom/oldloc, direction, forced)
 	SIGNAL_HANDLER
+	if(SSlag_switch.measures[DISABLE_FOOTSTEPS])
+		return
 	if(forced || source.buckled || source.throwing || source.is_ventcrawling || source.stat == DEAD || isyautja(source))
 		return
 	var/turf/open/step_turf = get_turf(source)
