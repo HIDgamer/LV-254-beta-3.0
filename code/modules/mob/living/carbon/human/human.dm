@@ -14,6 +14,7 @@
 	if(!real_name || !name)
 		change_real_name(src, "unknown")
 	AddElement(/datum/element/strippable, GLOB.strippable_human_items, TYPE_PROC_REF(/mob/living/carbon/human, should_strip))
+	AddElement(/datum/element/human_footstep)
 	. = ..()
 
 	prev_gender = gender // Debug for plural genders
@@ -56,6 +57,7 @@
 	remove_from_all_mob_huds()
 	despawn_fax_responder()
 	assigned_equipment_preset = null
+	QDEL_NULL(sprint_dust)
 	GLOB.human_mob_list -= src
 	GLOB.alive_human_list -= src
 	SShuman.processable_human_list -= src

@@ -67,6 +67,13 @@
 	var/obj/item/wear_l_ear = null
 	var/obj/item/wear_r_ear = null
 	var/obj/item/wear_id = null
+	var/sprint_energy = SPRINT_ENERGY_MAX
+	var/sprint_energy_time = 0
+	var/sprint_rest_until = 0
+	var/sprint_exhausted = FALSE
+	var/sprint_streak = 0
+	var/sprint_dir = 0
+	var/obj/effect/sprint_dust/sprint_dust
 	var/obj/item/r_store = null
 	var/obj/item/l_store = null
 	var/obj/item/s_store = null

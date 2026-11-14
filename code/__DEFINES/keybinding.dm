@@ -58,6 +58,7 @@
 //Human
 #define COMSIG_KB_HUMAN_ISSUE_ORDER "keybinding_human_issue_order"
 #define COMSIG_KB_HUMAN_ISSUE_ORDER_MOVE "keybinding_human_issue_order_move"
+#define COMSIG_KB_HUMAN_SPRINT_DOWN "keybinding_human_sprint_down"
 #define COMSIG_KB_HUMAN_ISSUE_ORDER_HOLD "keybinding_human_issue_order_hold"
 #define COMSIG_KB_HUMAN_ISSUE_ORDER_FOCUS "keybinding_human_issue_order_focus"
 #define COMSIG_KB_HUMAN_SPECIALIST_ACTIVATION_ONE "keybinding_human_specialist_activation_one"

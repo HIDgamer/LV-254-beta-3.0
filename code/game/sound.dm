@@ -19,20 +19,20 @@
 	var/z
 	var/y_s_offset // Vertical sound offset
 	var/x_s_offset // Horizontal sound offset
+	var/list/interior_rects // Interior areas whose listeners also hear it, as list(center x, center y, width, height, z)
 
 /datum/sound_template/proc/get_hearers()
 	var/list/hearers_to_return = list()
-	var/datum/shape/rectangle/zone = SQUARE(x, y, range * 2)
-	hearers_to_return += SSquadtree.players_in_range(zone, z)
+	hearers_to_return += SSsound.listeners_in_box(x, y, range, range, z)
 
 	var/turf/above = SSmapping.get_turf_above(locate(x, y, z))
 	while(above)
-		hearers_to_return += SSquadtree.players_in_range(zone, above.z)
+		hearers_to_return += SSsound.listeners_in_box(x, y, range, range, above.z)
 		above = SSmapping.get_turf_above(above)
 
 	var/turf/below = SSmapping.get_turf_below(locate(x, y, z))
 	while(below)
-		hearers_to_return += SSquadtree.players_in_range(zone, below.z)
+		hearers_to_return += SSsound.listeners_in_box(x, y, range, range, below.z)
 		below = SSmapping.get_turf_below(below)
 	return hearers_to_return
 

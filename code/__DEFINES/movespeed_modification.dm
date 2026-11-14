@@ -40,3 +40,18 @@
 
 /// Extra delay while crawling
 #define CRAWLING_SLOWDOWN 6
+
+#define MOVESPEED_ID_SPRINT "sprint"
+/// Delay removed while sprinting
+#define SPRINT_SPEED_BONUS 0.75
+#define SPRINT_ENERGY_MAX 100
+/// Energy spent per tile sprinted
+#define SPRINT_ENERGY_COST 4
+/// Energy regained per decisecond once resting
+#define SPRINT_ENERGY_REGEN 0.5
+/// Deciseconds after the last sprint step before energy returns
+#define SPRINT_REGEN_DELAY 15
+/// Energy needed to sprint again after running out
+#define SPRINT_RESUME_ENERGY 25
+/// Tiles sprinted in a row to count as a sustained sprint
+#define SPRINT_SUSTAINED_TILES 8

@@ -218,6 +218,7 @@
 	var/list/movespeed_modification
 	var/list/movespeed_totals
 	var/movespeed_dirty = FALSE
+	var/sprinting = FALSE
 
 	///Holds the time when a mob can throw an item next, only applies after two throws, reference /mob/proc/do_click()
 	COOLDOWN_DECLARE(throw_delay)

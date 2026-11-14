@@ -71,6 +71,7 @@
 		status_delay = HUMAN_SUPERSLOWED_AMOUNT
 	else if(slowed)
 		status_delay = HUMAN_SLOWED_AMOUNT
+	set_movespeed_modifier(MOVESPEED_ID_SPRINT, MOVESPEED_STAGE_ADD, sprinting ? -SPRINT_SPEED_BONUS : 0, update = FALSE)
 	set_movespeed_modifier(MOVESPEED_ID_SLOWED, MOVESPEED_STAGE_FINAL, status_delay, update = FALSE)
 	set_movespeed_modifier(MOVESPEED_ID_CONFIG, MOVESPEED_STAGE_FINAL, CONFIG_GET(number/human_delay), update = FALSE)
 
