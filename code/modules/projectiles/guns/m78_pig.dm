@@ -123,9 +123,11 @@
 
 /obj/item/weapon/gun/m78_pig/apply_bullet_effects(obj/projectile/projectile_to_fire, mob/user, i = 1, reflex = 0)
 	. = ..()
-	if(!HAS_TRAIT(user, TRAIT_BIMEX|EYE_PROTECTION_FLASH|EYE_PROTECTION_WELDING) && ishuman(user))
+	if(ishuman(user) && !HAS_TRAIT(user, TRAIT_BIMEX) && user.get_eye_protection() < EYE_PROTECTION_FLASH)
 		var/mob/living/carbon/human/huser = user
 		var/datum/internal_organ/eyes/E = huser.internal_organs_by_name["eyes"]
+		if(!E)
+			return
 		INVOKE_ASYNC(user, /mob/proc/emote, "pain")
 		huser.AdjustEyeBlur(12,20)
 		E.take_damage(rand(15, 25), TRUE)
