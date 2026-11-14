@@ -2690,7 +2690,8 @@ GLOBAL_VAR_INIT(ai_target_candidate_pool_time, 0)
 		if(pilot.hive?.is_ally(living_candidate))
 			return FALSE
 		if(ishuman(living_candidate))
-			return TRUE
+			var/mob/living/carbon/human/human_candidate = living_candidate
+			return human_candidate.ai_grace_until <= world.time
 		// "Different hive factions should be considered hostile, of course
 		// unless the hive status is allied. Allying with a faction makes
 		// them friendly, therefore not enemies to the AI." is_ally() above
