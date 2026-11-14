@@ -148,9 +148,9 @@
 					if (prob(chance))
 						visible_message(SPAN_DANGER("[attacking_mob] accidentally discharges [src]'s [held_weapon.name] during the struggle!"), SPAN_DANGER("You accidentally discharge [src]'s [held_weapon.name] during the struggle!"), null, 5)
 						var/list/turfs = list()
-						for(var/turf/turfs_to_discharge in view())
+						for(var/turf/turfs_to_discharge in view(attacking_mob))
 							turfs += turfs_to_discharge
-						var/turf/target = pick(turfs)
+						var/turf/target = length(turfs) ? pick(turfs) : get_turf(src)
 						count_niche_stat(STATISTICS_NICHE_DISCHARGE)
 						held_weapon.handle_fire(target, src)
 

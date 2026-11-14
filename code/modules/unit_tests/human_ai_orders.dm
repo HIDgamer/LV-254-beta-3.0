@@ -306,3 +306,22 @@
 	brain.cancel_order()
 	TEST_ASSERT_EQUAL(brain.error_total, 0, "The brain threw errors under orders")
 	detach_human_ai(soldier)
+
+/// An order that needs a target is not built for a bare floor tile, and a tile with someone on it aims the order at them
+/datum/unit_test/human_ai_order_floor_target
+
+/datum/unit_test/human_ai_order_floor_target/Run()
+	var/mob/living/carbon/human/admin = allocate(/mob/living/carbon/human, run_loc_floor_bottom_left)
+	var/datum/npc_command_console/console = new(admin)
+	var/turf/tile = run_loc_floor_top_right
+	TEST_ASSERT(isnull(console.build_order("attack", tile, tile, tile)), "An attack order was built for an empty floor tile")
+	var/mob/living/carbon/xenomorph/drone/dummy = allocate(/mob/living/carbon/xenomorph/drone, tile)
+	var/datum/npc_order/order = console.build_order("attack", tile, tile, tile)
+	TEST_ASSERT_NOTNULL(order, "No attack order was built for a tile with a xeno on it")
+	TEST_ASSERT_EQUAL(order.get_target(), dummy, "The attack order did not aim at the xeno on the tile")
+	var/datum/npc_order/stray = new /datum/npc_order/attack
+	stray.set_target(tile)
+	TEST_ASSERT(isnull(stray.get_target()), "An order kept a turf as its target")
+	qdel(stray)
+	qdel(order)
+	qdel(console)

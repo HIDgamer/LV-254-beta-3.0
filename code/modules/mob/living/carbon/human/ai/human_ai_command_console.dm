@@ -258,7 +258,15 @@ GLOBAL_LIST_INIT(npc_command_orders, list(
 				return null
 			order.target_turf = where
 		if("target")
-			if(!target || QDELETED(target))
+			if(isturf(target))
+				// An armed order clicked on the floor aims at whoever stands there
+				var/mob/living/found
+				for(var/mob/living/candidate in target)
+					if(candidate.stat != DEAD)
+						found = candidate
+						break
+				target = found
+			if(!isliving(target) || QDELETED(target))
 				qdel(order)
 				return null
 			order.set_target(target)

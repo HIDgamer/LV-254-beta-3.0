@@ -44,6 +44,8 @@
 	return target_ref?.resolve()
 
 /datum/npc_order/proc/set_target(atom/movable/new_target)
+	if(!ismovable(new_target))
+		new_target = null
 	target_ref = new_target ? WEAKREF(new_target) : null
 
 /// Why the performer cannot carry this out, null when it can
@@ -146,13 +148,13 @@
 
 /datum/npc_order/attack/can_perform(datum/human_ai_brain/performer)
 	var/mob/living/victim = get_target()
-	if(!victim || QDELETED(victim) || victim.stat == DEAD)
+	if(!isliving(victim) || QDELETED(victim) || victim.stat == DEAD)
 		return "no target"
 	return null
 
 /datum/npc_order/attack/forced_target()
 	var/mob/living/victim = get_target()
-	return (victim && !QDELETED(victim) && victim.stat != DEAD) ? victim : null
+	return (isliving(victim) && !QDELETED(victim) && victim.stat != DEAD) ? victim : null
 
 /datum/npc_order/attack/tick(datum/human_ai_brain/performer)
 	var/mob/living/victim = forced_target()
