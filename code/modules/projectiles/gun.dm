@@ -1878,15 +1878,15 @@ not all weapons use normal magazines etc. load_into_chamber() itself is designed
 	//firing from an attachment
 	if(active_attachable && active_attachable.flags_attach_features & ATTACH_PROJECTILE)
 		if(active_attachable.fire_sound) //If we're firing from an attachment, use that noise instead.
-			playsound(user, active_attachable.fire_sound, 50)
+			playsound(user, active_attachable.fire_sound, 50, vol_cat = VOLUME_WEAPONS)
 	else
 		if(!(flags_gun_features & GUN_SILENCED))
 			if (firing_sndfreq && fire_rattle)
-				playsound(user, fire_rattle, firesound_volume, FALSE)//if the gun has a unique 'mag rattle' SFX play that instead of pitch shifting.
+				playsound(user, fire_rattle, firesound_volume, FALSE, vol_cat = VOLUME_WEAPONS)//if the gun has a unique 'mag rattle' SFX play that instead of pitch shifting.
 			else
-				playsound(user, actual_sound, firesound_volume, firing_sndfreq)
+				playsound(user, actual_sound, firesound_volume, firing_sndfreq, vol_cat = VOLUME_WEAPONS)
 		else
-			playsound(user, actual_sound, 25, firing_sndfreq)
+			playsound(user, actual_sound, 25, firing_sndfreq, vol_cat = VOLUME_WEAPONS)
 
 /obj/item/weapon/gun/proc/simulate_scatter(obj/projectile/projectile_to_fire, atom/target, turf/curloc, turf/targloc, mob/user, bullets_fired = 1)
 	if(curloc.z != targloc.z)

@@ -137,7 +137,7 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 	//CO career path
 	var/commander_career_path = 0
 	//Volume preferences
-	var/list/volume_preferences = list(1, 0.5, 1, 0.6) // Game, music, admin midis, lobby music
+	var/list/volume_preferences = DEFAULT_VOLUME_PREFERENCES // Indexed by the VOLUME_ defines
 	//Xeno ability click mode
 	var/xeno_ability_click_mode = XENO_ABILITY_CLICK_MIDDLE
 	//Queen name preferences
@@ -683,6 +683,7 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 			dat += "<b>Allow Flashing Lights:</b> <a href='?src=\ref[src];action=proccall;procpath=/client/proc/set_flashing_lights_pref'>Set</a><br>"
 			dat += "<b>Play Lobby Music:</b> <a href='?_src_=prefs;preference=lobby_music'><b>[(toggles_sound & SOUND_LOBBY) ? "Yes" : "No"]</b></a><br>"
 			dat += "<b>Play VOX Announcements:</b> <a href='?_src_=prefs;preference=sound_vox'><b>[(hear_vox) ? "Yes" : "No"]</b></a><br>"
+			dat += "<b>Volume Mixer:</b> <a href='?src=\ref[src];action=proccall;procpath=/client/proc/open_volume_mixer'>Open</a><br>"
 			dat += "<b>Default Ghost Night Vision Level:</b> <a href='?_src_=prefs;preference=ghost_vision_pref;task=input'><b>[ghost_vision_pref]</b></a><br>"
 			dat += "<b>Button To Activate Xenomorph Abilities:</b> <a href='?_src_=prefs;preference=mouse_button_activation;task=input'><b>[xeno_ability_mouse_pref_to_string(xeno_ability_click_mode)]</b></a><br>"
 			dat += "<b>Xeno Cooldown Messages:</b> <a href='?_src_=prefs;preference=show_cooldown_messages'><b>[(show_cooldown_messages) ? "Show" : "Hide"]</b></a><br>"
