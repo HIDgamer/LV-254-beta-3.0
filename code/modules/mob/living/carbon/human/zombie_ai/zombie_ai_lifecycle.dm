@@ -105,7 +105,7 @@ GLOBAL_VAR_INIT(ai_zombie_max_pop, 40)
  * AI control (event/horde use, or testing) independent of the transform/revive call sites.
  */
 /client/proc/debug_attach_zombie_ai()
-	set category = "Debug"
+	set category = "Admin.AI"
 	set name = "Attach Zombie AI"
 
 	var/mob/living/carbon/human/target = tgui_input_list(src, "Which zombie?", "Attach Zombie AI", GLOB.alive_human_list)

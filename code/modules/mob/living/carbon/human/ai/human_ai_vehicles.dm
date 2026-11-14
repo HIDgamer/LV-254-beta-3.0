@@ -101,7 +101,7 @@
 
 /// Gives a vehicle to a side, the side it fights for and the one whose rounds do not harm it
 /client/proc/assign_vehicle_faction()
-	set category = "Admin.Events"
+	set category = "Admin.AI"
 	set name = "Assign Vehicle Faction"
 	if(!check_rights(R_SPAWN))
 		return

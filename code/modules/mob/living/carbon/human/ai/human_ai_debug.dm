@@ -29,7 +29,7 @@ GLOBAL_LIST_INIT(human_ai_intent_names, list(
 	return lines.Join("<br>")
 
 /client/proc/debug_view_human_ai()
-	set category = "Debug"
+	set category = "Admin.AI"
 	set name = "View Human AI"
 
 	var/mob/living/carbon/human/target = tgui_input_list(src, "Which AI human?", "View Human AI", GLOB.ai_human_list)

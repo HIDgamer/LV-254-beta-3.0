@@ -165,6 +165,8 @@
 			toggle_bitflag(prefs, "toggles_sound", SOUND_LOBBY)
 		if("hear_vox")
 			prefs.hear_vox = !prefs.hear_vox
+		if("volume_mixer")
+			owner.open_volume_mixer()
 
 		if("toggle_ignore_self")
 			toggle_bitflag(prefs, "toggle_prefs", TOGGLE_IGNORE_SELF)

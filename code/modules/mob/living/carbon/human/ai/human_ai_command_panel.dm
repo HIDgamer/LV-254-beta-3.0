@@ -236,7 +236,7 @@ GLOBAL_LIST_EMPTY(npc_command_panels)
 
 /client/proc/npc_command_panel()
 	set name = "NPC Command Panel"
-	set category = "Admin.Events"
+	set category = "Admin.AI"
 	if(!check_rights(R_SPAWN))
 		return
 	open_npc_panel_for(usr, NPC_PANEL_HUMANS)

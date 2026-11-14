@@ -1459,19 +1459,19 @@
 
 /client/proc/create_humans()
 	set name = "Create Humans"
-	set category = "Admin.Events"
+	set category = "Admin.AI"
 	if(admin_holder)
 		admin_holder.open_spawn_terminal(usr, null, "human")
 
 /client/proc/create_xenos()
 	set name = "Create Xenos"
-	set category = "Admin.Events"
+	set category = "Admin.AI"
 	if(admin_holder)
 		admin_holder.open_spawn_terminal(usr, null, "xeno")
 
 /client/proc/open_job_terminal()
 	set name = "Job Terminal"
-	set category = "Admin.Events"
+	set category = "Admin.AI"
 	if(admin_holder)
 		admin_holder.open_spawn_terminal(usr, null, "job")
 

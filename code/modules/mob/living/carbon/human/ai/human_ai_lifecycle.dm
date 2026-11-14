@@ -99,7 +99,7 @@ GLOBAL_LIST_EMPTY(ai_human_list)
 	return attach_human_ai(human)
 
 /client/proc/debug_attach_human_ai()
-	set category = "Debug"
+	set category = "Admin.AI"
 	set name = "Attach Human AI"
 
 	var/mob/living/carbon/human/target = tgui_input_list(src, "Which human?", "Attach Human AI", GLOB.alive_human_list)

@@ -594,7 +594,7 @@ GLOBAL_LIST_EMPTY(human_ai_squads)
 	return brain.follow_leader(squad.leader.body, squad.slot_of(brain))
 
 /client/proc/debug_form_human_ai_squad()
-	set category = "Debug"
+	set category = "Admin.AI"
 	set name = "Form Human AI Squad"
 
 	var/list/nearby = list()
