@@ -16,6 +16,8 @@ type Data = {
   default_slot: number;
   random_name: BooleanLike;
   random_body: BooleanLike;
+  pda_themes: string[];
+  pda_theme: string;
 };
 
 // The entry point replacing the legacy ShowChoices() popup. Covers the full Marine
@@ -36,6 +38,8 @@ export const CharacterSetup = () => {
     default_slot,
     random_name,
     random_body,
+    pda_themes = [],
+    pda_theme,
   } = data;
 
   const [nameDraft, setNameDraft] = useState(real_name);
@@ -173,6 +177,19 @@ export const CharacterSetup = () => {
                 </Section>
               </Stack.Item>
             </Stack>
+          </Stack.Item>
+          <Stack.Item>
+            <Section title="PDA">
+              <LabeledList>
+                <LabeledList.Item label="Theme">
+                  <Dropdown
+                    selected={pda_theme}
+                    options={pda_themes}
+                    onSelected={(value) => act('pda_theme', { pda_theme: value })}
+                  />
+                </LabeledList.Item>
+              </LabeledList>
+            </Section>
           </Stack.Item>
           <Stack.Item>
             <Section title="Appearance & Loadout">

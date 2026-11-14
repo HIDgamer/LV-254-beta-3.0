@@ -331,7 +331,7 @@
 //gets assignment from ID or ID inside PDA or PDA itself
 //Useful when player do something with computers
 /mob/living/carbon/human/proc/get_assignment(if_no_id = "No id", if_no_job = "No job")
-	var/obj/item/card/id/id = wear_id
+	var/obj/item/card/id/id = get_idcard()
 	if(istype(id))
 		. = id.assignment
 	else
@@ -343,7 +343,7 @@
 //gets name from ID or ID inside PDA or PDA itself
 //Useful when player do something with computers
 /mob/living/carbon/human/proc/get_authentification_name(if_no_id = "Unknown")
-	var/obj/item/card/id/id = wear_id
+	var/obj/item/card/id/id = get_idcard()
 	if(istype(id))
 		. = id.registered_name
 	else
@@ -353,7 +353,7 @@
 //gets paygrade from ID
 //paygrade is a user's actual rank, as defined on their ID.  size 1 returns an abbreviation, size 0 returns the full rank name, the third input is used to override what is returned if no paygrade is assigned.
 /mob/living/carbon/human/get_paygrade(size = 1)
-	var/obj/item/card/id/id = wear_id
+	var/obj/item/card/id/id = get_idcard()
 	if(!species || !istype(id))
 		return ""
 	return species.handle_paygrades(id.paygrade, size, gender)

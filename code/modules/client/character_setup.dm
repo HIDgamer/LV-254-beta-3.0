@@ -70,6 +70,9 @@
 		ethnicities += key
 	.["ethnicities"] = ethnicities
 	.["has_predator"] = !!owner.check_whitelist_status(WHITELIST_PREDATOR)
+	.["pda_themes"] = list()
+	for(var/pda_theme_name in GLOB.pda_themes)
+		.["pda_themes"] += pda_theme_name
 
 /datum/character_setup/ui_data(mob/user)
 	. = list()
@@ -85,6 +88,7 @@
 	.["default_slot"] = prefs.default_slot
 	.["random_name"] = prefs.be_random_name
 	.["random_body"] = prefs.be_random_body
+	.["pda_theme"] = prefs.pda_theme
 
 /datum/character_setup/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
@@ -128,6 +132,11 @@
 
 		if("rotate_preview")
 			prefs.rotate_preview(params["clockwise"] != FALSE)
+			return TRUE
+
+		if("pda_theme")
+			if(GLOB.pda_themes[params["pda_theme"]])
+				prefs.pda_theme = params["pda_theme"]
 			return TRUE
 
 		if("save")

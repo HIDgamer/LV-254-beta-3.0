@@ -182,6 +182,7 @@
 	load_id(new_human, mob_client)
 	if(show_job_gear)
 		load_gear(new_human, mob_client)
+		load_pda(new_human, mob_client)
 	load_status(new_human, mob_client)
 	load_vanity(new_human, mob_client)
 	load_traits(new_human, mob_client)

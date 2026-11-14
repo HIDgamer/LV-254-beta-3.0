@@ -1,0 +1,63 @@
+.NtosChatMessage {
+  display: inline-flex;
+  flex-direction: column;
+  max-width: 25rem;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  background-color: rgba(36, 232, 127, 0.08);
+
+  &_outgoing {
+    @extend .NtosChatMessage;
+    background-color: rgba(36, 232, 127, 0.25);
+    text-align: right;
+    float: right;
+  }
+
+  &__timestamp {
+    height: 0.9rem;
+    margin-top: 0.25rem;
+    margin-left: 0.5rem;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    min-width: 9rem;
+    overflow-wrap: break-word;
+    text-align: left;
+    word-break: break-all;
+  }
+}
+
+.NtosChatLog {
+  padding: 0.5rem;
+  min-height: 99.5%;
+  margin: 0;
+}
+
+.UnreadDivider {
+  position: relative;
+  display: flex;
+  font-size: 1rem;
+  text-align: center;
+
+  & > span {
+    color: #e74c3c;
+  }
+
+  & > div {
+    display: inline-flex;
+    flex: 1;
+    border-bottom: 1px solid #e74c3c;
+    height: 50%;
+
+    &:last-child {
+      margin-left: 1%;
+    }
+
+    &:first-child {
+      margin-right: 1%;
+    }
+  }
+}

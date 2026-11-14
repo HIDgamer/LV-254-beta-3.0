@@ -415,6 +415,8 @@ Applied by gun suicide and high impact bullet executions, removed by rejuvenate,
 		client.add_to_screen(wear_id)
 		wear_id.screen_loc = hud_used.ui_datum.hud_slot_offset(wear_id, hud_used.ui_datum.ui_id)
 
+	if(istype(wear_id, /obj/item/modular_computer))
+		return
 	var/obj/item/card/id/card = get_idcard()
 	if(!card)
 		return

@@ -53,6 +53,15 @@ const setWindowSize = (vec: [number, number]) => {
   });
 };
 
+// Grow the window to show content that overflows it
+export const growWindowHeight = (extra: number) => {
+  const [width, height] = getWindowSize();
+  const newHeight = Math.min(getScreenSize()[1], height + extra * pixelRatio);
+  if (newHeight > height) {
+    setWindowSize([width, newHeight]);
+  }
+};
+
 // Get screen position
 const getScreenPosition = (): [number, number] => [
   0 - screenOffset[0],

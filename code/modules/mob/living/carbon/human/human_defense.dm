@@ -355,7 +355,7 @@ Contains most of the procs that are called when a mob is attacked by something
 			affecting.embed(I)
 
 /mob/living/carbon/human/proc/get_id_faction_group()
-	var/obj/item/card/id/C = wear_id
+	var/obj/item/card/id/C = get_idcard()
 	if(!istype(C))
 		C = get_active_hand()
 	if(!istype(C))

@@ -1357,6 +1357,10 @@ GLOBAL_LIST_INIT(cm_vending_gear_corresponding_types_list, list(
 	update_icon()
 
 /obj/structure/machinery/cm_vending/proc/vendor_successful_vend_one(prod_type, mob/living/carbon/human/user, turf/target_turf, insignas_override, stack_amount)
+	if(ispath(prod_type, /obj/item/modular_computer/pda) && length(user?.search_contents_for(/obj/item/modular_computer/pda)))
+		return
+	if(ispath(prod_type, /obj/item/modular_computer/pda))
+		prod_type = GLOB.pda_types_by_job[user?.job] || prod_type
 	var/obj/item/new_item
 	if(vend_flags & VEND_PROPS)
 		new_item = new /obj/item/prop/replacer(target_turf, prod_type)
@@ -1376,6 +1380,10 @@ GLOBAL_LIST_INIT(cm_vending_gear_corresponding_types_list, list(
 		new_item.add_fingerprint(user)
 	else
 		new_item = new prod_type(target_turf)
+
+	if(istype(new_item, /obj/item/modular_computer/pda))
+		var/obj/item/modular_computer/pda/vended_pda = new_item
+		vended_pda.imprint_to(user)
 
 	if(vend_flags & VEND_UNIFORM_RANKS)
 		if(insignas_override)

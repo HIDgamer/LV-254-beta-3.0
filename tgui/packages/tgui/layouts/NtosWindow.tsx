@@ -5,10 +5,11 @@
  */
 
 import { BooleanLike } from 'common/react';
+import { useEffect, useRef } from 'react';
 import { resolveAsset } from 'tgui/assets';
 import { useBackend } from 'tgui/backend';
 import { Box, Button } from 'tgui/components';
-
+import { growWindowHeight } from 'tgui/drag';
 import { Window } from './Window';
 
 export type NTOSData = {
@@ -84,7 +85,7 @@ export const NtosWindow = (props) => {
               {PC_stationtime}
             </Box>
             <Box inline italic mr={2} opacity={0.33}>
-              {(PC_device_theme === 'syndicate' && 'Syndix') || 'NtOS'}
+              Weyland-Yutani
               {!!PC_lowpower_mode && ' - RUNNING ON LOW POWER MODE'}
             </Box>
           </div>
@@ -151,8 +152,30 @@ export const NtosWindow = (props) => {
 };
 
 const NtosWindowContent = (props) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const lastHeight = useRef(0);
+
+  useEffect(() => {
+    const scroller = ref.current?.querySelector('.Layout__content--scrollable');
+    if (!scroller) {
+      return;
+    }
+    const timeout = setTimeout(() => {
+      const height = scroller.scrollHeight;
+      if (height === lastHeight.current) {
+        return;
+      }
+      lastHeight.current = height;
+      const overflow = height - scroller.clientHeight;
+      if (overflow > 1) {
+        growWindowHeight(overflow + 4);
+      }
+    }, 250);
+    return () => clearTimeout(timeout);
+  });
+
   return (
-    <div className="NtosWindow__content">
+    <div className="NtosWindow__content" ref={ref}>
       <Window.Content {...props} />
     </div>
   );

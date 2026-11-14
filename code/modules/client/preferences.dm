@@ -212,6 +212,7 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 	var/species = "Human"    //Species datum to use.
 	var/ethnicity = "Western" // Ethnicity
 	var/body_type = "Mesomorphic (Average)" // Body Type
+	var/pda_theme = PDA_THEME_TERMINAL_NAME
 	var/language = "None" //Secondary language
 	var/preferred_squad = "None"
 		//Some faction information.
@@ -418,6 +419,7 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 			dat += "<b>Gender:</b> <a href='?_src_=prefs;preference=gender'><b>[gender == MALE ? "Male" : "Female"]</b></a><br>"
 			dat += "<b>Ethnicity:</b> <a href='?_src_=prefs;preference=ethnicity;task=input'><b>[ethnicity]</b></a><br>"
 			dat += "<b>Body Type:</b> <a href='?_src_=prefs;preference=body_type;task=input'><b>[body_type]</b></a><br>"
+			dat += "<b>PDA Theme:</b> <a href='?_src_=prefs;preference=pda_theme;task=input'><b>[pda_theme]</b></a><br>"
 			dat += "<b>Traits:</b> <a href='byond://?src=\ref[user];preference=traits;task=open'><b>Character Traits</b></a>"
 			dat += "<br>"
 
@@ -1682,6 +1684,11 @@ GLOBAL_LIST_INIT(bgstate_options, list(
 
 					if (new_body_type)
 						body_type = new_body_type
+
+				if("pda_theme")
+					var/new_pda_theme = tgui_input_list(user, "Choose the theme of your PDA:", "Character Preferences", GLOB.pda_themes)
+					if(new_pda_theme)
+						pda_theme = new_pda_theme
 
 				if("facial")
 					var/new_facial = input(user, "Choose your character's facial-hair color:", "Character Preference", rgb(r_facial, g_facial, b_facial)) as color|null

@@ -562,7 +562,7 @@
 		return FALSE //already in a squad
 
 	if(!id_card)
-		id_card = target_mob.wear_id
+		id_card = target_mob.get_idcard()
 		if(!id_card)
 			id_card = target_mob.get_active_hand()
 

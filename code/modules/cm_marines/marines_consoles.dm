@@ -968,7 +968,7 @@ GLOBAL_LIST_EMPTY_TYPED(crew_monitor, /datum/crewmonitor)
 		if((pos_faction == faction) || (pos_faction in extra_factions))
 			return TRUE
 
-	var/obj/item/card/id/id_card = target.wear_id
+	var/obj/item/card/id/id_card = target.get_idcard()
 	if(!id_card)
 		return FALSE
 
