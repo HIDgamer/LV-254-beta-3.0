@@ -144,3 +144,6 @@
 
 	// for multiz looking up
 	var/atom/observed_atom
+
+	///for water_overlays
+	var/datum/water_overlay_config/water_config = /datum/water_overlay_config

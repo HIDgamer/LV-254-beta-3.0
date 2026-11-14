@@ -1680,7 +1680,7 @@
 		visible_message(SPAN_DANGER("[src] rolls on the floor, trying to put themselves out!"),
 			SPAN_NOTICE("You stop, drop, and roll!"), null, 5)
 
-	if(istype(get_turf(src), /turf/open/gm/river))
+	if(SSwater_overlays.is_water(get_turf(src)))
 		ExtinguishMob()
 
 	if(fire_stacks > 0)

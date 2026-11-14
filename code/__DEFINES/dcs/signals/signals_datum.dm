@@ -43,6 +43,9 @@
 /// from /datum/squad/proc/put_marine_in_squad
 #define COMSIG_SET_SQUAD "set_squad"
 
+/// from /datum/controller/subsystem/nightmare/proc/prepare_game()
+#define COMSIG_NIGHTMARES_PREPARE_GAME_COMPLETE "nightmare_prepare_game_complete"
+
 // From /datum/surgery_step/tend_wounds/success()
 // Sent to command the limb's suture datum to add sutures, NOT when sutures are added.
 #define COMSIG_LIMB_ADD_SUTURES "limb_add_sutures"

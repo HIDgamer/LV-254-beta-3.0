@@ -198,6 +198,9 @@
 	/// this is the resin mark that is currently being tracked by the xeno
 	var/obj/effect/alien/resin/marker/tracked_marker
 
+	//water overlay configuration the xeno uses
+	water_config = /datum/water_overlay_config/xeno/medium
+
 	//////////////////////////////////////////////////////////////////
 	//
 	// Modifiers

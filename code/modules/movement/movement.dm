@@ -74,6 +74,7 @@
 		last_move_dir = get_dir(oldloc, loc)
 	if (.)
 		Moved(oldloc, direct)
+	SEND_SIGNAL(src, COMSIG_MOVABLE_POST_MOVE, oldloc)
 
 /// Called when a movable atom has hit an atom via movement
 /atom/movable/proc/Collide(atom/A)

@@ -10,6 +10,12 @@
 	speak_emote = list("screeches")
 	emote_hear = list("screeches")
 
+
+/mob/living/simple_animal/bat/Initialize(mapload, ...)
+	. = ..()
+	mob_flags |= MOB_FLYING
+
+
 /mob/living/simple_animal/bat/initialize_pass_flags(datum/pass_flags_container/PF)
 	..()
 	if (PF)

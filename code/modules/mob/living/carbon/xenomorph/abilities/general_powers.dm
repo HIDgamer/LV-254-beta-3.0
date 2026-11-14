@@ -449,6 +449,7 @@
 	X.visible_message(SPAN_XENOWARNING("\The [X] [action_text][findtext(action_text, "e", -1) || findtext(action_text, "p", -1) ? "s" : "es"] at [A]!"), SPAN_XENOWARNING("We [action_text] at [A]!"))
 
 	pre_pounce_effects()
+	SEND_SIGNAL(owner, COMSIG_XENO_POUNCE_STARTED, target)
 
 	X.pounce_distance = get_dist(X, A)
 	X.throw_atom(A, distance, throw_speed, X, launch_type = LOW_LAUNCH, pass_flags = pounce_pass_flags, collision_callbacks = pounce_callbacks)

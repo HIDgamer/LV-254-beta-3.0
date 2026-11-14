@@ -78,6 +78,11 @@
 			arealist |= turf.loc
 		for(var/atom/movable/movable as anything in turf)
 			atomlist += movable // Much like initTemplateBounds() this only recurses content once. Never been an issue so far, but keep it in mind.
+		if(SSwater_overlays.is_water(turf))
+			for(var/direction in GLOB.alldirs)
+				var/turf/found_turf = get_step(turf, direction)
+				if(found_turf && !SSwater_overlays.is_water(found_turf))
+					SSwater_overlays.turfs_to_process |= found_turf
 	SSmapping.reg_in_areas_in_z(arealist) // Legacy. Not sure this is needed as it should already be carried out through area Initialize.
 	SSatoms.InitializeAtoms(atomlist + arealist)
 	// We still defer lighting, area sorting, etc, to be done all in one go!

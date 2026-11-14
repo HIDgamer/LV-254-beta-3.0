@@ -76,3 +76,6 @@
 
 /// from /modules/animations/animations_library.dm
 #define COMSIG_HUMAN_ANIMATING "human_animating"
+
+//from /mob/living/carbon/human/proc/handle_haul()
+#define COMSIG_HUMAN_HAULED "human_hauled"

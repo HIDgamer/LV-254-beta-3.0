@@ -22,3 +22,6 @@
 
 ///from base of /datum/turf_reservation/proc/Release: (datum/turf_reservation/reservation)
 #define COMSIG_TURF_RESERVATION_RELEASED "turf_reservation_released"
+
+///from /turf/proc/launched_landing(atom/movable/launched)
+#define COMSIG_TURF_LAUNCHED_LANDING "turf_launched_landing"

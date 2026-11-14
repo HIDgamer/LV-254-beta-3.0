@@ -42,6 +42,9 @@
 #define COMSIG_LIVING_SET_BUCKLED "living_set_buckled"
 ///from base of mob/living/set_body_position()
 #define COMSIG_LIVING_SET_BODY_POSITION  "living_set_body_position"
+///from /mob/living/proc/update_layer()
+#define COMSIG_LIVING_LAYER_UPDATED  "living_later_updated"
+
 
 /// from base of /mob/living/apply_status_effect(): (datum/status_effect/new_effect)
 #define COMSIG_LIVING_APPLY_EFFECT "living_apply_effect"
@@ -50,3 +53,6 @@
 #define COMSIG_LIVING_SHIMMY_LAYER "structure_shimmy_layer"
 	/// Sent when a shimmy component is currently overriding the layer
 	#define COMSIG_LIVING_SHIMMY_LAYER_CANCEL (1<<0)
+
+///from /mob/living/proc/set_lying_angle
+#define COMSIG_LIVING_SET_LYING_ANGLE "living_set_lying_angle"

@@ -24,6 +24,7 @@
 /obj/structure/platform/Initialize()
 	. = ..()
 	var/image/I = image(icon, src, "platform_overlay", LADDER_LAYER, dir)//ladder layer puts us just above weeds.
+	var/is_water = SSwater_overlays.is_water(get_turf(src))
 	switch(dir)
 		if (NORTH)
 			layer = OBJ_LAYER+0.1
@@ -41,7 +42,9 @@
 		if (WEST)
 			layer = MOB_LAYER+0.1
 			I.pixel_x = -16
-
+	if(is_water && (dir == NORTH || dir == EAST || dir == WEST))
+		layer = UNDER_WATER_TURF_LAYER + 0.01
+		plane = FLOOR_PLANE
 
 /obj/structure/platform/initialize_pass_flags(datum/pass_flags_container/PF)
 	..()
@@ -168,18 +171,14 @@
 /obj/structure/platform_decoration/Initialize()
 	. = ..()
 	switch(dir)
-		if (NORTH)
-			layer = OBJ_LAYER+0.1
-		if (SOUTH)
-			layer = ABOVE_MOB_LAYER+0.1
-		if (SOUTHEAST)
-			layer = ABOVE_MOB_LAYER+0.1
-		if (SOUTHWEST)
-			layer = ABOVE_MOB_LAYER+0.1
-		if (EAST)
-			layer = MOB_LAYER+0.1
-		if (WEST)
-			layer = MOB_LAYER+0.1
+		if(SOUTH, NORTH , SOUTHWEST, SOUTHEAST)
+			layer = ABOVE_MOB_LAYER
+		else
+			if(SSwater_overlays.is_water(get_turf(src)))
+				layer = UNDER_WATER_TURF_LAYER + 0.01
+				plane = FLOOR_PLANE
+			else
+				layer = MOB_LAYER
 
 /obj/structure/platform_decoration/initialize_pass_flags(datum/pass_flags_container/PF)
 	..()

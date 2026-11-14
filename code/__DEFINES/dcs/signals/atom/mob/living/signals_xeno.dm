@@ -102,3 +102,6 @@
 /// From /obj/structure/tunnel/attack_alien() : (mob/living/carbon/xenomorph/xeno)
 #define COMSIG_XENO_ENTER_TUNNEL "xeno_enter_tunnel"
 	#define COMPONENT_CANCEL_TUNNEL (1<<0)
+
+///from /datum/action/xeno_action/activable/pounce/use_ability()
+#define COMSIG_XENO_POUNCE_STARTED "xeno_pounce_start"

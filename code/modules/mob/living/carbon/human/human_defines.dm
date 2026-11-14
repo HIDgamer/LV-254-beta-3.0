@@ -211,6 +211,9 @@
 	/// Timer to prevent spreading yellow dancer tags from same person.
 	var/last_target_spread_time = 0
 
+	// water overlays config
+	water_config = /datum/water_overlay_config/human
+
 /client/var/cached_human_playtime
 
 /client/proc/get_total_human_playtime(skip_cache = FALSE)
