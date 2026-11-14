@@ -89,7 +89,6 @@
 
 /client/proc/recalculate_move_delay()
 	move_delay = mob.movement_delay()
-	mob.next_delay_update = world.time + mob.next_delay_delay
 
 /client/Move(n, direct)
 	var/mob/living/living_mob
@@ -104,9 +103,6 @@
 
 	if(world.time < next_movement)
 		return
-	if(living_mob && living_mob.body_position == LYING_DOWN && mob.crawling)
-		return
-
 	next_move_dir_add = 0
 	next_move_dir_sub = 0
 
@@ -180,7 +176,7 @@
 		return O.relaymove(mob, direct)
 	else
 		move_delay = mob.move_delay
-		if(mob.recalculate_move_delay)// && mob.next_delay_update <= world.time)
+		if(mob.recalculate_move_delay)
 			recalculate_move_delay()
 		if(mob.next_move_slowdown)
 			move_delay += mob.next_move_slowdown
@@ -190,31 +186,20 @@
 				move_delay += MOVE_REDUCTION_DIRECTION_LOCKED // by Geeves
 
 		mob.cur_speed = clamp(10/(move_delay + 0.5), MIN_SPEED, MAX_SPEED)
-		next_movement = world.time + MINIMAL_MOVEMENT_INTERVAL // We pre-set this now for the crawling case. If crawling do_after fails, next_movement would be set after the attempt end instead of now.
+		next_movement = world.time + MINIMAL_MOVEMENT_INTERVAL
 
-		//Try to crawl first
-		if(living_mob && living_mob.body_position == LYING_DOWN)
-			if(mob.crawling)
-				return // Already doing it.
-			//check for them not being a limbless blob (only humans have limbs)
-			if(ishuman(mob))
-				var/mob/living/carbon/human/human = mob
-				var/list/extremities = list("l_hand", "r_hand", "l_foot", "r_foot", "l_arm", "r_arm", "l_leg", "r_leg")
-				for(var/zone in extremities)
-					if(!(human.get_limb(zone)))
-						extremities.Remove(zone)
-				if(length(extremities) < 4)
-					return
-			//now crawl
-			mob.crawling = TRUE
-			if(!do_after(mob, 1 SECONDS, INTERRUPT_MOVED|INTERRUPT_UNCONSCIOUS|INTERRUPT_STUNNED|INTERRUPT_RESIST|INTERRUPT_CHANGED_LYING, NO_BUSY_ICON))
-				mob.crawling = FALSE
+		//Limbless humans can't crawl
+		if(living_mob && living_mob.body_position == LYING_DOWN && ishuman(mob))
+			var/mob/living/carbon/human/human = mob
+			var/list/extremities = list("l_hand", "r_hand", "l_foot", "r_foot", "l_arm", "r_arm", "l_leg", "r_leg")
+			for(var/zone in extremities)
+				if(!(human.get_limb(zone)))
+					extremities.Remove(zone)
+			if(length(extremities) < 4)
 				return
-			if(!mob.crawling)
-				return // Crawling interrupted by a "real" move. Do nothing. In theory INTERRUPT_MOVED|INTERRUPT_CHANGED_LYING catches this in do_after.
-		mob.crawling = FALSE
 		mob.move_intentionally = TRUE
 		moving = TRUE
+		mob.set_step_glide(move_delay)
 		if(mob.confused)
 			mob.Move(get_step(mob, pick(GLOB.cardinals)))
 		else

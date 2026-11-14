@@ -60,3 +60,10 @@
 #define PASS_FLAGS_FLAME (PASS_AROUND|PASS_UNDER|PASS_MOB_THRU|PASS_THROUGH|PASS_OVER_FIRE)
 #define PASS_FLAGS_SMOKE (PASS_HIGH_OVER|PASS_AROUND|PASS_UNDER|PASS_MOB_THRU|PASS_THROUGH)
 #define PASS_FLAGS_CRAWLER (PASS_TYPE_CRAWLER|PASS_UNDER)
+
+/// Glide size limits, in pixels per tick
+#define MIN_GLIDE_SIZE 1
+#define MAX_GLIDE_SIZE 32
+
+/// Pixels per tick an atom must glide to cover one tile in delay deciseconds
+#define DELAY_TO_GLIDE_SIZE(delay) (clamp((world.icon_size / max((delay) / world.tick_lag, 1)) * GLOB.glide_size_multiplier * GLOB.glide_size_user_scale, MIN_GLIDE_SIZE, MAX_GLIDE_SIZE))

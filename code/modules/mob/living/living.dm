@@ -161,6 +161,7 @@
 		lying_angle_on_movement(direct)
 	if (buckled && buckled.loc != NewLoc) //not updating position
 		if (!buckled.anchored)
+			buckled.set_glide_size(glide_size)
 			return buckled.Move(NewLoc, direct)
 		else
 			return FALSE
@@ -178,6 +179,7 @@
 			return
 
 		var/pull_dir = get_dir(src, pulling)
+		pulling.set_glide_size(glide_size)
 
 		if(grab_level >= GRAB_CARRY)
 			switch(grab_level)
@@ -255,16 +257,14 @@
 		else
 			client.next_movement = world.time + (10*pulledby.grab_level) + client.move_delay
 
-/mob/living/movement_delay()
+/mob/living/refresh_derived_movespeed()
 	. = ..()
+	set_movespeed_modifier(MOVESPEED_ID_BUMP, MOVESPEED_STAGE_ADD, do_bump_delay ? 10 : 0, update = FALSE)
+	do_bump_delay = 0
+	set_movespeed_modifier(MOVESPEED_ID_DROWSY, MOVESPEED_STAGE_ADD, drowsyness > 0 ? 6 : 0, update = FALSE)
+	set_movespeed_modifier(MOVESPEED_ID_CRAWLING, MOVESPEED_STAGE_ADD, body_position == LYING_DOWN ? CRAWLING_SLOWDOWN : 0, update = FALSE)
 
-	if (do_bump_delay)
-		. += 10
-		do_bump_delay = 0
-
-	if (drowsyness > 0)
-		. += 6
-
+	var/pull_amount = 0
 	if(pulling && pulling.drag_delay && get_pull_miltiplier()) //Dragging stuff can slow you down a bit.
 		var/pull_delay = pulling.get_pull_drag_delay() * get_pull_miltiplier()
 
@@ -275,8 +275,8 @@
 			if(GRAB_CHOKE)
 				grab_level_delay = 9
 
-		. += max(pull_speed + (pull_delay + reagent_move_delay_modifier) + grab_level_delay, 0) //harder grab makes you slower
-	move_delay = .
+		pull_amount = max(pull_speed + (pull_delay + reagent_move_delay_modifier) + grab_level_delay, 0) //harder grab makes you slower
+	set_movespeed_modifier(MOVESPEED_ID_PULL, MOVESPEED_STAGE_ADD, pull_amount, update = FALSE)
 
 
 //the inherent slowdown of the object when pulled
@@ -638,6 +638,7 @@
 	. = body_position
 	body_position = new_value
 	body_position_changed = world.time
+	recalculate_move_delay = TRUE
 	SEND_SIGNAL(src, COMSIG_LIVING_SET_BODY_POSITION, new_value, .)
 	if(new_value == LYING_DOWN) // From standing to lying down.
 		var/is_bleeding = FALSE

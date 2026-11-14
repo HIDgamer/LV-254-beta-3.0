@@ -258,6 +258,9 @@ Administrative related.
 
 /datum/config_entry/number/glide_size_mod
 	config_entry_value = 80
+
+/datum/config_entry/flag/smooth_glide
+	config_entry_value = TRUE
 /*
 Voting
 */

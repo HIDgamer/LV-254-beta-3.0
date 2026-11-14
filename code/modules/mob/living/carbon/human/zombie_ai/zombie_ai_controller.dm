@@ -277,6 +277,7 @@
 	if(!pilot || world.time < next_step_time)
 		return FALSE
 	direction = get_cardinal_direction(direction)
+	pilot.set_step_glide(pilot.move_delay)
 	. = step(pilot, direction)
 	if(. && pilot)
 		next_step_time = world.time + pilot.movement_delay()

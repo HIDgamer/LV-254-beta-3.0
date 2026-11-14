@@ -42,7 +42,6 @@
 	var/next_move_slowdown = 0 // Amount added during the next movement_delay(), then is reset.
 	var/speed = 0 //Speed that modifies the movement delay of a given mob
 	var/recalculate_move_delay = TRUE // Whether move delay needs to be recalculated, on by default so that new mobs actually get movement delay calculated upon creation
-	var/crawling = FALSE
 	var/can_crawl = TRUE
 	var/monkeyizing = null //Carbon
 	var/hand = null
@@ -213,9 +212,12 @@
 
 	var/noclip = FALSE
 
-	var/next_delay_update = 0 // when next update of move delay should happen
-	var/next_delay_delay = 10 // how much time we wait for next calc of move delay
 	var/move_delay
+	var/last_step_time = 0
+	var/step_interval_avg = 0
+	var/list/movespeed_modification
+	var/list/movespeed_totals
+	var/movespeed_dirty = FALSE
 
 	///Holds the time when a mob can throw an item next, only applies after two throws, reference /mob/proc/do_click()
 	COOLDOWN_DECLARE(throw_delay)

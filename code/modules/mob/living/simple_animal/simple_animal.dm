@@ -399,9 +399,13 @@
 	return ..()
 
 
+/mob/living/simple_animal/refresh_derived_movespeed()
+	. = ..()
+	set_movespeed_modifier(MOVESPEED_ID_CONFIG, MOVESPEED_STAGE_FINAL, CONFIG_GET(number/animal_delay), update = FALSE)
+
 /mob/living/simple_animal/movement_delay()
 	. = ..()
-	. += CONFIG_GET(number/animal_delay)
+	. += movespeed_total(MOVESPEED_STAGE_FINAL)
 
 	move_delay = .
 

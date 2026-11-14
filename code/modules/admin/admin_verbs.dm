@@ -187,6 +187,7 @@ GLOBAL_LIST_INIT(admin_verbs_server, list(
 GLOBAL_LIST_INIT(admin_verbs_debug, list(
 	/client/proc/debug_role_authority,
 	/client/proc/cmd_debug_make_powernets,
+	/client/proc/set_glide_scale,
 	/client/proc/cmd_debug_list_processing_items,
 	/client/proc/cmd_admin_delete,
 	/client/proc/cmd_debug_del_all,

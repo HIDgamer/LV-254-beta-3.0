@@ -198,3 +198,18 @@
 
 	show_browser(usr, dat, "Bulk Fetcher Panel", "debug")
 	return
+
+/client/proc/set_glide_scale()
+	set name = "Set Glide Scale"
+	set category = "Debug"
+	set desc = "Scales every glide size in percent. Higher glides faster, 100 is nominal."
+
+	if(!check_rights(R_DEBUG))
+		return
+
+	var/new_scale = tgui_input_number(src, "Glide scale in percent (currently [round(GLOB.glide_size_user_scale * 100)])", "Glide Scale", round(GLOB.glide_size_user_scale * 100), 200, 50)
+	if(isnull(new_scale))
+		return
+
+	GLOB.glide_size_user_scale = new_scale / 100
+	message_admins("[key_name_admin(src)] set the glide scale to [new_scale]%.")

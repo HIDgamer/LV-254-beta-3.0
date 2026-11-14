@@ -101,6 +101,36 @@
 		L.source_atom.static_update_light()
 	return TRUE
 
+GLOBAL_VAR_INIT(glide_size_multiplier, 1)
+GLOBAL_VAR_INIT(glide_size_user_scale, 1)
+
+/atom/movable/proc/set_glide_size(target = 8, recursed = FALSE)
+	SEND_SIGNAL(src, COMSIG_MOVABLE_UPDATE_GLIDE_SIZE, target)
+	glide_size = target
+
+/obj/structure/bed/set_glide_size(target = 8, recursed = FALSE)
+	. = ..()
+	if(!recursed && buckled_mob)
+		buckled_mob.set_glide_size(target, TRUE)
+
+/// Sets the glide for a step about to be taken with the given movement delay, matched to the mob's observed step cadence
+/mob/proc/set_step_glide(delay)
+	if(isobserver(src))
+		return
+	if(!CONFIG_GET(flag/smooth_glide))
+		return
+	if(isnull(delay))
+		delay = 2
+	var/interval = delay + world.tick_lag
+	if(last_step_time && world.time - last_step_time <= interval * 2)
+		var/observed = world.time - last_step_time
+		step_interval_avg = step_interval_avg ? step_interval_avg * 0.7 + observed * 0.3 : observed
+		interval = clamp(step_interval_avg, delay, delay + world.tick_lag * 2)
+	else
+		step_interval_avg = 0
+	last_step_time = world.time
+	set_glide_size(DELAY_TO_GLIDE_SIZE(interval))
+
 /atom/movable/proc/forceMove(atom/destination)
 	. = FALSE
 	if(destination)

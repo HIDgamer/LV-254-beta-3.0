@@ -254,31 +254,31 @@
 
 //Adds or removes a delay to movement based on your caste. If speed = 0 then it shouldn't do much.
 //Runners are -2, -4 is BLINDLINGLY FAST, +2 is fat-level
+/mob/living/carbon/xenomorph/refresh_derived_movespeed()
+	. = ..()
+
+	set_movespeed_modifier(MOVESPEED_ID_ABILITY, MOVESPEED_STAGE_ADD, ability_speed_modifier, update = FALSE)
+	set_movespeed_modifier(MOVESPEED_ID_FRENZY, MOVESPEED_STAGE_ADD, -(frenzy_aura * 0.05), update = FALSE)
+	set_movespeed_modifier(MOVESPEED_ID_AGILITY, MOVESPEED_STAGE_ADD, agility ? caste.agility_speed_increase : 0, update = FALSE)
+
+	var/obj/effect/alien/weeds/W = locate(/obj/effect/alien/weeds) in loc
+	set_movespeed_modifier(MOVESPEED_ID_OWN_WEEDS, MOVESPEED_STAGE_MULT, (W && W.linked_hive.hivenumber == hivenumber) ? 0.95 : 1, update = FALSE)
+
+	var/obj/effect/alien/resin/sticky/fast/FR = locate(/obj/effect/alien/resin/sticky/fast) in loc
+	set_movespeed_modifier(MOVESPEED_ID_FAST_RESIN, MOVESPEED_STAGE_MULT, (FR && FR.hivenumber == hivenumber) ? 0.8 : 1, update = FALSE)
+
+	var/status_delay = 0
+	if(superslowed)
+		status_delay = XENO_SUPERSLOWED_AMOUNT
+	else if(slowed)
+		status_delay = XENO_SLOWED_AMOUNT
+	set_movespeed_modifier(MOVESPEED_ID_SLOWED, MOVESPEED_STAGE_FINAL, status_delay, update = FALSE)
+
 /mob/living/carbon/xenomorph/movement_delay()
 	. = ..()
 
-	. += ability_speed_modifier
-
-	if(frenzy_aura)
-		. -= (frenzy_aura * 0.05)
-
-	if(agility)
-		. += caste.agility_speed_increase
-
-	var/obj/effect/alien/weeds/W = locate(/obj/effect/alien/weeds) in loc
-	if (W)
-		if (W.linked_hive.hivenumber == hivenumber)
-			. *= 0.95
-
-	var/obj/effect/alien/resin/sticky/fast/FR = locate(/obj/effect/alien/resin/sticky/fast) in loc
-	if (FR && FR.hivenumber == hivenumber)
-		. *= 0.8
-
-	if(superslowed)
-		. += XENO_SUPERSLOWED_AMOUNT
-
-	if(slowed && !superslowed)
-		. += XENO_SLOWED_AMOUNT
+	. *= movespeed_total(MOVESPEED_STAGE_MULT)
+	. += movespeed_total(MOVESPEED_STAGE_FINAL)
 
 	var/list/L = list("speed" = .)
 	SEND_SIGNAL(src, COMSIG_XENO_MOVEMENT_DELAY, L)

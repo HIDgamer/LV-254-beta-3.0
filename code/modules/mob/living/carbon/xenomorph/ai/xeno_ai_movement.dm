@@ -1096,6 +1096,7 @@ GLOBAL_VAR_INIT(xeno_pathfind_bounded_failure_logged, FALSE)
 		return FALSE
 	direction = get_cardinal_direction(direction)
 	var/mob/living/carbon/xenomorph/stepping_pilot = pilot
+	stepping_pilot.set_step_glide(stepping_pilot.move_delay)
 	. = step(stepping_pilot, direction)
 	if(.)
 		// step() can kill the pilot as a side effect (a hazard tile, a

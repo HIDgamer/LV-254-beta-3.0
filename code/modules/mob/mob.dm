@@ -29,6 +29,7 @@
 	clear_fullscreens()
 	QDEL_NULL(mob_panel)
 	QDEL_NULL(mob_language_menu)
+	QDEL_LIST_ASSOC_VAL(movespeed_modification)
 
 	tgui_open_uis = null
 	buckled = null
@@ -232,6 +233,8 @@
 		if(MOVE_INTENT_WALK)
 			. = 7 + CONFIG_GET(number/walk_speed)
 	. += speed
+	refresh_movespeed_modifiers()
+	. += movespeed_total(MOVESPEED_STAGE_ADD)
 	move_delay = .
 
 
