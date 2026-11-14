@@ -17,6 +17,8 @@
 	allowed_sensors = list(/obj/item/device/assembly/timer)
 	max_container_volume = 60
 	var/det_time = 40
+	/// When a timed fuse was lit, null while the grenade is not lit
+	var/primed_at
 	var/dangerous = FALSE //Make an danger overlay for humans?
 	var/arm_sound = 'sound/weapons/armbomb.ogg'
 	var/has_arm_sound = TRUE
@@ -113,6 +115,7 @@
 		activate_sensors()
 	else
 		active = TRUE
+		primed_at = world.time
 		det_time ? addtimer(CALLBACK(src, PROC_REF(prime)), det_time) : prime()
 	w_class = SIZE_MASSIVE // We cheat a little, primed nades become massive so they cant be stored anywhere
 	update_icon()

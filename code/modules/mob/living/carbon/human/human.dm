@@ -67,6 +67,8 @@
 	// an admin hard-delete). Var check alone is enough gating - null for every non-zombie human.
 	if(zombie_ai_controller)
 		detach_zombie_ai(src)
+	if(ai_brain)
+		detach_human_ai(src, HAI_STOP_DELETED)
 
 	QDEL_NULL_LIST(embedded_items)
 	QDEL_LIST_ASSOC_VAL(internal_organs_by_name)

@@ -267,6 +267,7 @@
 			job_whitelist = "[title][whitelist_status]"
 
 		human.job = title //TODO Why is this a mob variable at all?
+		human.update_npc_command_verb()
 
 		load_loadout(M)
 

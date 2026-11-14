@@ -49,6 +49,10 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 	normalspeed = 1
 	var/obj/item/circuitboard/airlock/electronics = null
 	var/hasShocked = 0 //Prevents multiple shocks from happening
+	/// The faction an AI engineer electrified the door for, its people are spared the shock
+	var/electrified_by
+	/// Set while an AI engineer has been at the panel, shown when the door is examined
+	var/ai_tampered = FALSE
 	var/secured_wires = 0 //for mapping use
 
 	var/no_panel = 0 //the airlock has no panel that can be screwdrivered open
@@ -115,6 +119,8 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 		. += SPAN_WARNING("It looks slightly damaged.")
 	if(masterkey_resist)
 		. += SPAN_INFO("It has been reinforced against breaching attempts.")
+	if(ai_tampered || GetComponent(/datum/component/door_trap))
+		. += SPAN_WARNING("The access panel has been tampered with.")
 
 /obj/structure/machinery/door/airlock/proc/take_damage(dam, mob/M)
 	if(!dam || unacidable)
@@ -206,6 +212,7 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 				shockedby += text("\[[time_stamp()]\][key_name(usr)]")
 				usr.attack_log += text("\[[time_stamp()]\] <font color='red'>Electrified the [name] at [x] [y] [z]</font>")
 				secondsElectrified = 30
+				sync_pathfinding()
 				visible_message(SPAN_DANGER("Electric arcs shoot off from \the [src] airlock!"))
 				spawn(10)
 					//TODO: Move this into process() and make pulsing reset secondsElectrified to 30
@@ -214,6 +221,7 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 						if(secondsElectrified<0)
 							secondsElectrified = 0
 						sleep(10)
+					sync_pathfinding()
 
 		if(AIRLOCK_WIRE_OPEN_DOOR)
 			//tries to open the door without ID
@@ -267,6 +275,7 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 				shockedby += text("\[[time_stamp()]\][key_name(usr)]")
 				usr.attack_log += text("\[[time_stamp()]\] <font color='red'>Electrified the [name] at [x] [y] [z]</font>")
 				secondsElectrified = -1
+				sync_pathfinding()
 				visible_message(SPAN_DANGER("Electric arcs shoot off from \the [src] airlock!"))
 
 		if(AIRLOCK_WIRE_SAFETY)
@@ -297,6 +306,7 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 		if(AIRLOCK_WIRE_ELECTRIFY)
 			if(secondsElectrified == -1)
 				secondsElectrified = 0
+				sync_pathfinding()
 
 		if(AIRLOCK_WIRE_SAFETY)
 			safe = 1
@@ -386,6 +396,8 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 /obj/structure/machinery/door/airlock/shock(mob/user, prb)
 	if(!arePowerSystemsOn())
 		return FALSE
+	if(electrified_exempt(user))
+		return FALSE
 	if(hasShocked)
 		return FALSE //Already shocked someone recently?
 	if(..())
@@ -397,7 +409,11 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 		return FALSE
 
 
+/obj/structure/machinery/door/airlock/path_secure()
+	return locked || welded || isElectrified() || !arePowerSystemsOn() || GetComponent(/datum/component/door_trap)
+
 /obj/structure/machinery/door/airlock/update_icon()
+	sync_pathfinding()
 	if(overlays)
 		overlays.Cut()
 	if(density)
@@ -646,6 +662,10 @@ GLOBAL_LIST_INIT(airlock_wire_descriptions, list(
 		panel_open = !panel_open
 		to_chat(user, SPAN_NOTICE("You [panel_open ? "open" : "close"] [src]'s panel."))
 		update_icon()
+		return
+
+	else if(HAS_TRAIT(attacking_item, TRAIT_TOOL_WIRECUTTERS) && panel_open && GetComponent(/datum/component/door_trap))
+		disarm_trap(user)
 		return
 
 	else if(HAS_TRAIT(attacking_item, TRAIT_TOOL_WIRECUTTERS))

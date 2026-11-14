@@ -2,6 +2,7 @@
 /datum/spatial_grid_cell
 	var/list/mob/clients = list()
 	var/list/mob/npcs = list()
+	var/list/mob/ai_humans = list()
 
 SUBSYSTEM_DEF(spatial_grid)
 	name = "Spatial Grid"
@@ -35,6 +36,9 @@ SUBSYSTEM_DEF(spatial_grid)
 		for(var/mob/living/npc as anything in GLOB.ai_xeno_list)
 			if(!(npc.spatial_grid_flags & SPATIAL_GRID_TRACK_NPC))
 				track(npc, SPATIAL_GRID_TRACK_NPC)
+		for(var/mob/living/carbon/human/zombie as anything in GLOB.ai_zombie_list)
+			if(!(zombie.spatial_grid_flags & SPATIAL_GRID_TRACK_NPC))
+				track(zombie, SPATIAL_GRID_TRACK_NPC)
 		currentrun = tracked.Copy()
 
 	while(length(currentrun))
@@ -103,6 +107,7 @@ SUBSYSTEM_DEF(spatial_grid)
 		return
 	cell.clients -= tracked_mob
 	cell.npcs -= tracked_mob
+	cell.ai_humans -= tracked_mob
 	tracked_mob.spatial_grid_cell = null
 
 /// Files the mob under the cell it is standing in now, mobs inside containers use the container's turf
@@ -118,7 +123,60 @@ SUBSYSTEM_DEF(spatial_grid)
 		cell.clients += tracked_mob
 	if(tracked_mob.spatial_grid_flags & SPATIAL_GRID_TRACK_NPC)
 		cell.npcs += tracked_mob
+	if(tracked_mob.spatial_grid_flags & SPATIAL_GRID_TRACK_HUMAN_AI)
+		cell.ai_humans += tracked_mob
 	tracked_mob.spatial_grid_cell = cell
+
+/// AI humans standing within radius tiles of the turf, found through the cells so the radius is rounded up to whole cells
+/datum/controller/subsystem/spatial_grid/proc/ai_humans_in_range(turf/center, radius)
+	var/list/found = list()
+	if(!center || center.z > length(grids) || !grids[center.z])
+		return found
+	var/list/cells = grids[center.z]
+	var/cell_radius = ceil(radius / SPATIAL_GRID_CELLSIZE)
+	var/center_col = clamp(SPATIAL_GRID_CELL_INDEX(center.x), 1, grid_cols)
+	var/center_row = clamp(SPATIAL_GRID_CELL_INDEX(center.y), 1, grid_rows)
+	for(var/row in max(1, center_row - cell_radius) to min(grid_rows, center_row + cell_radius))
+		for(var/col in max(1, center_col - cell_radius) to min(grid_cols, center_col + cell_radius))
+			var/datum/spatial_grid_cell/cell = cells[(row - 1) * grid_cols + col]
+			if(length(cell.ai_humans))
+				found += cell.ai_humans
+	return found
+
+/// Whether anything of another faction that is alive stands within the 3x3 cells around the body, the check that lets an idle brain skip its sight scan
+/datum/controller/subsystem/spatial_grid/proc/has_candidates_near(turf/center, mob/living/self)
+	if(!center || center.z > length(grids) || !grids[center.z])
+		return FALSE
+	var/list/cells = grids[center.z]
+	var/center_col = clamp(SPATIAL_GRID_CELL_INDEX(center.x), 1, grid_cols)
+	var/center_row = clamp(SPATIAL_GRID_CELL_INDEX(center.y), 1, grid_rows)
+	for(var/row in max(1, center_row - 1) to min(grid_rows, center_row + 1))
+		for(var/col in max(1, center_col - 1) to min(grid_cols, center_col + 1))
+			var/datum/spatial_grid_cell/cell = cells[(row - 1) * grid_cols + col]
+			for(var/mob/other as anything in cell.clients)
+				if(other != self && other.faction != self.faction && other.stat != DEAD)
+					return TRUE
+			for(var/mob/other as anything in cell.npcs)
+				if(other != self && other.faction != self.faction && other.stat != DEAD)
+					return TRUE
+			for(var/mob/other as anything in cell.ai_humans)
+				if(other != self && other.faction != self.faction && other.stat != DEAD)
+					return TRUE
+	return FALSE
+
+/// Whether any client stands within cell_radius cells of the turf, the check is per cell so it is coarse by design
+/datum/controller/subsystem/spatial_grid/proc/has_player_near(turf/center, cell_radius = 3)
+	if(!center || center.z > length(grids) || !grids[center.z])
+		return FALSE
+	var/list/cells = grids[center.z]
+	var/center_col = clamp(SPATIAL_GRID_CELL_INDEX(center.x), 1, grid_cols)
+	var/center_row = clamp(SPATIAL_GRID_CELL_INDEX(center.y), 1, grid_rows)
+	for(var/row in max(1, center_row - cell_radius) to min(grid_rows, center_row + cell_radius))
+		for(var/col in max(1, center_col - cell_radius) to min(grid_cols, center_col + cell_radius))
+			var/datum/spatial_grid_cell/cell = cells[(row - 1) * grid_cols + col]
+			if(length(cell.clients))
+				return TRUE
+	return FALSE
 
 /**
  * Tracked mobs standing inside the shape on a z level.

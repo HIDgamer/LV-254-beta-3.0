@@ -145,5 +145,8 @@
 	// for multiz looking up
 	var/atom/observed_atom
 
+	/// When this mob's last gunshot was passed to the AI humans
+	var/last_ai_gunshot_time = 0
+
 	///for water_overlays
 	var/datum/water_overlay_config/water_config = /datum/water_overlay_config

@@ -29,7 +29,12 @@
 	recoil_unwielded = RECOIL_AMOUNT_TIER_2
 
 /obj/item/weapon/gun/plasma/unique_action(mob/user)
-	toggle_gun_safety(user)
+	if(flags_gun_features & GUN_BURST_FIRING)
+		return
+	if(user.is_mob_incapacitated() || !isturf(user.loc))
+		return
+	flags_gun_features ^= GUN_TRIGGER_SAFETY
+	gun_safety_handle(user)
 
 
 //-------------------------------------------------------

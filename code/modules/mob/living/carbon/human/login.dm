@@ -1,5 +1,7 @@
 /mob/living/carbon/human/Login()
 	..()
+	if(ai_brain)
+		detach_human_ai(src, HAI_STOP_CLAIMED)
 	if(species)
 		species.handle_login_special(src)
 	if(selected_ability)

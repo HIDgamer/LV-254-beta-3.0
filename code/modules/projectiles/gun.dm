@@ -2042,6 +2042,10 @@ not all weapons use normal magazines etc. load_into_chamber() itself is designed
 	burst_amount = value
 	SEND_SIGNAL(src, COMSIG_GUN_BURST_SHOTS_TO_FIRE_MODIFIED, burst_amount)
 
+/// Getter for burst_amount
+/obj/item/weapon/gun/proc/get_burst_amount()
+	return burst_amount
+
 /// adder for burst_amount
 /obj/item/weapon/gun/proc/modify_burst_amount(value, mob/user)
 	burst_amount += value

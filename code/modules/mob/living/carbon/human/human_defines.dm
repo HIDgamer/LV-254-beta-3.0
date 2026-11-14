@@ -99,6 +99,16 @@
 	var/revive_grace_period = 5 MINUTES //5 minutes
 	var/undefibbable = FALSE //whether the human is dead and past the defibbrillation period.
 
+	/// Decision making datum of an NPC piloted human, null for player piloted humans and zombies. See code/modules/mob/living/carbon/human/ai/.
+	var/datum/human_ai_brain/ai_brain
+	var/is_human_ai_controlled = FALSE
+	/// Set once at attach time, a body that started AI driven returns to AI when its player pilot leaves
+	var/was_human_ai_spawned = FALSE
+	/// What the brain was like when it died, so a revived body takes its AI back. Null while a brain is attached or when the body never had one
+	var/list/human_ai_memory
+	/// World time until which the hive AI leaves this ambient NPC alone
+	var/ai_grace_until = 0
+
 	/// Composed AI decision-making datum for an NPC-piloted zombie. Null for player-piloted
 	/// humans (including player-piloted zombies) and for humans that aren't zombies at all.
 	/// See code/modules/mob/living/carbon/human/zombie_ai/.

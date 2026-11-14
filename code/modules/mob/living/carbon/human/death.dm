@@ -61,6 +61,9 @@
 		disable_special_items()
 		disable_headsets() //Disable radios for dead people to reduce load
 
+	if(ai_brain)
+		detach_human_ai(src, HAI_STOP_DEAD)
+
 	if(pulledby && isxeno(pulledby)) // Xenos lose grab on dead humans
 		pulledby.stop_pulling()
 

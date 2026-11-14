@@ -22,6 +22,8 @@ SUBSYSTEM_DEF(lag_switch)
 			return "Talk sounds"
 		if(DISABLE_LANGCHAT)
 			return "Chat text over speakers"
+		if(SIMPLIFY_HUMAN_AI)
+			return "Simplified human AI"
 
 /datum/controller/subsystem/lag_switch/proc/set_measure(measure, state)
 	if(measure < 1 || measure > MEASURES_AMOUNT || !!measures[measure] == !!state)

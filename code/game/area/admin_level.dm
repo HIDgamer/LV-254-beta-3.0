@@ -168,6 +168,7 @@
 
 /area/misc/testroom
 	requires_power = FALSE
+	static_lighting = FALSE
 	name = "Test Room"
 
 /area/misc/tutorial

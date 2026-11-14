@@ -1,5 +1,18 @@
 GLOBAL_VAR_INIT(game_year, 2182)
 
+/// Set once the first native pathfinding call either succeeds or fails, so a missing library is only probed once
+GLOBAL_VAR_INIT(__xeno_pathfind_checked, FALSE)
+/// Whether the native pathfinding library is present and callable on this host
+GLOBAL_VAR_INIT(__xeno_pathfind_available, FALSE)
+/// Set once the first persistent-grid call either succeeds or fails
+GLOBAL_VAR_INIT(__xeno_pathfind_persistent_checked, FALSE)
+/// Whether the persistent-grid entry points are present and callable on this host
+GLOBAL_VAR_INIT(__xeno_pathfind_persistent_available, FALSE)
+/// Set once the capabilities probe has run
+GLOBAL_VAR_INIT(__xeno_pathfind_profiles_checked, FALSE)
+/// Whether the loaded library understands route profiles, secure doors and the danger layer
+GLOBAL_VAR_INIT(__xeno_pathfind_profiles_available, FALSE)
+
 GLOBAL_VAR_INIT(ooc_allowed, TRUE)
 GLOBAL_VAR_INIT(looc_allowed, TRUE)
 GLOBAL_VAR_INIT(dsay_allowed, TRUE)

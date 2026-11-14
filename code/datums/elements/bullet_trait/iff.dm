@@ -53,8 +53,8 @@
 		iff_group = user.get_id_faction_group()
 		LAZYSET(iff_group_cache, user, iff_group)
 		// Remove them from the cache if they are deleted
-		RegisterSignal(user, COMSIG_HUMAN_EQUIPPED_ITEM, PROC_REF(handle_id_equip))
-		RegisterSignal(user, COMSIG_PARENT_QDELETING, PROC_REF(reset_iff_group_cache))
+		RegisterSignal(user, COMSIG_HUMAN_EQUIPPED_ITEM, PROC_REF(handle_id_equip), TRUE)
+		RegisterSignal(user, COMSIG_PARENT_QDELETING, PROC_REF(reset_iff_group_cache), TRUE)
 
 	return iff_group
 

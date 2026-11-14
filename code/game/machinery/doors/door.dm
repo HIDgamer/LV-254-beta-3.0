@@ -17,6 +17,8 @@
 	var/width = 1
 
 	var/secondsElectrified = 0
+	/// Who last tried the door, told to the traps rigged to it
+	var/mob/last_opener
 	var/visible = TRUE
 	var/panel_open = FALSE
 	var/operating = DOOR_OPERATING_IDLE
@@ -124,6 +126,7 @@
 	if(operating)
 		return
 	add_fingerprint(user)
+	last_opener = user
 	if(!requiresID())
 		user = null
 	if(density)
@@ -144,6 +147,7 @@
 		return
 
 	add_fingerprint(user)
+	last_opener = user
 	if(operating)
 		return
 	if(!Adjacent(user) || !requiresID())
@@ -169,8 +173,10 @@
 	if(prob(40/severity))
 		if(secondsElectrified == 0)
 			secondsElectrified = -1
+			sync_pathfinding()
 			spawn(30 SECONDS)
 				secondsElectrified = 0
+				sync_pathfinding()
 
 /obj/structure/machinery/door/ex_act(severity)
 	if(explo_proof)
@@ -252,6 +258,8 @@
 	SSxeno_pathfinding?.push_delta(get_turf(src)) // Keeps the xeno AI's native walkability grid in sync with door state - doors are objs, so ChangeTurf()'s own hook never sees them.
 
 	operating = DOOR_OPERATING_IDLE
+	SEND_SIGNAL(src, COMSIG_DOOR_OPENED, last_opener)
+	last_opener = null
 	if(autoclose)
 		addtimer(CALLBACK(src, PROC_REF(autoclose)), normalspeed ? 15 SECONDS + openspeed : 5 DECISECONDS, TIMER_UNIQUE|TIMER_OVERRIDE|TIMER_NO_HASH_WAIT)
 
@@ -294,6 +302,13 @@
 		if(length(filler_turfs))
 			change_filler_opacity(opacity)
 	operating = DOOR_OPERATING_IDLE
+
+/// Whether the native grid prices this closed door as a last resort for humans
+/obj/structure/machinery/door/proc/path_secure()
+	return secondsElectrified != 0
+
+/obj/structure/machinery/door/proc/sync_pathfinding()
+	SSxeno_pathfinding?.push_delta(get_turf(src))
 
 /obj/structure/machinery/door/proc/requiresID()
 	return !external_activation

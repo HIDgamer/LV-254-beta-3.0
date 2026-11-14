@@ -1174,11 +1174,8 @@
 				admin_datum.owner.free_for_ghosts(H)
 
 			arm_equipment(H, job_name, TRUE, FALSE)
-			// "AI" is the one spawn_as value with no equivalent for a real job/gear human yet -
-			// human AI doesn't exist, so it's a no-op there (see SPAWN_MODES_HUMAN's description
-			// in the tgui frontend).
-			if(is_zombie_entry && spawn_as == "ai")
-				if(!attach_zombie_ai(H))
+			if(spawn_as == "ai")
+				if(is_zombie_entry ? !attach_zombie_ai(H) : !attach_human_ai(H, params["personality"] || "neutral"))
 					ai_attach_failures++
 			humans += H
 
@@ -1189,7 +1186,7 @@
 		return
 
 	if(ai_attach_failures)
-		to_chat(user, SPAN_WARNING("[ai_attach_failures] zombie\s spawned without AI control - the population cap (GLOB.ai_zombie_max_pop=[GLOB.ai_zombie_max_pop]) was reached."))
+		to_chat(user, SPAN_WARNING("[ai_attach_failures] human\s spawned without AI control - a population cap was reached (zombies [GLOB.ai_zombie_max_pop], humans [SShuman_ai.max_total])."))
 
 	if(spawn_as == "ert")
 		var/datum/emergency_call/custom/em_call = new()

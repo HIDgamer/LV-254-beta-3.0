@@ -165,7 +165,8 @@ GLOBAL_LIST_INIT(admin_verbs_spawn, list(
 	/client/proc/create_humans,
 	/client/proc/create_xenos,
 	/client/proc/hive_status,
-	/client/proc/xeno_command_console
+	/client/proc/npc_command_panel,
+	/client/proc/assign_vehicle_faction,
 ))
 
 GLOBAL_LIST_INIT(admin_verbs_server, list(
@@ -240,6 +241,9 @@ GLOBAL_LIST_INIT(debug_verbs, list(
 	/client/proc/view_power_update_stats_machines,
 	/client/proc/toggle_power_update_profiling,
 	/client/proc/debug_attach_zombie_ai,
+	/client/proc/debug_attach_human_ai,
+	/client/proc/debug_view_human_ai,
+	/client/proc/debug_set_human_ai_hostility,
 ))
 
 GLOBAL_LIST_INIT(admin_verbs_possess, list(

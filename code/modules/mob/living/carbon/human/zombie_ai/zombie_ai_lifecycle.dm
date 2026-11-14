@@ -36,6 +36,8 @@ GLOBAL_VAR_INIT(ai_zombie_max_pop, 40)
 		return FALSE
 	if(length(GLOB.ai_zombie_list) >= GLOB.ai_zombie_max_pop)
 		return FALSE
+	if(zombie.ai_brain)
+		detach_human_ai(zombie, HAI_STOP_SPECIES)
 
 	zombie.zombie_ai_controller = new /datum/zombie_ai_controller(zombie)
 	if(anchor_override)

@@ -23,10 +23,10 @@ import {
 } from './helpers';
 import {
   buildSquadObservable,
-  groupSorter,
+  type groupSorter,
   type Observable,
   type OrbitData,
-  splitter,
+  type splitter,
 } from './types';
 
 type search = {
@@ -64,7 +64,13 @@ export const Orbit = () => {
 /** Controls filtering out the list of observables via search */
 const ObservableSearch = () => {
   const { act, data } = useBackend<OrbitData>();
-  const { humans = [], marines = [], survivors = [], xenos = [] } = data;
+  const {
+    ai = [],
+    humans = [],
+    marines = [],
+    survivors = [],
+    xenos = [],
+  } = data;
 
   let auto_observe = data.auto_observe;
 
@@ -75,6 +81,7 @@ const ObservableSearch = () => {
       marines,
       survivors,
       xenos,
+      ai,
     ]);
 
     if (mostRelevant !== undefined) {
@@ -131,9 +138,7 @@ const xenoSplitter = (members: Array<Observable>) => {
   const primeHive: Array<Observable> = [];
   const corruptedHive: Array<Observable> = [];
   const forsakenHive: Array<Observable> = [];
-  const mutatedHive: Array<Observable> = [];
   const otherHives: Array<Observable> = [];
-  const yautjaHive: Array<Observable> = [];
 
   members.forEach((x) => {
     if (x.area_name?.includes('Thunderdome')) {
@@ -144,10 +149,6 @@ const xenoSplitter = (members: Array<Observable>) => {
       corruptedHive.push(x);
     } else if (x.hivenumber?.includes('forsaken')) {
       forsakenHive.push(x);
-    } else if (x.hivenumber?.includes('mutated')) {
-      mutatedHive.push(x);
-    } else if (x.hivenumber?.includes('yautja')) {
-      yautjaHive.push(x);
     } else {
       otherHives.push(x);
     }
@@ -157,9 +158,7 @@ const xenoSplitter = (members: Array<Observable>) => {
     buildSquadObservable('Prime', 'xeno', primeHive),
     buildSquadObservable('Corrupted', 'green', corruptedHive),
     buildSquadObservable('Forsaken', 'grey', forsakenHive),
-    buildSquadObservable('Mutated', 'pink', mutatedHive),
     buildSquadObservable('Other', 'light-grey', otherHives),
-    buildSquadObservable('Yautja', 'green', yautjaHive),
   ];
   return squads;
 };
@@ -175,7 +174,6 @@ const marineSplitter = (members: Array<Observable>) => {
   const FORECONSquad: Array<Observable> = [];
   const SOFSquad: Array<Observable> = [];
   const other: Array<Observable> = [];
-  const provost: Array<Observable> = [];
 
   members.forEach((x) => {
     if (x.job?.includes('Alpha')) {
@@ -196,8 +194,6 @@ const marineSplitter = (members: Array<Observable>) => {
       FORECONSquad.push(x);
     } else if (x.job?.includes('SOF')) {
       SOFSquad.push(x);
-    } else if (x.job?.includes('Provost')) {
-      provost.push(x);
     } else {
       other.push(x);
     }
@@ -214,9 +210,25 @@ const marineSplitter = (members: Array<Observable>) => {
     buildSquadObservable('FORECON', 'green', FORECONSquad),
     buildSquadObservable('SOF', 'red', SOFSquad),
     buildSquadObservable('Other', 'grey', other),
-    buildSquadObservable('Provost', 'red', provost),
   ];
   return squads;
+};
+
+/** Splits the AI by what plays it, humans further by the side they are on */
+const aiSplitter = (members: Array<Observable>) => {
+  const groups = new Map<string, Array<Observable>>();
+
+  members.forEach((x) => {
+    const title =
+      x.ai_kind === 'Human'
+        ? `Human - ${capitalizeFirst(x.faction ?? 'unknown')}`
+        : (x.ai_kind ?? 'Other');
+    groups.set(title, [...(groups.get(title) ?? []), x]);
+  });
+
+  return Array.from(groups.keys())
+    .sort()
+    .map((title) => buildSquadObservable(title, 'olive', groups.get(title)!));
 };
 
 const rankList = [
@@ -343,6 +355,7 @@ const uppSort = (a: Observable, b: Observable) => {
 
 const weyyuSplitter = (members: Array<Observable>) => {
   const whiteout: Array<Observable> = [];
+  const wycommando: Array<Observable> = [];
   const pmc: Array<Observable> = [];
   const goons: Array<Observable> = [];
   const other: Array<Observable> = [];
@@ -352,6 +365,8 @@ const weyyuSplitter = (members: Array<Observable>) => {
       whiteout.push(x);
     } else if (x.job?.includes('Death Squad')) {
       whiteout.push(x);
+    } else if (x.job?.includes('W-Y Commando')) {
+      wycommando.push(x);
     } else if (x.job?.includes('PMC')) {
       pmc.push(x);
     } else if (x.job?.includes('Corporate Security')) {
@@ -365,6 +380,7 @@ const weyyuSplitter = (members: Array<Observable>) => {
     buildSquadObservable('PMCs', 'white', pmc),
     buildSquadObservable('Goons', 'orange', goons),
     buildSquadObservable('Corporate', 'white', other),
+    buildSquadObservable('W-Y Commando', 'white', wycommando),
     buildSquadObservable('Whiteout', 'red', whiteout),
   ];
   return squads;
@@ -378,6 +394,7 @@ const weyyuSplitter = (members: Array<Observable>) => {
 const ObservableContent = () => {
   const { data } = useBackend<OrbitData>();
   const {
+    ai = [],
     humans = [],
     responders = [],
     marines = [],
@@ -408,6 +425,12 @@ const ObservableContent = () => {
 
   return (
     <Stack vertical>
+      <GroupedObservable
+        color="olive"
+        section={ai}
+        title="AI"
+        splitter={aiSplitter}
+      />
       <GroupedObservable
         color="blue"
         section={marines}
@@ -445,12 +468,7 @@ const ObservableContent = () => {
         section={clf}
         title="Colonial Liberation Front"
       />
-      <GroupedObservable
-        color="white"
-        section={wy}
-        title="Weyland Yutani"
-        splitter={weyyuSplitter}
-      />
+      <ObservableSection color="white" section={wy} title="Weyland Yutani" />
       <ObservableSection
         color="red"
         section={twe}
@@ -609,6 +627,7 @@ const ObservableTooltip = (props: { readonly item: Observable }) => {
       caste,
       health,
       job,
+      role,
       full_name,
       icon,
       background_color,
@@ -648,6 +667,7 @@ const ObservableTooltip = (props: { readonly item: Observable }) => {
           {job}
         </LabeledList.Item>
       )}
+      {!!role && <LabeledList.Item label="AI role">{role}</LabeledList.Item>}
       {displayHealth && (
         <LabeledList.Item label="Health">{healthText}</LabeledList.Item>
       )}

@@ -5,7 +5,9 @@
 #define SPATIAL_GRID_TRACK_CLIENT (1<<0)
 /// The mob is an AI-piloted hostile with no client
 #define SPATIAL_GRID_TRACK_NPC (1<<1)
-#define SPATIAL_GRID_TRACK_ALL (SPATIAL_GRID_TRACK_CLIENT|SPATIAL_GRID_TRACK_NPC)
+/// The mob is an AI-piloted human, kept apart from the hostile NPC list
+#define SPATIAL_GRID_TRACK_HUMAN_AI (1<<2)
+#define SPATIAL_GRID_TRACK_ALL (SPATIAL_GRID_TRACK_CLIENT|SPATIAL_GRID_TRACK_NPC|SPATIAL_GRID_TRACK_HUMAN_AI)
 
 /// 1-based cell column or row holding a tile coordinate
 #define SPATIAL_GRID_CELL_INDEX(coord) (floor(((coord) - 1) / SPATIAL_GRID_CELLSIZE) + 1)

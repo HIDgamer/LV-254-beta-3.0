@@ -688,7 +688,7 @@
 		pick(playsound(src.loc, 'sound/weapons/smartgun_move.mp3', 55, 1), playsound(src.loc, 'sound/weapons/smartgun_move2.mp3', 55, 1))
 
 	. = ..()
-	user.client.images |= autoshot_image
+	user.client?.images |= autoshot_image
 
 /obj/item/weapon/gun/smartgun/unwield(mob/user)
 	. = ..()

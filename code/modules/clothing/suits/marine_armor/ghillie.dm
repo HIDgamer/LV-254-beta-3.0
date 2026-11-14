@@ -46,9 +46,14 @@
 	if(!usr || usr.is_mob_incapacitated(TRUE))
 		return
 
-	if(!ishuman(usr) || hide_in_progress || !can_camo)
+	if(!ishuman(usr))
 		return
-	var/mob/living/carbon/human/H = usr
+	prepare_position(usr)
+
+/// Rigs the suit up for its wearer, the verb does this for whoever uses it and a unit run by the AI does it for itself
+/obj/item/clothing/suit/storage/marine/ghillie/proc/prepare_position(mob/living/carbon/human/H)
+	if(!istype(H) || H.is_mob_incapacitated(TRUE) || hide_in_progress || !can_camo)
+		return
 	if(H.wear_suit != src)
 		to_chat(H, SPAN_WARNING("You must be wearing the ghillie suit to activate it!"))
 		return

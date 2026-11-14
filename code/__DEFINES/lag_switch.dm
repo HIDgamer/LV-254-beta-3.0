@@ -6,4 +6,7 @@
 /// Stops the chat text that floats over a speaker
 #define DISABLE_LANGCHAT 3
 
-#define MEASURES_AMOUNT 3
+/// Halves how often NPC human brains think
+#define SIMPLIFY_HUMAN_AI 4
+
+#define MEASURES_AMOUNT 4

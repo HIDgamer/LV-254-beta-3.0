@@ -124,6 +124,9 @@
 	template.y = turf_source.y
 	template.z = turf_source.z
 
+	if(length(GLOB.ai_human_list) && vol >= HAI_NOISE_MIN_VOLUME)
+		human_ai_noise(turf_source, vol, sound_range, source, template.file)
+
 	if(!SSinterior)
 		SSsound.queue(template)
 		return template.channel

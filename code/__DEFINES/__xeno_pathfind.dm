@@ -17,11 +17,6 @@
 // below and degrades to the bounded local solver, same as if native
 // pathfinding were absent entirely).
 
-/// Set once the first call either succeeds or fails, so a missing library is only probed once instead of retried every AI tick.
-/var/__xeno_pathfind_checked = FALSE
-/// Whether the native library is actually present and callable on this host.
-/var/__xeno_pathfind_available = FALSE
-
 /**
  * Calls the native A* solver. grid_desc is
  * "width,height,start_x,start_y,end_x,end_y" (grid-local coordinates);
@@ -41,7 +36,7 @@
 	// blacklisting a perfectly good library for the rest of the round.
 	if(!grid_desc || !blocked_map)
 		return ""
-	if(__xeno_pathfind_checked && !__xeno_pathfind_available)
+	if(GLOB.__xeno_pathfind_checked && !GLOB.__xeno_pathfind_available)
 		return ""
 	. = ""
 	try
@@ -51,19 +46,19 @@
 		// actually working" signal as a thrown exception.
 		if(!istext(.))
 			. = ""
-		__xeno_pathfind_available = TRUE
+		GLOB.__xeno_pathfind_available = TRUE
 	catch(var/exception/error)
 		// "Native grid unavailable" used to be the whole story in the log -
 		// the actual DM exception (wrong architecture, missing symbol, lib
 		// not found at this working directory, ABI mismatch) was thrown away
 		// right here. Logged once, on the very first failure only - this proc
-		// is only ever reached before __xeno_pathfind_checked latches, so
+		// is only ever reached before GLOB.__xeno_pathfind_checked latches, so
 		// there's no risk of spamming this every AI tick for the rest of the
 		// round.
 		. = ""
-		__xeno_pathfind_available = FALSE
+		GLOB.__xeno_pathfind_available = FALSE
 		log_debug("SSxeno_pathfinding: rust_xeno_pathfind() native call failed - [error]")
-	__xeno_pathfind_checked = TRUE
+	GLOB.__xeno_pathfind_checked = TRUE
 
 // ---------------------------------------------------------------------------
 // Persistent full-map grid entry points (see SSxeno_pathfinding,
@@ -75,14 +70,9 @@
 // availability flag below, and degrades to the bounded local solver.
 // ---------------------------------------------------------------------------
 
-/// Set once the first persistent-grid call either succeeds or fails - separate from __xeno_pathfind_available since an older DLL can support the bounded solver but not these.
-/var/__xeno_pathfind_persistent_checked = FALSE
-/// Whether the persistent-grid entry points are present and callable on this host.
-/var/__xeno_pathfind_persistent_available = FALSE
-
 /// Shared call/harden/blacklist tail for every persistent-grid entry point.
 /proc/__xeno_pathfind_persistent_call(func_name, arg1, arg2)
-	if(__xeno_pathfind_persistent_checked && !__xeno_pathfind_persistent_available)
+	if(GLOB.__xeno_pathfind_persistent_checked && !GLOB.__xeno_pathfind_persistent_available)
 		return ""
 	. = ""
 	try
@@ -92,18 +82,18 @@
 			. = RUSTG_CALL(RUST_G, func_name)(arg1, arg2)
 		if(!istext(.))
 			. = ""
-		__xeno_pathfind_persistent_available = TRUE
+		GLOB.__xeno_pathfind_persistent_available = TRUE
 	catch(var/exception/error)
 		// Same reasoning as rust_xeno_pathfind()'s catch above - this is the
 		// one that was actually silently failing in production (missing
 		// libxeno_pathfind.so on a Linux host), and "failed to load z-level
 		// N" with no further detail was the entire diagnostic trail left
 		// behind. Logged once per round (first call only, before
-		// __xeno_pathfind_persistent_checked latches).
+		// GLOB.__xeno_pathfind_persistent_checked latches).
 		. = ""
-		__xeno_pathfind_persistent_available = FALSE
+		GLOB.__xeno_pathfind_persistent_available = FALSE
 		log_debug("SSxeno_pathfinding: native call to [func_name] failed - [error]")
-	__xeno_pathfind_persistent_checked = TRUE
+	GLOB.__xeno_pathfind_persistent_checked = TRUE
 
 /// Bulk-loads one z-level's walkability. z_desc is "z,width,height"; packed_cells is width*height chars of '0' open / '1' blocked / '2' closed door / '3' breakable obstacle / '4' ON_BORDER structure, row-major from tile (1,1). Returns "ok" or "".
 /proc/rust_xeno_pathfind_init_z(z_desc, packed_cells)
@@ -118,10 +108,47 @@
 	return __xeno_pathfind_persistent_call("xeno_pathfind_update", deltas)
 
 /// Solves a full-map route. route_desc is "z,sx,sy,ex,ey" (world 1-based coords). Returns ';'-separated "x,y" world coords start-to-end inclusive, or "" (no route / z unloaded / library unavailable - callers always fall back).
-/proc/rust_xeno_pathfind_route(route_desc)
+/proc/rust_xeno_pathfind_route(route_desc, profile)
 	if(!route_desc)
 		return ""
+	if(!isnull(profile))
+		route_desc = "[route_desc],[profile]"
 	return __xeno_pathfind_persistent_call("xeno_pathfind_route", route_desc)
+
+/// Route cost profile ids, the optional second argument of rust_xeno_pathfind_route(). Only pass a profile after xeno_pathfind_profiles_available() is TRUE - an older library treats a profile field as a malformed route and answers "".
+#define XENO_PATHFIND_PROFILE_XENO 0
+#define XENO_PATHFIND_PROFILE_HUMAN 1
+
+/// Adds contact danger at "z,x,y,amount,radius" (radius 1 to 8) - only the human profile reads this layer.
+/proc/rust_xeno_pathfind_danger(danger_desc)
+	if(!danger_desc)
+		return ""
+	return __xeno_pathfind_persistent_call("xeno_pathfind_danger", danger_desc)
+
+/// Halves every danger value on every loaded z-level, independent of the threat decay.
+/proc/rust_xeno_pathfind_decay_danger()
+	return __xeno_pathfind_persistent_call("xeno_pathfind_decay_danger", "")
+
+/// What the loaded library supports, e.g. "profiles=xeno,human;cells=0-5;danger=1;diagonals=human". "" on a library that predates it.
+/proc/rust_xeno_pathfind_capabilities()
+	. = ""
+	if(GLOB.__xeno_pathfind_persistent_checked && !GLOB.__xeno_pathfind_persistent_available)
+		return
+	try
+		. = RUSTG_CALL(RUST_G, "xeno_pathfind_capabilities")("")
+		if(!istext(.))
+			. = ""
+	catch
+		. = ""
+
+/// TRUE if the loaded native library can solve human-profile routes. Probed once, then cached.
+/proc/xeno_pathfind_profiles_available()
+	if(GLOB.__xeno_pathfind_profiles_checked)
+		return GLOB.__xeno_pathfind_profiles_available
+	var/capabilities = rust_xeno_pathfind_capabilities()
+	GLOB.__xeno_pathfind_profiles_available = !!findtext(capabilities, "profiles=xeno,human")
+	GLOB.__xeno_pathfind_profiles_checked = TRUE
+	return GLOB.__xeno_pathfind_profiles_available
 
 /// Adds decaying threat cost at "z,x,y,amount" with radius-2 falloff - routes bend away from hot cells until xeno_pathfind_decay() cools them.
 /proc/rust_xeno_pathfind_threat(threat_desc)
