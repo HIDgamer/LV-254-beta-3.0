@@ -156,6 +156,15 @@ export function Input(props: Props) {
     }, 1);
   }, []);
 
+  /** Syncs the field with a changed value prop unless the user is typing in it */
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input || document.activeElement === input) return;
+
+    const newValue = toInputValue(value);
+    if (input.value !== newValue) input.value = newValue;
+  }, [value]);
+
   return (
     <Box
       className={classes([
