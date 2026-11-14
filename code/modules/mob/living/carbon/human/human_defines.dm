@@ -211,6 +211,12 @@
 	/// Timer to prevent spreading yellow dancer tags from same person.
 	var/last_target_spread_time = 0
 
+	/// Which actions of someone held at gunpoint make this human open fire
+	var/gunpoint_triggers = GUNPOINT_TRIGGER_MOVE
+
+	/// Whether the words being spoken right now go out over a radio
+	var/speaking_over_radio = FALSE
+
 	// water overlays config
 	water_config = /datum/water_overlay_config/human
 

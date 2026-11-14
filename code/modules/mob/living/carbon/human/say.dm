@@ -176,7 +176,9 @@
 			italics = 1
 			message_range = 2
 
+		speaking_over_radio = length(used_radios) > 0
 		..(message, speaking, verb, alt_name, italics, message_range, speech_sound, sound_vol, 0, message_mode) //ohgod we should really be passing a datum here.
+		speaking_over_radio = FALSE
 
 		INVOKE_ASYNC(src, TYPE_PROC_REF(/mob/living/carbon/human, say_to_radios), used_radios, message, message_mode, verb, speaking)
 
