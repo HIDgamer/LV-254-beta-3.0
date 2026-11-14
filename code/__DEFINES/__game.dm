@@ -491,24 +491,6 @@
 /// Window skin types
 #define TOGGLE_WINDOW_SKIN 1
 
-// Quadtree values
-
-/// Max amount of player coordinates in a quadtree cell
-#define QUADTREE_CAPACITY 12
-/// Minimum X width up to which we keep dividing the tree (meaning cells can be half that)
-#define QUADTREE_BOUNDARY_MINIMUM_WIDTH 12
-/// Minimum Y height up to which we keep dividing the tree (meaning cells can be half that)
-#define QUADTREE_BOUNDARY_MINIMUM_HEIGHT 12
-
-
-#define QTREE_EXCLUDE_OBSERVER 1
-
-/// Return mob list instead of client list.
-#define QTREE_SCAN_MOBS 2
-
-/// Also include AI-piloted hostile mobs (no client) fed in alongside players. Opt-in per caller.
-#define QTREE_INCLUDE_NPC_HOSTILES 4
-
 // Ship section bounds
 
 #define UPPER_DECK "Upper deck"

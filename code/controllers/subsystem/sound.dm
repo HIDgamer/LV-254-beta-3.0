@@ -40,7 +40,7 @@ SUBSYSTEM_DEF(sound)
 		run_queue.Remove(run_template) // Everyone that had to get this sound got it. Bye, template
 		run_hearers = null // Reset so we know next one is new
 
-/// Records where every listening client is right now, hearers are found from this instead of the stale quadtree
+/// Records where every listening client is right now
 /datum/controller/subsystem/sound/proc/snapshot_listeners()
 	listener_clients = list()
 	listener_x = list()

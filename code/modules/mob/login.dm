@@ -15,6 +15,7 @@
 		client.player_data.playtime_start = world.time
 
 	GLOB.player_list |= src
+	SSspatial_grid?.track(src, SPATIAL_GRID_TRACK_CLIENT)
 
 	update_Login_details()
 

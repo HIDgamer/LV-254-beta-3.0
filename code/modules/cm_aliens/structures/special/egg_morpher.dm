@@ -124,7 +124,7 @@
 	if(!range_bounds)
 		range_bounds = SQUARE(x, y, EGGMORPG_RANGE)
 
-	var/list/targets = SSquadtree.players_in_range(range_bounds, z, QTREE_SCAN_MOBS | QTREE_EXCLUDE_OBSERVER)
+	var/list/targets = SSspatial_grid.players_in_range(range_bounds, z, SPATIAL_GRID_SCAN_MOBS | SPATIAL_GRID_EXCLUDE_OBSERVER)
 	if(isnull(targets) || !length(targets))
 		return
 

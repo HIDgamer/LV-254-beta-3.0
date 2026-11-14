@@ -100,6 +100,7 @@ GLOBAL_LIST_INIT(ai_evolve_priority_castes, list(
 
 	GLOB.ai_xeno_list += xeno
 	GLOB.ai_xeno_active_count++
+	SSspatial_grid?.track(xeno, SPATIAL_GRID_TRACK_NPC)
 
 	xeno.ai_controller.start()
 	xeno.free_for_ghosts(TRUE) // Lets a ghost claim the mob mid-fight at any time, same mechanism as an unclaimed King hatch.
@@ -127,6 +128,7 @@ GLOBAL_LIST_INIT(ai_evolve_priority_castes, list(
 
 	GLOB.ai_xeno_list -= xeno
 	GLOB.ai_xeno_active_count = max(0, GLOB.ai_xeno_active_count - 1)
+	SSspatial_grid?.untrack(xeno, SPATIAL_GRID_TRACK_NPC)
 
 	return TRUE
 

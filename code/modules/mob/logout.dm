@@ -4,6 +4,7 @@
 	if(interactee)
 		unset_interaction()
 	GLOB.player_list -= src
+	SSspatial_grid?.untrack(src, SPATIAL_GRID_TRACK_CLIENT)
 
 	if(s_active)
 		s_active.storage_close(src)

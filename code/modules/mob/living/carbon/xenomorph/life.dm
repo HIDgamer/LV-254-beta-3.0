@@ -40,17 +40,12 @@
 		if(client)
 			handle_regular_hud_updates()
 
-/**
- * Cheap presence check reusing SSquadtree's already-maintained per-tick index -
- * no new scanning, just a bounded lookup against the existing snapshot. Used to
- * gate purely cosmetic Life() work for AI-piloted xenos (see above); deliberately
- * does not gate anything that affects actual gameplay state.
- */
+/// Whether any client is within radius tiles, used to skip cosmetic Life() work for AI-piloted xenos
 /mob/living/carbon/xenomorph/proc/has_nearby_watcher(radius = 10)
 	var/turf/my_turf = get_turf(src)
 	if(!my_turf)
 		return FALSE
-	return length(SSquadtree.players_in_range(SQUARE(my_turf.x, my_turf.y, radius), my_turf.z)) > 0
+	return length(SSspatial_grid.players_in_range(SQUARE(my_turf.x, my_turf.y, radius), my_turf.z, limit = 1)) > 0
 
 /mob/living/carbon/xenomorph/proc/update_progression()
 	if(isnull(hive))

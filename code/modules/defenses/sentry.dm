@@ -88,7 +88,7 @@ GLOBAL_LIST_EMPTY(sentry_turret_list)
 
 	if(!range_bounds)
 		set_range()
-	targets = SSquadtree.players_in_range(range_bounds, z, QTREE_SCAN_MOBS | QTREE_EXCLUDE_OBSERVER | QTREE_INCLUDE_NPC_HOSTILES)
+	targets = SSspatial_grid.players_in_range(range_bounds, z, SPATIAL_GRID_SCAN_MOBS | SPATIAL_GRID_EXCLUDE_OBSERVER | SPATIAL_GRID_INCLUDE_NPC_HOSTILES)
 	if(!targets)
 		return FALSE
 

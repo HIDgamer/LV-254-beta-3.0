@@ -285,7 +285,7 @@
 		STOP_PROCESSING(SSobj, src)
 		return
 
-	var/list/targets = SSquadtree.players_in_range(SQUARE(M.x, M.y, area_range), M.z, QTREE_SCAN_MOBS | QTREE_EXCLUDE_OBSERVER | QTREE_INCLUDE_NPC_HOSTILES)
+	var/list/targets = SSspatial_grid.players_in_range(SQUARE(M.x, M.y, area_range), M.z, SPATIAL_GRID_SCAN_MOBS | SPATIAL_GRID_EXCLUDE_OBSERVER | SPATIAL_GRID_INCLUDE_NPC_HOSTILES)
 	if(!targets)
 		return
 
