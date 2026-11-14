@@ -54,3 +54,24 @@
 	for(var/cooling in 1 to 12)
 		rust_xeno_pathfind_decay_danger()
 	TEST_ASSERT(findtext(route(1, 1, 11, 1, XENO_PATHFIND_PROFILE_HUMAN), ";6,1;"), "Decayed danger still bends the route")
+
+/// A z-level that appears after boot is read into the native grid when its template is synced, and routes on it work
+/datum/unit_test/native_pathfind_new_z
+
+/datum/unit_test/native_pathfind_new_z/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, this scenario needs it")
+	var/datum/space_level/level = SSmapping.add_new_zlevel("native grid sync test", list(), contain_turfs = FALSE)
+	var/new_z = level.z_value
+	TEST_ASSERT(!(new_z in SSxeno_pathfinding.loaded_z), "A z-level made after boot was already in the native grid")
+	for(var/turf/floor_turf as anything in block(1, 1, new_z, 30, 12, new_z))
+		floor_turf.ChangeTurf(/turf/open/floor)
+	SSxeno_pathfinding.sync_bounds(list(1, 1, new_z, 30, 12, new_z))
+	TEST_ASSERT(new_z in SSxeno_pathfinding.loaded_z, "A synced z-level was not read into the native grid")
+	var/route = rust_xeno_pathfind_route("[new_z],3,5,25,5")
+	TEST_ASSERT(length(route), "No route on a z-level that was synced after boot")
+	// A wall that appears later on a known level is picked up by syncing the stretch it stands on
+	var/turf/wall_turf = locate(14, 5, new_z)
+	wall_turf.ChangeTurf(/turf/closed/wall/almayer)
+	SSxeno_pathfinding.sync_bounds(list(14, 5, new_z, 14, 5, new_z))
+	var/detour = rust_xeno_pathfind_route("[new_z],3,5,25,5")
+	TEST_ASSERT(length(detour) && !findtext(detour, "14,5;") && !findtext(detour, ";14,5"), "The route still goes through a wall that was synced: [detour]")

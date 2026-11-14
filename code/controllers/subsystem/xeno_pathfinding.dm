@@ -24,12 +24,15 @@ SUBSYSTEM_DEF(xeno_pathfinding)
 	var/list/pending_deltas = list()
 	/// fire() counter driving the periodic threat decay (see Rust-side xeno_pathfind_decay()).
 	var/decay_counter = 0
+	/// The z-levels whose cells the native side holds, kept so a z-level that appears after boot (a map or template loaded mid-round) is told apart from one that was read at boot
+	var/list/loaded_z = list()
 
 /datum/controller/subsystem/xeno_pathfinding/Initialize()
 	// The DLL outlives world reboots (the Dream Daemon process doesn't
 	// restart between rounds) - wipe last round's grid/threat before
 	// rebuilding for this one.
 	rust_xeno_pathfind_clear()
+	loaded_z = list()
 
 	var/loaded_count = 0
 	for(var/z in 1 to world.maxz)
@@ -112,6 +115,8 @@ SUBSYSTEM_DEF(xeno_pathfinding)
 	// from "call never actually reached the library" at a glance.
 	if(result != "ok")
 		log_debug("SSxeno_pathfinding: xeno_pathfind_init_z(z=[z]) returned [result ? "\"[result]\"" : "null/empty"] instead of \"ok\" - cells=[length(cells)], expected=[world.maxx * world.maxy]")
+	if(result == "ok")
+		loaded_z |= z
 	return result == "ok"
 
 /**
@@ -208,3 +213,23 @@ SUBSYSTEM_DEF(xeno_pathfinding)
 		decay_counter = 0
 		rust_xeno_pathfind_decay()
 		refresh_turret_threat()
+
+/**
+ * Brings the native grid up to date with a template that was loaded after the subsystem read the map: a z-level the grid has
+ * never held is read whole, a stretch of one it has is sent cell by cell. Maps loaded at boot never need this, only the ones
+ * an admin or a scenario loads mid-round, whose turfs and structures never pass through the change hooks.
+ */
+/datum/controller/subsystem/xeno_pathfinding/proc/sync_bounds(list/bounds)
+	if(!initialized || !bounds)
+		return
+	for(var/z in bounds[MAP_MINZ] to bounds[MAP_MAXZ])
+		if(!(z in loaded_z))
+			if(load_z_level(z))
+				available = GLOB.__xeno_pathfind_persistent_available
+			continue
+		if(!available)
+			continue
+		for(var/turf/changed as anything in block(bounds[MAP_MINX], bounds[MAP_MINY], z, bounds[MAP_MAXX], bounds[MAP_MAXY], z))
+			push_delta(changed)
+			CHECK_TICK
+		flush_deltas()

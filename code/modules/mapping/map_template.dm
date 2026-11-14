@@ -77,6 +77,9 @@
 			continue
 		unlit.static_lighting_build_overlay()
 
+	// The native pathfinding grid was read at boot, a template loaded now has to be handed to it
+	SSxeno_pathfinding?.sync_bounds(bounds)
+
 /datum/map_template/proc/load_new_z(secret = FALSE)
 	var/x = floor((world.maxx - width) * 0.5) + 1
 	var/y = floor((world.maxy - height) * 0.5) + 1
