@@ -344,6 +344,11 @@ export const SettingsSetup = () => {
                       onLabel="Yes"
                       offLabel="No"
                     />
+                    <LabeledList.Item label="Volume Mixer">
+                      <Button icon="sliders" onClick={() => act('volume_mixer')}>
+                        Open
+                      </Button>
+                    </LabeledList.Item>
                     <LabeledList.Item label="Default Ghost Night Vision">
                       <Button onClick={() => act('ghost_vision_pref')}>
                         {data.ghost_vision_pref}
