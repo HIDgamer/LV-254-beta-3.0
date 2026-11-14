@@ -14,6 +14,8 @@
 	var/key = ""
 	/// This will also call the emote.
 	var/key_third_person = ""
+	/// User-friendly name for the emote, defaults to the key.
+	var/name = ""
 	/// Message displayed when emote is used.
 	var/message = ""
 	///Message displayed for audible emotes if someone's deaf. Only use this if key_third_person can't be acceptably used.
@@ -47,6 +49,8 @@
 	var/can_message_change = FALSE
 	/// How long is the cooldown on the audio of the emote, if it has one?
 	var/audio_cooldown = 2 SECONDS
+	/// Does this emote's sound share the per-mob 20 second audio cooldown with other emote sounds?
+	var/global_audio_cooldown = TRUE
 	/// What message to make the user send with the emote?
 	var/say_message
 	/// What volume should the sound be played at?
@@ -67,6 +71,9 @@
 
 	mob_type_blacklist_typecache = typecacheof(mob_type_blacklist_typecache)
 	mob_type_ignore_stat_typecache = typecacheof(mob_type_ignore_stat_typecache)
+
+	if(!name)
+		name = key
 
 /**
  * Handles the modifications and execution of emotes.
@@ -97,11 +104,12 @@
 		to_chat(user, SPAN_NOTICE("You just did an emote. Wait awhile."))
 		return
 	else if(tmp_sound && should_play_sound(user, intentional))
-		if(TIMER_COOLDOWN_CHECK(user, COOLDOWN_MOB_AUDIO))
+		if(global_audio_cooldown && TIMER_COOLDOWN_CHECK(user, COOLDOWN_MOB_AUDIO))
 			return
 		if(!HAS_TRAIT(user, TRAIT_EMOTE_CD_EXEMPT))
 			TIMER_COOLDOWN_START(user, type, audio_cooldown)
-			S_TIMER_COOLDOWN_START(user, COOLDOWN_MOB_AUDIO, 20 SECONDS) // We won't ever want to stop this except during qdel
+			if(global_audio_cooldown)
+				S_TIMER_COOLDOWN_START(user, COOLDOWN_MOB_AUDIO, 20 SECONDS) // We won't ever want to stop this except during qdel
 		playsound(user, tmp_sound, volume, vary, vol_cat = VOLUME_VOICE)
 
 	log_emote("[user.name]/[user.key] : [msg ? msg : key]")

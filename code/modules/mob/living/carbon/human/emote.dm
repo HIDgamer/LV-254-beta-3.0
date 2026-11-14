@@ -71,6 +71,9 @@
 	key = "cry"
 	key_third_person = "cries"
 	message = "cries."
+	audio_cooldown = 5 SECONDS
+	global_audio_cooldown = FALSE
+	emote_type = EMOTE_AUDIBLE|EMOTE_VISIBLE
 
 /datum/emote/living/carbon/human/eyebrow
 	key = "eyebrow"
@@ -99,6 +102,16 @@
 	key = "gasp"
 	key_third_person = "gasps"
 	message = "gasps!"
+	audio_cooldown = 3 SECONDS
+	global_audio_cooldown = FALSE
+	emote_type = EMOTE_AUDIBLE|EMOTE_VISIBLE
+
+/datum/emote/living/carbon/human/gasp/get_sound(mob/living/user)
+	if(!ishumansynth_strict(user))
+		return
+	if(user.gender == MALE)
+		return get_sfx("male_gasp")
+	return get_sfx("female_gasp")
 
 /datum/emote/living/carbon/human/giggle
 	key = "giggle"
@@ -139,7 +152,17 @@
 	key = "laugh"
 	key_third_person = "laughs"
 	message = "laughs!"
+	audio_cooldown = 5 SECONDS
+	global_audio_cooldown = FALSE
+	vary = TRUE
 	emote_type = EMOTE_AUDIBLE|EMOTE_VISIBLE
+
+/datum/emote/living/carbon/human/laugh/get_sound(mob/living/user)
+	if(!ishumansynth_strict(user))
+		return
+	if(user.gender == MALE)
+		return get_sfx("male_laugh")
+	return get_sfx("female_laugh")
 
 /datum/emote/living/carbon/human/look
 	key = "look"
@@ -263,6 +286,40 @@
 
 	var/scream_message = pick("FUCK!!!", "AGH!!!", "ARGH!!!", "AAAA!!!", "HGH!!!", "NGHHH!!!", "NNHH!!!", "SHIT!!!")
 	user.langchat_speech(scream_message, group, GLOB.all_languages, skip_language_check = TRUE, animation_style = LANGCHAT_PANIC_POP, additional_styles = list("langchat_yell"))
+
+/datum/emote/living/carbon/human/slap
+	key = "slap"
+	key_third_person = "slaps"
+	hands_use_check = TRUE
+	cooldown = 3 SECONDS
+
+/datum/emote/living/carbon/human/slap/run_emote(mob/user, params, type_override, intentional)
+	. = ..()
+	if(!.)
+		return
+	var/obj/item/hand_item/slapper/slapper = new(user)
+	if(user.put_in_hands(slapper))
+		to_chat(user, SPAN_NOTICE("You ready your slapping hand."))
+	else
+		qdel(slapper)
+		to_chat(user, SPAN_WARNING("You're incapable of slapping in your current state."))
+
+/datum/emote/living/carbon/human/kiss
+	key = "kiss"
+	key_third_person = "kisses"
+	hands_use_check = TRUE
+	cooldown = 3 SECONDS
+
+/datum/emote/living/carbon/human/kiss/run_emote(mob/user, params, type_override, intentional)
+	. = ..()
+	if(!.)
+		return
+	var/obj/item/hand_item/kisser/kisser = new(user)
+	if(user.put_in_hands(kisser))
+		to_chat(user, SPAN_NOTICE("You ready your kiss-blowing hand."))
+	else
+		qdel(kisser)
+		to_chat(user, SPAN_WARNING("You're incapable of blowing a kiss in your current state."))
 
 /datum/emote/living/carbon/human/shakehead
 	key = "shakehead"
