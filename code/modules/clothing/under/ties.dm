@@ -430,12 +430,28 @@
 	name = "USCM patch"
 	desc = "A fire-resistant shoulder patch, worn by the men and women of the United States Colonial Marines."
 	icon_state = "uscmpatch"
+	icon = 'icons/obj/items/clothing/accessory/patches.dmi'
+	accessory_icons = list(
+		WEAR_BODY = 'icons/mob/humans/onmob/clothing/accessory/patches.dmi',
+		WEAR_JACKET = 'icons/mob/humans/onmob/clothing/accessory/patches.dmi',
+	)
+	item_icons = list(
+		WEAR_AS_GARB = 'icons/mob/humans/onmob/clothing/helmet_garb/patches_flairs.dmi',
+	)
 	jumpsuit_hide_states = (UNIFORM_SLEEVE_CUT|UNIFORM_JACKET_REMOVED)
+	flags_obj = OBJ_IS_HELMET_GARB
 
 /obj/item/clothing/accessory/patch/falcon
 	name = "USCM Falling Falcons patch"
 	desc = "A fire-resistant shoulder patch, worn by the men and women of the Falling Falcons, the 2nd battalion of the 4th brigade of the USCM."
 	icon_state = "fallingfalconspatch"
+	item_state_slots = list(WEAR_AS_GARB = "falconspatch")
+	flags_obj = OBJ_IS_HELMET_GARB
+
+/obj/item/clothing/accessory/patch/devils
+	name = "USCM Solar Devils patch"
+	desc = "A fire-resistant shoulder patch, worn by the men and women of the 3rd Battalion 'Solar Devils', part of the USCM 2nd Division, 1st Regiment."
+	icon_state = "solardevilspatch"
 
 /obj/item/clothing/accessory/patch/forecon
 	name = "USCM Force Reconnaissance patch"
@@ -467,20 +483,15 @@
 	desc = "A fire-resistant shoulder patch, worn by the men and women of the UPP Naval Infantry."
 	icon_state = "navalpatch"
 
-/obj/item/clothing/accessory/patch/falconalt
-	name = "Falling Falcons UA Shoulder Patch"
-	desc = "A fire-resistant shoulder patch, worn by the men and women of the Falling Falcons, the 2nd battalion of the 4th brigade of the USCM."
-	icon_state = "fallingfalcons_ua_patch"
-
-/obj/item/clothing/accessory/patch/uscmlarge
-	name = "USCM Large Patch"
-	desc = "A larger fire-resistant shoulder patch for the USCM"
-	icon_state = "uscm_large_patch"
-
 /obj/item/clothing/accessory/patch/ua
-	name = "UA Patch"
-	desc = "United Americas patch"
-	icon_state = "ua_patch"
+	name = "United Americas patch"
+	desc = "A fire-resistant shoulder patch, worn by the men and women of the United Americas, An economic and political giant in both the Sol system and throughout the offworld colonies, the military might of the UA is unparalleled.."
+	icon_state = "uapatch"
+
+/obj/item/clothing/accessory/patch/twe
+	name = "Three World Empire patch"
+	desc = "A fire-resistant shoulder patch, worn by the men and women loyal to the Three World Empire, An older style symbol of the TWE."
+	icon_state = "twepatch"
 
 /obj/item/clothing/accessory/patch/tis
 	name = "UAAC-TIS patch"
@@ -500,20 +511,15 @@
 	desc = "A fire-resistant shoulder patch, worn by the men and women of the Tunnel Rats, the 4th Division 3rd brigade 6th Bat of the USCM."
 	icon_state = "tunnelratspatch"
 
-/obj/item/clothing/accessory/patch/merc_patch
-	name = "Mercenary Patch"
-	desc = "A generic mercenary company patch"
-	icon_state = "merc_patch"
-
-/obj/item/clothing/accessory/patch/devils
-	name = "Devils Patch"
-	desc = "The Devils squad insignia patch"
-	icon_state = "devils_patch"
-
 /obj/item/clothing/accessory/patch/wy
-	name = "Weyland-Yutani Patch"
-	desc = "Weyland-Yutani corporation patch"
-	icon_state = "wy_patch"
+	name = "Weyland-Yutani patch"
+	desc = "A fire-resistant black shoulder patch featuring the Weyland-Yutani logo. A symbol of loyalty to the corporation, or perhaps ironic mockery, depending on your viewpoint."
+	icon_state = "wypatch"
+
+/obj/item/clothing/accessory/patch/tis
+	name = "UAAC-TIS patch"
+	desc = "An elusive patch worn by members of the UAAC-TIS, also known as Three Eyes."
+	icon_state = "tispatch"
 
 /obj/item/clothing/accessory/patch/chaplain
 	name = "Military Chaplain patch"
@@ -568,36 +574,33 @@
 			squad_color = squad_name
 	icon_state = replacetext(initial(dummy_icon_state), "%SQUAD%", squad_color)
 
-/obj/item/clothing/accessory/patch/twe
-	name = "Three World Empire patch"
-	desc = "A fire-resistant shoulder patch, worn by the men and women loyal to the Three World Empire, An older style symbol of the TWE."
-	icon_state = "twe_patch"
-
-/obj/item/clothing/accessory/patch/medic_patch
-	name = "Field Medic patch"
-	desc = "A circular patch featuring a red cross on a white background with a bold red outline. Universally recognized as a symbol of aid and neutrality, it is worn by medics across the colonies. Whether a sign of true medical expertise, a keepsake, or merely a decoration, its presence offers a glimmer of hope in dire times."
-	icon_state = "medic_patch"
-
-/obj/item/clothing/accessory/patch/ua/united_american
-	name = "United American Patch"
-	desc = "United Americas coalition patch"
-	icon_state = "ua_patch"
-
-/obj/item/clothing/accessory/patch/clf_patch
-	name = "Insurgent patch"
-	desc = "A circular, fire-resistant patch with a white border. The design features three white stars and a tricolor background: green, black, and red, symbolizing the Rebels' fight for independence and unity. This patch is worn by Insurgent fighters as a badge of defiance against corporate and governmental oppression, representing their struggle for a free and self-determined colonial future. Though feared and reviled by some, it remains a powerful symbol of resistance and revolution."
-	icon_state = "clf_patch"
-
-/obj/item/clothing/accessory/patch/freelancer_patch
-	name = "Freelancer's Guild patch"
-	desc = "A fire-resistant circular patch featuring a white skull on a vertically split black and blue background. Worn by a skilled mercenary of the Freelancers, a well-equipped group for hire across the outer colonies, known for their professionalism and neutrality."
-	icon_state = "mercpatch"
-
 /obj/item/clothing/accessory/patch/cec_patch
 	name = "CEC patch"
 	desc = "An old, worn and faded fire-resistant circular patch with a gold star on a split orange and red background. Once worn by members of the Cosmos Exploration Corps (CEC), a division of the UPP dedicated to exploration, resource assessment, and establishing colonies on new worlds. The patch serves as a reminder of the CEC's daring missions aboard aging starships, a symbol of perseverance in the face of adversity."
 	icon_state = "cecpatch"
 	item_state_slots = list(WEAR_AS_GARB = "cecpatch")
+
+/obj/item/clothing/accessory/patch/freelancer_patch
+	name = "Freelancer's Guild patch"
+	desc = "A fire-resistant circular patch featuring a white skull on a vertically split black and blue background. Worn by a skilled mercenary of the Freelancers, a well-equipped group for hire across the outer colonies, known for their professionalism and neutrality. This patch is a personal memento from the wearer’s time with the group, representing a life spent navigating the dangerous world of mercenary contracts."
+	icon_state = "mercpatch"
+	item_state_slots = list(WEAR_AS_GARB = "mercpatch")
+
+/obj/item/clothing/accessory/patch/merc_patch
+	name = "Old Freelancer's Guild patch"
+	desc = "A faded old, worn fire-resistant circular patch featuring a white skull on a vertically split black and red background. Worn by a well-equipped mercenary group for hire across the outer colonies, known for their professionalism and neutrality. The current owner’s connection to the patch is unclear—whether it was once earned as part of service, kept as a memento, or simply found, disconnected from its original wearer."
+	icon_state = "mercpatch_red"
+	item_state_slots = list(WEAR_AS_GARB = "mercpatch_red")
+
+/obj/item/clothing/accessory/patch/medic_patch
+	name = "Field Medic patch"
+	desc = "A circular patch featuring a red cross on a white background with a bold red outline. Universally recognized as a symbol of aid and neutrality, it is worn by medics across the colonies. Whether a sign of true medical expertise, a keepsake, or merely a decoration, its presence offers a glimmer of hope in dire times."
+	icon_state = "medicpatch"
+
+/obj/item/clothing/accessory/patch/clf_patch
+	name = "Insurgent patch"
+	desc = "A circular, fire-resistant patch with a white border. The design features three white stars and a tricolor background: green, black, and red, symbolizing the Rebels' fight for independence and unity. This patch is worn by Insurgent fighters as a badge of defiance against corporate and governmental oppression, representing their struggle for a free and self-determined colonial future. Though feared and reviled by some, it remains a powerful symbol of resistance and revolution."
+	icon_state = "clfpatch"
 
 /obj/item/clothing/accessory/patch/pinkerton_patch
 	name = "Pinkerton Private Security Patch"
@@ -618,6 +621,7 @@
 	name = "Lasalle Bionational Patch"
 	desc = "A blue circle patch belonging to one of the dirtiest jobs in the galaxy. Great respect is held for those wearing the patch of the Lasalle Corps' Mercs due to the dangerous work they do dealing with biohazardous materials and entities day in and day out."
 	icon_state = "biomerc_patch"
+
 // Misc
 
 /obj/item/clothing/accessory/dogtags
