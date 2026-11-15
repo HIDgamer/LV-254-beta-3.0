@@ -350,7 +350,11 @@
 	for(var/offset in list(-2, -1, 1, 2))
 		var/obj/structure/barricade/metal/wall = new(locate(start.x + 3, start.y + offset, start.z))
 		wall.setDir(EAST)
-	var/mob/living/carbon/xenomorph/drone/dummy = make_target_dummy(locate(start.x + 9, start.y, start.z))
+	// A man, not a xeno: the AI shoots a xeno from as far as its gun reaches and never walks up to it, so a xeno cannot tell the bold from the careful
+	var/mob/living/carbon/human/dummy = allocate(/mob/living/carbon/human, locate(start.x + 9, start.y, start.z))
+	dummy.faction = FACTION_UPP
+	dummy.status_flags |= GODMODE
+	SSspatial_grid.track(dummy, SPATIAL_GRID_TRACK_NPC)
 	var/mob/living/carbon/human/soldier = make_soldier(start, FACTION_MARINE, TRUE, personality_id)
 	var/datum/human_ai_brain/brain = soldier.ai_brain
 	soldier.setDir(EAST)
