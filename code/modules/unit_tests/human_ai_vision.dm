@@ -99,6 +99,28 @@
 	TEST_ASSERT(!brain.is_concealed(subject), "A plain body was taken for concealed")
 	tear_down()
 
+	// A man holding Snake's crate is only made out from a few steps away while he keeps still, and from farther off when he moves
+	set_up(field, 6)
+	brain = watcher.ai_brain
+	var/mob/living/carbon/human/crate_man = allocate(/mob/living/carbon/human, locate(watcher.x + 6, watcher.y, watcher.z))
+	crate_man.faction = FACTION_MARINE
+	var/obj/item/snake_crate/crate = allocate(/obj/item/snake_crate)
+	TEST_ASSERT(crate_man.put_in_hands(crate, FALSE), "The crate could not be put in a hand")
+	TEST_ASSERT(brain.box_cover(crate_man), "A man holding the crate is not taken for hiding in it")
+	var/turf/crate_turf = get_turf(crate_man)
+	crate_man.l_move_time = world.time - 10 SECONDS
+	TEST_ASSERT_EQUAL(brain.clarity_of(crate_man, crate_turf, 6), 0, "A still crate was made out from 6 tiles")
+	var/still_near = brain.clarity_of(crate_man, crate_turf, 3)
+	TEST_ASSERT(still_near > 0 && still_near < 1, "A still crate was not harder to make out from 3 tiles: [still_near]")
+	crate_man.l_move_time = world.time
+	var/walking_far = brain.clarity_of(crate_man, crate_turf, 6)
+	TEST_ASSERT(walking_far > 0 && walking_far < 1, "A crate on the move was not a little harder to make out from 6 tiles: [walking_far]")
+	TEST_ASSERT(walking_far > still_near, "A crate on the move hides better than one standing still: [walking_far] against [still_near]")
+	crate_man.drop_held_item(crate)
+	TEST_ASSERT(!brain.box_cover(crate_man), "A man who put the crate down is still taken for hiding in it")
+	TEST_ASSERT_EQUAL(brain.clarity_of(crate_man, crate_turf, 6), 1, "A plain man was not made out from 6 tiles")
+	tear_down()
+
 	// Nothing hides from an arm's length, and shot at from where it cannot see, a unit goes to look and does not know who fired
 	set_up(field, 1)
 	brain = watcher.ai_brain

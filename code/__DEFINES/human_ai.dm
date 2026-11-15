@@ -722,6 +722,12 @@
 #define HAI_DIM_CLARITY 0.3
 #define HAI_CONCEAL_SIGHT 2
 #define HAI_CONCEAL_ALPHA 100
+/// Hiding in a crate: how long a man has to stand still for it to count, how far he is made out from while he does and while he moves, and how much of him is made out within that.
+#define HAI_BOX_STILL_TIME (2 SECONDS)
+#define HAI_BOX_SIGHT_STILL 4
+#define HAI_BOX_SIGHT_MOVING 9
+#define HAI_BOX_CLARITY_STILL 0.5
+#define HAI_BOX_CLARITY_MOVING 0.75
 /// How far a unit wearing night vision goggles makes things out in the dark, and how far the eyes reach when they are blurred.
 #define HAI_NIGHT_VISION_REACH 20
 #define HAI_BLURRY_REACH 4

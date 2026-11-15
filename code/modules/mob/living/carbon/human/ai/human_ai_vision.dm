@@ -25,6 +25,17 @@
 		return TRUE
 	return candidate.alpha <= HAI_CONCEAL_ALPHA
 
+/// The crate a man holds that he is hiding in, null when he is not holding one
+/datum/human_ai_brain/proc/box_cover(mob/living/candidate)
+	RETURN_TYPE(/obj/item/snake_crate)
+	if(!ishuman(candidate))
+		return null
+	var/mob/living/carbon/human/holder = candidate
+	var/obj/item/snake_crate/box = holder.get_active_hand()
+	if(!istype(box))
+		box = holder.get_inactive_hand()
+	return istype(box) ? box : null
+
 /// How much of the sight is taken away by what is worn over the eyes, as the game counts it for a player, from nothing to the most
 /datum/human_ai_brain/proc/eye_tint()
 	var/tint = 0
@@ -71,6 +82,16 @@
 		if(distance > HAI_CONCEAL_SIGHT)
 			return 0
 		clarity *= 0.35
+	// A crate over the head is a poor disguise: kept still it is taken for one from a few steps away, and one that walks about is only a little harder to make out
+	if(box_cover(candidate))
+		if(world.time > candidate.l_move_time + HAI_BOX_STILL_TIME)
+			if(distance > HAI_BOX_SIGHT_STILL)
+				return 0
+			clarity *= HAI_BOX_CLARITY_STILL
+		else
+			if(distance > HAI_BOX_SIGHT_MOVING)
+				return 0
+			clarity *= HAI_BOX_CLARITY_MOVING
 	// Night vision goggles light the whole place up for whoever wears them
 	var/reach = body.see_in_dark
 	if(has_night_vision())
