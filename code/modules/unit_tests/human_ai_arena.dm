@@ -1,6 +1,6 @@
 /**
  * Builds a walled arena from ASCII rows in the unit test z level and loads it into the native pathfinder.
- * # wall, . floor, D airlock, L locked airlock, A airlock that needs access, W window, T table, B barricade facing east, 1-9 floor with a marker
+ * # wall, . floor, D airlock, L locked airlock, A airlock that needs access, W window, T table, B barricade facing east, R strung barbed wire, 1-9 floor with a marker
  */
 /datum/human_ai_arena
 	var/z
@@ -53,6 +53,8 @@
 		if("B")
 			var/obj/structure/barricade/metal/barricade = new(built)
 			barricade.setDir(EAST)
+		if("R")
+			new /obj/structure/barricade/barbedwire(built)
 		if("1", "2", "3", "4", "5", "6", "7", "8", "9")
 			marks[char] = built
 

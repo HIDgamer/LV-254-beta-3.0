@@ -555,6 +555,9 @@
 #define HAI_DETOUR_MEMORY (12 SECONDS)
 #define HAI_VAULT_COOLDOWN (6 SECONDS)
 #define HAI_CLIMB_DETOURS 2
+/// How many times a brain looks for a way round strung barbed wire before it goes through or cuts it, and how long the cutting takes.
+#define HAI_WIRE_DETOURS 2
+#define HAI_WIRE_CUT_TIME (4 SECONDS)
 /// How long a door that will not open for the brain is left alone.
 #define HAI_DOOR_DENIED_MEMORY (3 MINUTES)
 

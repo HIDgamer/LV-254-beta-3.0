@@ -213,6 +213,9 @@
 	var/posts_taken = 0
 	/// Looking for a way round something climbable before climbing it, when the next vault is allowed and how many were made
 	var/climb_detours = 0
+	/// Detours taken round strung barbed wire on the way to the current goal, and wire cut
+	var/wire_detours = 0
+	var/wire_cuts = 0
 	var/next_vault_time = 0
 	var/vaults = 0
 	/// Shots held back for a friend in the way, steps taken backing off, the window those steps are counted in and the time of the next one

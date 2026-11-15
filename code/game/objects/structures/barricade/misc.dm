@@ -139,6 +139,7 @@
 	brute_projectile_multiplier = 0.375
 
 /obj/structure/barricade/barbedwire/update_icon()
+	SSxeno_pathfinding?.push_delta(get_turf(src))
 	if(build_state == BARRICADE_BSTATE_UNSECURED)
 		icon_state = "barbed_wire_broken"
 

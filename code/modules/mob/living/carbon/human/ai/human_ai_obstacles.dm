@@ -196,3 +196,54 @@
 	acting_until = 0
 	if(body)
 		next_step_time = world.time + body.movement_delay()
+
+/// Strung barbed wire on the turf that would slow whoever walks through it, null when there is none
+/datum/human_ai_brain/proc/find_wire(turf/there)
+	RETURN_TYPE(/obj/structure/barricade/barbedwire)
+	for(var/obj/structure/barricade/barbedwire/wire in there)
+		if(wire.build_state == BARRICADE_BSTATE_SECURED)
+			return wire
+	return null
+
+/**
+ * Barbed wire is not in the way of a step, it only drags at whoever goes through it, so it is dealt with before the step is taken.
+ * A brain in a hurry goes straight through. One that is not looks for a way round a couple of times, then cuts the wire if it has
+ * cutters and goes through it if it has not. True while the brain is dealing with it and the step has to wait.
+ */
+/datum/human_ai_brain/proc/handle_wire(obj/structure/barricade/barbedwire/wire, turf/next_turf)
+	if(climb_urgent() || acting_until > world.time)
+		return acting_until > world.time
+	if(wire_detours < HAI_WIRE_DETOURS)
+		wire_detours++
+		prefer_other_way(next_turf, "would rather go round [wire]")
+		return TRUE
+	var/obj/item/cutters = find_tool(TRAIT_TOOL_WIRECUTTERS)
+	if(!cutters)
+		return FALSE
+	acting_until = world.time + HAI_WIRE_CUT_TIME + 5 SECONDS
+	INVOKE_ASYNC(src, PROC_REF(cut_wire), wire, cutters)
+	return TRUE
+
+/datum/human_ai_brain/proc/cut_wire(obj/structure/barricade/barbedwire/wire, obj/item/cutters)
+	var/turf/start = get_turf(body)
+	if(QDELETED(cutters) || !hand_item(cutters))
+		acting_until = 0
+		return
+	body.face_atom(wire)
+	body.visible_message(SPAN_WARNING("[body] starts cutting [wire]."), SPAN_NOTICE("You start cutting [wire]."))
+	playsound(wire, 'sound/items/Wirecutter.ogg', 25, TRUE)
+	var/finish = world.time + HAI_WIRE_CUT_TIME
+	var/finished = TRUE
+	while(world.time < finish)
+		sleep(10)
+		if(hack_interrupted(wire, start))
+			finished = FALSE
+			break
+	acting_until = 0
+	if(QDELETED(body) || QDELETED(wire) || !finished)
+		return
+	wire.build_state = BARRICADE_BSTATE_UNSECURED
+	wire.update_icon()
+	wire_cuts++
+	log_decision("cut [wire]")
+	next_step_time = world.time + 2

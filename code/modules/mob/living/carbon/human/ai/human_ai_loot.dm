@@ -23,6 +23,9 @@
 
 /// Whether the loose item is something this brain is short of: a gun when it has none, ammo for the gun in hand, a crowbar, the tools to hack a door, medical supplies or a grenade
 /datum/human_ai_brain/proc/loot_wanted(obj/item/thing)
+	// A dog has no hands to carry anything with
+	if(isk9synth(body))
+		return FALSE
 	if(QDELETED(thing) || thing.anchored || (thing.flags_item & (NODROP|ITEM_ABSTRACT|DELONDROP)))
 		return FALSE
 	if(istype(thing, /obj/item/weapon/gun))

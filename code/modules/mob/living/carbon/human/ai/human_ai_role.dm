@@ -109,6 +109,8 @@ GLOBAL_LIST_INIT(human_ai_roles, init_human_ai_roles())
 /datum/human_ai_role/engineer/equip_kit(datum/human_ai_brain/brain)
 	if(!brain.find_building_stack())
 		brain.give_kit_item(/obj/item/stack/sheet/metal, 50)
+	if(!brain.find_tool(TRAIT_TOOL_WIRECUTTERS))
+		brain.give_kit_item(/obj/item/tool/wirecutters)
 
 /datum/human_ai_role/security
 	id = "security"

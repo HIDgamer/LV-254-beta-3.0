@@ -159,6 +159,11 @@ SUBSYSTEM_DEF(xeno_pathfinding)
 	var/has_obstacle = FALSE
 	var/has_border = FALSE
 	for(var/obj/structure/blocker in scanned)
+		if(istype(blocker, /obj/structure/barricade/barbedwire))
+			var/obj/structure/barricade/barbedwire/wire = blocker
+			if(wire.build_state == BARRICADE_BSTATE_SECURED)
+				has_border = TRUE // Strung wire drags at whoever walks through it, priced like something to climb so routes go round it when they can
+			continue
 		if(!blocker.density)
 			continue
 		if(blocker.climbable)

@@ -138,6 +138,84 @@
 	TEST_ASSERT(clearance.first_door("A").density, "The restricted door was opened without access")
 	detach_human_ai(walker)
 
+/// Walkers go round strung barbed wire when there is a way round, cut it when they carry cutters and nothing else leads on, and walk through it otherwise
+/datum/unit_test/human_ai_razor_wire
+	var/list/seen = list()
+
+/datum/unit_test/human_ai_razor_wire/proc/spawn_walker(turf/start, turf/goal, cutters = FALSE)
+	var/mob/living/carbon/human/walker = allocate(/mob/living/carbon/human, start)
+	walker.faction = FACTION_MARINE
+	attach_human_ai(walker)
+	walker.ai_brain.keep_awake = TRUE
+	if(cutters)
+		var/obj/item/tool/wirecutters/pair = allocate(/obj/item/tool/wirecutters, get_turf(walker))
+		TEST_ASSERT(walker.put_in_hands(pair, FALSE), "The wirecutters could not be given to the walker, it holds [walker.l_hand] and [walker.r_hand]")
+	walker.ai_brain.waypoint = goal
+	return walker
+
+/datum/unit_test/human_ai_razor_wire/proc/watch(mob/living/carbon/human/walker, seconds)
+	seen = list()
+	for(var/step_count in 1 to seconds * 4)
+		var/turf/here = get_turf(walker)
+		if(here)
+			seen[here] = TRUE
+		if(!walker.ai_brain?.waypoint)
+			return TRUE
+		sleep(2.5)
+	return !walker.ai_brain?.waypoint
+
+/datum/unit_test/human_ai_razor_wire/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+	TEST_ASSERT(xeno_pathfind_profiles_available(), "The loaded rust-g predates route profiles")
+
+	// Wire across the middle of a wide hall, the way round is open
+	var/datum/human_ai_arena/hall = new(list(
+		"###########",
+		"#.........#",
+		"#1..R...2.#",
+		"#.........#",
+		"###########",
+	), run_loc_floor_bottom_left)
+	var/obj/structure/barricade/barbedwire/hall_wire = locate(/obj/structure/barricade/barbedwire) in locate(hall.mark("1").x + 3, hall.mark("1").y, hall.z)
+	TEST_ASSERT(hall_wire, "The arena put no wire down")
+	TEST_ASSERT_EQUAL(hall_wire.build_state, BARRICADE_BSTATE_SECURED, "The arena wire is not strung")
+	var/mob/living/carbon/human/walker = spawn_walker(hall.mark("1"), hall.mark("2"))
+	TEST_ASSERT(watch(walker, 40), "The walker never crossed the wide hall, it is at [walker.x],[walker.y]: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(get_dist(walker, hall.mark("2")) <= 1, "The walker did not get across the hall: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(!(get_turf(hall_wire) in seen), "The walker went through the wire with a clear way round: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(hall_wire.build_state, BARRICADE_BSTATE_SECURED, "The wire was cut with a clear way round")
+	detach_human_ai(walker)
+
+	// Wire across the only way on and nothing to cut it with, the walker goes through it
+	var/datum/human_ai_arena/plain = new(list(
+		"#########",
+		"#1..R..2#",
+		"#########",
+	), run_loc_floor_bottom_left)
+	var/obj/structure/barricade/barbedwire/plain_wire = locate(/obj/structure/barricade/barbedwire) in locate(plain.mark("1").x + 3, plain.mark("1").y, plain.z)
+	TEST_ASSERT(plain_wire, "The corridor has no wire")
+	walker = spawn_walker(plain.mark("1"), plain.mark("2"))
+	TEST_ASSERT(watch(walker, 60), "The walker never got through the wire, it is at [walker.x],[walker.y]: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(get_dist(walker, plain.mark("2")) <= 1, "The walker did not walk through the wire: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(get_turf(plain_wire) in seen, "The walker reached the end without touching the wire")
+	TEST_ASSERT_EQUAL(plain_wire.build_state, BARRICADE_BSTATE_SECURED, "The wire was cut with nothing to cut it with")
+	detach_human_ai(walker)
+
+	// The same corridor with wirecutters in the walker's pack, the wire is cut and the way is open
+	var/datum/human_ai_arena/cut = new(list(
+		"#########",
+		"#1..R..2#",
+		"#########",
+	), run_loc_floor_bottom_left)
+	var/obj/structure/barricade/barbedwire/cut_wire = locate(/obj/structure/barricade/barbedwire) in locate(cut.mark("1").x + 3, cut.mark("1").y, cut.z)
+	TEST_ASSERT(cut_wire, "The second corridor has no wire")
+	walker = spawn_walker(cut.mark("1"), cut.mark("2"), TRUE)
+	TEST_ASSERT(watch(walker, 60), "The walker never got past the wire it carries cutters for, it is at [walker.x],[walker.y]: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(get_dist(walker, cut.mark("2")) <= 1, "The walker did not get through: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(cut_wire.build_state, BARRICADE_BSTATE_UNSECURED, "The wire was not cut: [walker.ai_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(walker.ai_brain.wire_cuts, 1, "The walker did not count the wire it cut")
+	detach_human_ai(walker)
+
 /// Followers keep formation slots, long walks sprint, lying bodies stand up and blocked corridors get given up on
 /datum/unit_test/human_ai_following
 

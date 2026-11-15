@@ -157,6 +157,15 @@
 	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(packed), bandage), 25), "The unit did not pick up a bandage it was short of: [scavenger.decision_log.Join(" | ")]")
 	TEST_ASSERT(isturf(spare_rifle.loc), "The unit picked up a second rifle with one in hand")
 	TEST_ASSERT_EQUAL(scavenger.error_total, 0, "The unit's brain threw errors")
+
+	// A dog has no hands, so what a soldier would pick up is left where it lies
+	var/obj/item/tool/crowbar/spare_crowbar = allocate(/obj/item/tool/crowbar, locate(start.x + 6, start.y, start.z))
+	TEST_ASSERT(scavenger.loot_wanted(spare_crowbar), "A soldier without a crowbar does not want one")
+	var/mob/living/carbon/human/dog = make_soldier(locate(start.x + 8, start.y + 2, start.z), FACTION_MARINE, FALSE)
+	dog.set_species(SPECIES_SYNTHETIC_K9)
+	TEST_ASSERT(isk9synth(dog), "The dog is not a K9")
+	TEST_ASSERT(!dog.ai_brain.loot_wanted(spare_crowbar), "A dog wants to pick up a crowbar")
+	detach_human_ai(dog)
 	detach_human_ai(soldier)
 
 /// A friendly player's words near a unit are turned into orders, strangers and the other side are ignored, a name picks who is meant
