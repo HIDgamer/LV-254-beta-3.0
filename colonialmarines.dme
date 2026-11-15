@@ -2186,6 +2186,7 @@
 #include "code\modules\mob\living\carbon\human\ai\human_ai_factions.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_fire.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_forced_entry.dm"
+#include "code\modules\mob\living\carbon\human\ai\human_ai_gas.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_gear.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_grenades.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_guns.dm"

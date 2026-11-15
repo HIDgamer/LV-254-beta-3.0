@@ -218,6 +218,9 @@ SUBSYSTEM_DEF(xeno_pathfinding)
 		decay_counter = 0
 		rust_xeno_pathfind_decay()
 		refresh_turret_threat()
+	// What the AI marked as blocked, on fire or gassed fades the same way, or the cells it was ever turned back from would stay out of every route for good
+	if(xeno_pathfind_profiles_available())
+		rust_xeno_pathfind_decay_danger()
 
 /**
  * Brings the native grid up to date with a template that was loaded after the subsystem read the map: a z-level the grid has

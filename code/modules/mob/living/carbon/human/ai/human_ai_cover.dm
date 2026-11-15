@@ -37,6 +37,8 @@
 		return FALSE
 	if(locate(/obj/flamer_fire) in candidate)
 		return FALSE
+	if(harmful_gas_on(candidate))
+		return FALSE
 	for(var/mob/living/occupant in candidate)
 		if(occupant != body)
 			return FALSE
@@ -221,10 +223,13 @@
 	var/turf/here = get_turf(body)
 	if(locate(/obj/flamer_fire) in here)
 		return here
+	if(harmful_gas_on(here))
+		return here
 	if(world.time < next_hazard_check)
 		return hazard_turf
 	next_hazard_check = world.time + HAI_HAZARD_CHECK_INTERVAL
 	hazard_turf = null
+	scan_hazards(here)
 	for(var/obj/item/explosive/grenade/grenade in range(HAI_HAZARD_RADIUS, here))
 		if(grenade.active && !QDELETED(grenade) && human_ai_grenade_hurts(grenade))
 			hazard_turf = get_turf(grenade)
@@ -234,10 +239,15 @@
 /// A turf close by and farther from the hazard than it can reach, without fire on it
 /datum/human_ai_brain/proc/escape_turf(turf/hazard)
 	var/turf/here = get_turf(body)
+	// A way out that was picked is kept until it is reached or the time is up, or a cloud around the body sends it back and forth between two ways out
+	if(escape_goal && world.time < escape_goal_until && escape_goal != here && cover_turf_usable(escape_goal))
+		return escape_goal
 	var/turf/best
 	var/best_score = -INFINITY
 	for(var/turf/candidate in range(4, here))
 		if(!cover_turf_usable(candidate))
+			continue
+		if(!cover_has_line(here, candidate))
 			continue
 		var/away = get_dist(candidate, hazard)
 		if(away <= HAI_HAZARD_RADIUS && !(hazard == here && away >= 2))
@@ -246,6 +256,8 @@
 		if(score > best_score)
 			best_score = score
 			best = candidate
+	escape_goal = best
+	escape_goal_until = world.time + HAI_ESCAPE_KEEP
 	return best
 
 /// Getting clear of a live grenade or burning ground takes over almost everything else

@@ -7,6 +7,8 @@ GLOBAL_LIST_INIT(human_ai_regression_batches, list(
 		/datum/unit_test/human_ai_sight_load,
 		/datum/unit_test/human_ai_movement,
 		/datum/unit_test/human_ai_following,
+		/datum/unit_test/human_ai_razor_wire,
+		/datum/unit_test/human_ai_hazards,
 		/datum/unit_test/human_ai_perception,
 		/datum/unit_test/human_ai_soak,
 		/datum/unit_test/native_pathfind_profiles,

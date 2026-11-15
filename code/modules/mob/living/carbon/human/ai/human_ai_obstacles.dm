@@ -158,9 +158,13 @@
 
 /// Whether getting over something climbable is worth the time right now: the brain has an enemy in sight, is under fire, running or clear of a hazard. A hard order alone is not a hurry
 /datum/human_ai_brain/proc/climb_urgent()
+	return in_a_hurry() || hazard_turf
+
+/// Whether the brain has no time to spare: an enemy in sight, fire coming at it or running
+/datum/human_ai_brain/proc/in_a_hurry()
 	if(get_target() && world.time <= target_seen_time + 40)
 		return TRUE
-	return suppressed() || broken_kind || hazard_turf || world.time < panic_until
+	return suppressed() || broken_kind || world.time < panic_until
 
 /**
  * Climbing is the last resort. A brain with nothing pressing never climbs, it takes another way or gives the goal up. One that has a goal to

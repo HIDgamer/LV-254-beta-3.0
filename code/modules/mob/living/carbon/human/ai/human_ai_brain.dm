@@ -216,6 +216,15 @@
 	/// Detours taken round strung barbed wire on the way to the current goal, and wire cut
 	var/wire_detours = 0
 	var/wire_cuts = 0
+	/// Looks for a way round fire or gas ahead, times it has stood and waited for one to go, and masks it has put on
+	var/hazard_detours = 0
+	var/hazard_waits = 0
+	var/gas_masks = 0
+	/// A cloud that would hurt the body is close
+	var/gas_alert = FALSE
+	/// Where the body is getting to to be clear of a hazard, and until when it keeps to that
+	var/turf/escape_goal
+	var/escape_goal_until = 0
 	var/next_vault_time = 0
 	var/vaults = 0
 	/// Shots held back for a friend in the way, steps taken backing off, the window those steps are counted in and the time of the next one
@@ -384,6 +393,7 @@
 	cover_goal_object = null
 	last_cover_object = null
 	hazard_turf = null
+	escape_goal = null
 	target_memo = null
 	hive_cache = null
 	cover_memo_here = null

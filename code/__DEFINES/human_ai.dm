@@ -558,6 +558,16 @@
 /// How many times a brain looks for a way round strung barbed wire before it goes through or cuts it, and how long the cutting takes.
 #define HAI_WIRE_DETOURS 2
 #define HAI_WIRE_CUT_TIME (4 SECONDS)
+/// Gas and fire: how far a brain notices a cloud or flames and how long it has a mask on its face, the danger and the deciseconds between reports a pathfinder is given for each hazard turf, and how often and how long a brain waits for a hazard in its way to go.
+#define HAI_GAS_WARN_RANGE 6
+#define HAI_GAS_MASK_TIME (2 SECONDS)
+#define HAI_HAZARD_PATH_DANGER 160
+#define HAI_HAZARD_REPORT_GAP (4 SECONDS)
+#define HAI_FIRE_WAITS 12
+#define HAI_GAS_WAITS 4
+#define HAI_HAZARD_WAIT_TIME 15
+/// Deciseconds a brain keeps to the turf it picked to get clear of a hazard.
+#define HAI_ESCAPE_KEEP (4 SECONDS)
 /// How long a door that will not open for the brain is left alone.
 #define HAI_DOOR_DENIED_MEMORY (3 MINUTES)
 

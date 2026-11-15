@@ -24,6 +24,8 @@
 		move_state = HAI_MOVE_ARRIVED
 		climb_detours = 0
 		wire_detours = 0
+		hazard_detours = 0
+		hazard_waits = 0
 		set_sprint(FALSE)
 		clear_stairs()
 		return FALSE
@@ -76,6 +78,9 @@
 		var/obj/structure/barricade/barbedwire/wire = find_wire(next_turf)
 		if(wire && handle_wire(wire, next_turf))
 			return TRUE
+		var/obj/hazard_ahead = find_hazard_on(next_turf)
+		if(hazard_ahead && handle_hazard_ahead(hazard_ahead, next_turf))
+			return TRUE
 		if(step_to_turf(next_turf))
 			return TRUE
 		var/list/obstacle = find_obstacle(here, next_turf)
@@ -93,6 +98,8 @@
 	climb_detours = 0
 	no_route_count = 0
 	wire_detours = 0
+	hazard_detours = 0
+	hazard_waits = 0
 	path = null
 
 /// Gets the body onto its feet, false while that takes the turn

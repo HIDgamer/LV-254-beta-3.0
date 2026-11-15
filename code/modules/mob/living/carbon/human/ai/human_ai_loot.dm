@@ -39,6 +39,8 @@
 		return held && mag.current_rounds > 0 && ammo_fits_gun(mag, held, get_human_ai_gun_appraisal(held)) && loot_spare_mags() < 4
 	if(istype(thing, /obj/item/clothing/suit/armor) || istype(thing, /obj/item/clothing/suit/storage/marine))
 		return !body.wear_suit
+	if(istype(thing, /obj/item/clothing/mask) && (thing.flags_inventory & BLOCKGASEFFECT))
+		return !gas_protected() && !find_gas_mask()
 	if(istype(thing, /obj/item/restraint/handcuffs))
 		return !find_cuffs()
 	if(HAS_TRAIT(thing, TRAIT_TOOL_CROWBAR))
