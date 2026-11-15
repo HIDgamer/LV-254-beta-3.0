@@ -216,6 +216,47 @@
 	TEST_ASSERT_EQUAL(walker.ai_brain.wire_cuts, 1, "The walker did not count the wire it cut")
 	detach_human_ai(walker)
 
+/// A walker that has made a few climbs in a short while turns the next one down, unless it is running for its life
+/datum/unit_test/human_ai_climb_burst
+
+/datum/unit_test/human_ai_climb_burst/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+	var/datum/human_ai_arena/hall = new(list(
+		"##############",
+		"#............#",
+		"#............#",
+		"#............#",
+		"##############",
+	), run_loc_floor_bottom_left)
+	var/turf/start = locate(hall.origin_x + 3, hall.origin_y + 2, hall.z)
+	var/turf/table_turf = locate(start.x + 1, start.y, start.z)
+	var/obj/structure/surface/table/table = allocate(/obj/structure/surface/table, table_turf)
+	var/mob/living/carbon/human/walker = make_soldier(start, FACTION_MARINE, FALSE)
+	var/datum/human_ai_brain/brain = walker.ai_brain
+	var/datum/npc_order/move/go = new
+	go.target_turf = locate(start.x + 8, start.y, start.z)
+	TEST_ASSERT(brain.give_order(go), "A move command was refused")
+	for(var/attempt in 1 to HAI_CLIMB_BURST)
+		brain.climb_detours = HAI_CLIMB_DETOURS
+		brain.next_vault_time = 0
+		brain.acting_until = 0
+		TEST_ASSERT(brain.handle_climb(table, table_turf), "Climb [attempt] was turned down: [brain.decision_log.Join(" | ")]")
+		sleep(3 SECONDS)
+		walker.forceMove(start)
+		brain.acting_until = 0
+	TEST_ASSERT_EQUAL(brain.vaults, HAI_CLIMB_BURST, "The walker made [brain.vaults] climbs")
+	brain.climb_detours = HAI_CLIMB_DETOURS
+	brain.next_vault_time = 0
+	brain.acting_until = 0
+	TEST_ASSERT(!brain.handle_climb(table, table_turf), "The walker agreed to a climb after [HAI_CLIMB_BURST] in a short while")
+	TEST_ASSERT(brain.is_blocked_turf(table_turf), "The table was not remembered as not worth climbing again")
+	TEST_ASSERT_EQUAL(brain.vaults, HAI_CLIMB_BURST, "The walker climbed once too often")
+	// Running for its life it goes over anyway
+	brain.panic_until = world.time + 10 SECONDS
+	brain.next_vault_time = 0
+	TEST_ASSERT(brain.handle_climb(table, table_turf), "A walker in a panic was kept from climbing")
+	detach_human_ai(walker)
+
 /// Walkers keep out of flames and bad air, put a gas mask on when a cloud is near and get out of one that rolls over them
 /datum/unit_test/human_ai_hazards
 	var/list/seen = list()

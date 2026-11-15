@@ -967,6 +967,231 @@
 	detach_human_ai(plain)
 	detach_human_ai(runner)
 
+/// A man in an explosive vest is a suicider that sets it off when the enemy is near and nobody of his own is in the way, and what a man carries says what he does for a living
+/datum/unit_test/human_ai_bomb_vest
+	var/datum/human_ai_brain/subject
+	var/mob/living/carbon/xenomorph/drone/enemy
+
+/datum/unit_test/human_ai_bomb_vest/proc/saw_enemy()
+	return subject.get_target() == enemy
+
+/datum/unit_test/human_ai_bomb_vest/proc/primed()
+	return subject.charges_primed >= 1
+
+/datum/unit_test/human_ai_bomb_vest/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+
+	// What a man carries says what he does
+	var/mob/living/carbon/human/vested = allocate(/mob/living/carbon/human, run_loc_floor_bottom_left)
+	dress(vested, new /obj/item/clothing/suit/storage/marine/bombvest(vested), WEAR_JACKET)
+	TEST_ASSERT_EQUAL(human_ai_role_for_gear(vested), "suicider", "A man in an explosive vest is not a suicider")
+	var/mob/living/carbon/human/shooter = allocate(/mob/living/carbon/human, run_loc_floor_bottom_left)
+	TEST_ASSERT_NULL(human_ai_role_for_gear(shooter), "A man with nothing special has a role")
+	var/obj/item/weapon/gun/rifle/sniper/elite/scoped = new(shooter)
+	TEST_ASSERT(shooter.put_in_hands(scoped, FALSE), "The sniper rifle could not be put in a hand")
+	TEST_ASSERT_EQUAL(human_ai_role_for_gear(shooter), "sniper", "A man with a sniper rifle is not a sniper")
+	shooter.drop_held_item(scoped)
+	var/obj/item/weapon/gun/m60/gun_mg = new(shooter)
+	TEST_ASSERT(shooter.put_in_hands(gun_mg, FALSE), "The machinegun could not be put in a hand")
+	TEST_ASSERT_EQUAL(human_ai_role_for_gear(shooter), "machinegunner", "A man with a machinegun is not a machinegunner")
+	shooter.drop_held_item(gun_mg)
+	var/obj/item/weapon/gun/launcher/grenade/m92/launcher = new(shooter)
+	TEST_ASSERT(shooter.put_in_hands(launcher, FALSE), "The grenade launcher could not be put in a hand")
+	TEST_ASSERT_EQUAL(human_ai_role_for_gear(shooter), "grenadier", "A man with a grenade launcher is not a grenadier")
+	shooter.drop_held_item(launcher)
+	TEST_ASSERT(attach_human_ai(vested), "The brain would not attach to the man in the vest")
+	TEST_ASSERT_EQUAL(vested.ai_brain.role?.id, "suicider", "A brain attached to a man in a vest did not take his role")
+	detach_human_ai(vested)
+
+	// He sets the vest off when the enemy is near enough, and not with a friend beside him
+	var/datum/human_ai_arena/blast = new(list(
+		"########################################",
+		"#......................................#",
+		"#......................................#",
+		"#......................................#",
+		"########################################",
+	), run_loc_floor_bottom_left)
+	var/mob/living/carbon/human/bomber = make_soldier(locate(blast.origin_x + 3, blast.origin_y + 2, blast.z), FACTION_MARINE, FALSE)
+	subject = bomber.ai_brain
+	subject.set_role("suicider")
+	var/obj/item/clothing/suit/storage/marine/bombvest/vest = new(bomber)
+	vest.det_time = 600 SECONDS
+	dress(bomber, vest, WEAR_JACKET)
+	TEST_ASSERT(subject.worn_bomb_vest() == vest, "The brain does not see the vest it wears")
+	var/mob/living/carbon/human/friend = make_soldier(locate(blast.origin_x + 4, blast.origin_y + 3, blast.z), FACTION_MARINE, FALSE)
+	enemy = make_target_dummy(locate(blast.origin_x + 3 + HAI_VEST_RANGE, blast.origin_y + 2, blast.z))
+	SSspatial_grid.track(enemy, SPATIAL_GRID_TRACK_NPC)
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(saw_enemy)), 45), "The suicider never saw the enemy: [subject.decision_log.Join(" | ")]")
+	sleep(4 SECONDS)
+	TEST_ASSERT(!vest.active, "The vest was set off with a friend beside the man in it")
+	detach_human_ai(friend)
+	qdel(friend)
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(primed)), 25), "The suicider never set the vest off: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(vest.active, "The vest is not armed")
+	qdel(vest)
+	detach_human_ai(bomber)
+	qdel(bomber)
+	qdel(enemy)
+
+/// An engineer holding an area walls up its window and door from the sheets it carries, and breaks up furniture for sheets when it has none
+/datum/unit_test/human_ai_fortify_openings
+	var/datum/human_ai_brain/subject
+
+/datum/unit_test/human_ai_fortify_openings/proc/walled(turf/spot)
+	return !!(locate(/obj/structure/barricade/metal) in spot)
+
+/datum/unit_test/human_ai_fortify_openings/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+	var/datum/human_ai_arena/room = new(list(
+		"###############W###############",
+		"#.............................#",
+		"#.............................#",
+		"#.............................#",
+		"#.............................#",
+		"###############D###############",
+	), run_loc_floor_bottom_left)
+	var/turf/middle = locate(room.origin_x + 15, room.origin_y + 3, room.z)
+	var/turf/window_inside = locate(room.origin_x + 15, room.origin_y + 4, room.z)
+	var/turf/door_inside = locate(room.origin_x + 15, room.origin_y + 1, room.z)
+	var/mob/living/carbon/human/engineer = make_soldier(middle, FACTION_MARINE, FALSE)
+	subject = engineer.ai_brain
+	dress(engineer, new /obj/item/storage/backpack(engineer), WEAR_BACK)
+	subject.set_role("engineer")
+	subject.role.equip_kit(subject)
+	TEST_ASSERT(subject.find_building_stack(), "The engineer was not given sheets")
+	subject.set_leash(middle, 6)
+	var/list/opening = subject.find_opening()
+	TEST_ASSERT_NOTNULL(opening, "The engineer found no opening in the area")
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(walled), window_inside), 40), "The window was never barricaded: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(walled), door_inside), 40), "The door was never barricaded: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(subject.openings_walled >= 2, "The engineer did not count the openings it walled up")
+	detach_human_ai(engineer)
+	qdel(engineer)
+
+	// With no sheets it breaks furniture up for them
+	var/datum/human_ai_arena/hall = new(list(
+		"###############W###############",
+		"#.............................#",
+		"#.....TTTT....................#",
+		"#.............................#",
+		"###############################",
+	), run_loc_floor_bottom_left)
+	middle = locate(hall.origin_x + 15, hall.origin_y + 2, hall.z)
+	window_inside = locate(hall.origin_x + 15, hall.origin_y + 3, hall.z)
+	var/mob/living/carbon/human/scrapper = make_soldier(middle, FACTION_MARINE, FALSE)
+	subject = scrapper.ai_brain
+	subject.set_role("engineer")
+	TEST_ASSERT(!subject.find_any_sheets(), "The engineer already has sheets")
+	subject.set_leash(middle, 12)
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(walled), window_inside), 90), "The window was never barricaded from scrap: scrapped [subject.scrapped] [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(subject.scrapped >= 4, "The engineer broke up only [subject.scrapped] pieces of furniture")
+	detach_human_ai(scrapper)
+	qdel(scrapper)
+
+/// A mortar that fires from anywhere, the test room is not a ground level
+/obj/structure/mortar/unit_test
+
+/obj/structure/mortar/unit_test/can_fire_at(mob/user = null, test_targ_x = targ_x, test_targ_y = targ_y, test_targ_z = targ_z, test_dial_x, test_dial_y)
+	return !busy
+
+/// A shell that does nothing where it lands
+/obj/item/mortar_shell/he/unit_test
+
+/obj/item/mortar_shell/he/unit_test/detonate(turf/T)
+	return
+
+/// A crewman with shells and a mortar close by dials in an enemy that somebody else is looking at and fires on it, and leaves it alone with a friend in the way
+/datum/unit_test/human_ai_mortar
+	var/datum/human_ai_brain/subject
+
+/datum/unit_test/human_ai_mortar/proc/fired()
+	return subject.mortar_shells_fired >= 1
+
+/datum/unit_test/human_ai_mortar/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+	var/datum/human_ai_arena/field = new(list(
+		"########################################",
+		"#......................................#",
+		"#......................................#",
+		"#......................................#",
+		"########################################",
+	), run_loc_floor_bottom_left)
+	var/turf/gun_turf = locate(field.origin_x + 3, field.origin_y + 2, field.z)
+	var/obj/structure/mortar/unit_test/gun = new(gun_turf)
+	var/mob/living/carbon/human/crew = make_soldier(locate(gun_turf.x - 1, gun_turf.y, gun_turf.z), FACTION_MARINE, FALSE)
+	subject = crew.ai_brain
+	subject.set_role("mortar")
+	subject.set_leash(get_turf(crew), 1)
+	for(var/count in 1 to 3)
+		new /obj/item/mortar_shell/he/unit_test(crew)
+	TEST_ASSERT_EQUAL(subject.count_mortar_shells(), 3, "The crewman does not carry its shells")
+	var/turf/spot = locate(gun_turf.x + 6, gun_turf.y, gun_turf.z)
+	var/mob/living/carbon/human/spotter = make_soldier(spot, FACTION_MARINE, FALSE)
+	spotter.ai_brain.set_leash(spot, 1)
+	var/turf/enemy_turf = locate(gun_turf.x + 14, gun_turf.y, gun_turf.z)
+	var/mob/living/carbon/xenomorph/drone/enemy = make_target_dummy(enemy_turf)
+	SSspatial_grid.track(enemy, SPATIAL_GRID_TRACK_NPC)
+
+	// A friend of the crew stands near the enemy so nothing is fired at it
+	var/mob/living/carbon/human/friend = make_soldier(locate(enemy_turf.x - 2, enemy_turf.y + 1, enemy_turf.z), FACTION_MARINE, FALSE)
+	friend.ai_brain.set_leash(get_turf(friend), 1)
+	sleep(12 SECONDS)
+	TEST_ASSERT_EQUAL(subject.mortar_shells_fired, 0, "The crewman fired a mortar with a friend next to the enemy: [subject.decision_log.Join(" | ")]")
+	detach_human_ai(friend)
+	qdel(friend)
+
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(fired)), 60), "The crewman never fired the mortar: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(gun.targ_x, enemy_turf.x, "The mortar was dialed to [gun.targ_x] and not the enemy at [enemy_turf.x]")
+	TEST_ASSERT_EQUAL(gun.targ_y, enemy_turf.y, "The mortar was dialed to [gun.targ_y] and not the enemy at [enemy_turf.y]")
+	detach_human_ai(spotter)
+	detach_human_ai(crew)
+	qdel(spotter)
+	qdel(crew)
+	qdel(enemy)
+	qdel(gun)
+
+/// A unit with an enemy in sight goes to a machinegun nest nearby, mans it, shoots from it and lets go of it once the enemy is gone
+/datum/unit_test/human_ai_emplacement
+	var/datum/human_ai_brain/subject
+	var/obj/structure/machinery/m56d_hmg/auto/nest
+	var/mob/living/carbon/xenomorph/drone/enemy
+
+/datum/unit_test/human_ai_emplacement/proc/manning()
+	return subject.manned_emplacement() == nest
+
+/datum/unit_test/human_ai_emplacement/proc/fired()
+	return subject.emplacement_shots >= 3
+
+/datum/unit_test/human_ai_emplacement/proc/let_go()
+	return !subject.manned_emplacement()
+
+/datum/unit_test/human_ai_emplacement/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, these scenarios need it")
+	var/datum/human_ai_arena/yard = new(list(
+		"##############################",
+		"#............................#",
+		"#............................#",
+		"#............................#",
+		"##############################",
+	), run_loc_floor_bottom_left)
+	var/turf/nest_turf = locate(yard.origin_x + 4, yard.origin_y + 2, yard.z)
+	nest = new(nest_turf)
+	nest.rounds = nest.rounds_max
+	nest.setDir(EAST)
+	var/mob/living/carbon/human/gunner = make_soldier(locate(yard.origin_x + 2, yard.origin_y + 2, yard.z), FACTION_MARINE, FALSE)
+	subject = gunner.ai_brain
+	TEST_ASSERT(subject.emplacement_usable(nest), "A loaded nest nobody is on is not usable")
+	enemy = make_target_dummy(locate(yard.origin_x + 13, yard.origin_y + 2, yard.z))
+	SSspatial_grid.track(enemy, SPATIAL_GRID_TRACK_NPC)
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(manning)), 30), "The unit never manned the nest: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(fired)), 20), "The unit never fired the nest: [subject.decision_log.Join(" | ")]")
+	TEST_ASSERT(nest.rounds < nest.rounds_max, "The nest has all its rounds left")
+	qdel(enemy)
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(let_go)), 40), "The unit stayed on the nest with nothing to shoot at: [subject.decision_log.Join(" | ")]")
+	detach_human_ai(gunner)
+	qdel(gunner)
+	qdel(nest)
+
 /// An insurgent with a charge blows the bolted door it cannot hack and goes through, a marine with the same charge leaves the door alone
 /datum/unit_test/human_ai_forced_entry
 	var/datum/human_ai_brain/raider

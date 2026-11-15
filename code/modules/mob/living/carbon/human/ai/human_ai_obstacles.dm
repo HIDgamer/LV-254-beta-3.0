@@ -178,13 +178,24 @@
 	if(world.time < next_vault_time)
 		next_step_time = world.time + 5
 		return TRUE
+	// A brain that keeps going over ledges, trench walls and tables gets nowhere for it, it stays where it is for a while once it has done enough of it
+	if(climbs_lately() >= HAI_CLIMB_BURST && !hazard_turf && !broken_kind && world.time >= panic_until)
+		remember_blocked(next_turf, "has climbed enough for now", HAI_CLIMB_REST)
+		return FALSE
 	if(!urgent && climb_detours < HAI_CLIMB_DETOURS)
 		climb_detours++
 		prefer_other_way(next_turf, "would rather go round [structure]")
 		return FALSE
 	next_vault_time = world.time + HAI_VAULT_COOLDOWN
 	vaults++
+	LAZYADD(climb_times, world.time)
 	return start_vault(structure)
+
+/// How many climbs the brain has made in the last stretch of time, older ones are forgotten
+/datum/human_ai_brain/proc/climbs_lately()
+	while(length(climb_times) && world.time - climb_times[1] > HAI_CLIMB_WINDOW)
+		climb_times.Cut(1, 2)
+	return length(climb_times)
 
 /datum/human_ai_brain/proc/start_vault(obj/structure/structure)
 	if(!structure.can_climb(body))

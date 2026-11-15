@@ -83,6 +83,54 @@
 	var/obj/item/explosive/grenade/grenade = brain.charge_for(brain.get_target())
 	return grenade ? brain.prime_charge(grenade) : FALSE
 
+/// The explosive vest the body wears, null when it wears none
+/datum/human_ai_brain/proc/worn_bomb_vest()
+	RETURN_TYPE(/obj/item/clothing/suit/storage/marine/bombvest)
+	var/obj/item/clothing/suit/storage/marine/bombvest/vest = body.wear_suit
+	return istype(vest) ? vest : null
+
+/**
+ * The vest of a suicider that should be set off now, null when it should not: the fuse runs about as long as the run to an enemy that close takes, and
+ * nobody on the side may stand where the blast would reach, round the body or round the enemy it is running at. A vest that has been set off is left alone.
+ */
+/datum/human_ai_brain/proc/vest_ready(mob/living/target)
+	RETURN_TYPE(/obj/item/clothing/suit/storage/marine/bombvest)
+	if(!role?.bomber || roe == HAI_ROE_WEAPONS_HOLD)
+		return null
+	var/obj/item/clothing/suit/storage/marine/bombvest/vest = worn_bomb_vest()
+	if(!vest || vest.active)
+		return null
+	if(!target || world.time > target_seen_time + 20 || get_dist(body, target) > HAI_VEST_RANGE)
+		return null
+	for(var/atom/center as anything in list(body, target))
+		for(var/mob/living/bystander in view(HAI_VEST_SAFE_RADIUS, center))
+			if(bystander != body && is_protected(bystander))
+				return null
+	return vest
+
+/// Sets the vest off, the fuse is a few seconds and the brain carries on at the enemy meanwhile
+/datum/human_ai_brain/proc/prime_vest(obj/item/clothing/suit/storage/marine/bombvest/vest)
+	vest.attack_self(body)
+	if(!vest.active)
+		log_decision("[vest.name] would not go off")
+		return FALSE
+	charges_primed++
+	express(HAI_EXPR_BATTLE_CRY, null, "scream")
+	log_decision("set off [vest.name] to take the enemy with it")
+	return TRUE
+
+/// A suicider in a vest sets it off once the enemy is near enough
+/datum/human_ai_action/prime_vest
+	id = "prime_vest"
+	intents = list(HAI_INTENT_ENGAGE)
+
+/datum/human_ai_action/prime_vest/get_weight(datum/human_ai_brain/brain)
+	return brain.vest_ready(brain.get_target()) ? 92 : 0
+
+/datum/human_ai_action/prime_vest/trigger(datum/human_ai_brain/brain)
+	var/obj/item/clothing/suit/storage/marine/bombvest/vest = brain.vest_ready(brain.get_target())
+	return vest ? brain.prime_vest(vest) : FALSE
+
 /// The members of the group with the ones whose job it is to go round the side first
 /datum/human_ai_squad/proc/flankers_first(list/group)
 	var/list/ordered = list()

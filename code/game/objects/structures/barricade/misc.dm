@@ -170,6 +170,8 @@
 
 /obj/structure/barricade/barbedwire/Crossed(atom/movable/AM)
 	. = ..()
+	if(!isliving(AM))
+		return
 	var/mob/living/L = AM
 	if(build_state == BARRICADE_BSTATE_SECURED)
 		var/new_slowdown = L.next_move_slowdown + 16

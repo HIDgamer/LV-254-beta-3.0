@@ -28,6 +28,8 @@ GLOBAL_LIST_EMPTY(ai_human_list)
 	var/inferred_role = human_ai_role_for_job(human.job)
 	if(!inferred_role && isworkingjoe(human))
 		inferred_role = "working_joe"
+	if(!inferred_role)
+		inferred_role = human_ai_role_for_gear(human)
 	if(inferred_role)
 		brain.set_role(inferred_role)
 		brain.role.equip_kit(brain)

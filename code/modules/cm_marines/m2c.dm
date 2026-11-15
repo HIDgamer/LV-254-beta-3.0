@@ -545,20 +545,24 @@
 		user.reset_view(src)
 		if(dir == EAST)
 			diff_x = -16 + user_old_x
-			user.client.pixel_x = viewoffset
-			user.client.pixel_y = 0
+			if(user.client)
+				user.client.pixel_x = viewoffset
+				user.client.pixel_y = 0
 		if(dir == WEST)
 			diff_x = 16 + user_old_x
-			user.client.pixel_x = -viewoffset
-			user.client.pixel_y = 0
+			if(user.client)
+				user.client.pixel_x = -viewoffset
+				user.client.pixel_y = 0
 		if(dir == NORTH)
 			diff_y = -16 + user_old_y
-			user.client.pixel_x = 0
-			user.client.pixel_y = viewoffset
+			if(user.client)
+				user.client.pixel_x = 0
+				user.client.pixel_y = viewoffset
 		if(dir == SOUTH)
 			diff_y = 16 + user_old_y
-			user.client.pixel_x = 0
-			user.client.pixel_y = -viewoffset
+			if(user.client)
+				user.client.pixel_x = 0
+				user.client.pixel_y = -viewoffset
 
 		animate(user, pixel_x=diff_x, pixel_y=diff_y, 0.4 SECONDS)
 	else

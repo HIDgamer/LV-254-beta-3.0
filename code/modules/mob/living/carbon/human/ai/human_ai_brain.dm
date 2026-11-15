@@ -213,10 +213,35 @@
 	var/posts_taken = 0
 	/// Looking for a way round something climbable before climbing it, when the next vault is allowed and how many were made
 	var/climb_detours = 0
+	/// When the last few climbs were made
+	var/list/climb_times
 	/// Detours taken round strung barbed wire on the way to the current goal, and wire cut
 	var/wire_detours = 0
 	var/wire_cuts = 0
 	/// Looks for a way round fire or gas ahead, times it has stood and waited for one to go, and masks it has put on
+	/// The mounted gun it is heading for, when it last looked for one, when it last fired the one it is on, when its burst ends, and what it has done with them
+	var/datum/weakref/emplacement_ref
+	var/next_emplacement_scan = 0
+	var/emplacement_idle_since = 0
+	var/emplacement_burst_until = 0
+	var/emplacement_shots = 0
+	var/emplacements_manned = 0
+	/// Walling up a held area: the openings found, those given up on, the furniture being broken up and given up on, when to try again and what has been done
+	var/list/opening_cache
+	var/opening_cache_until = 0
+	var/list/skipped_openings
+	var/datum/weakref/scrap_ref
+	var/list/skipped_scrap
+	var/next_fortify_time = 0
+	var/openings_walled = 0
+	var/scrapped = 0
+	/// Serving a mortar: the gun, when it looked for one, the place being fired at and the shells left for it, when to take another mission and the shells fired
+	var/datum/weakref/mortar_ref
+	var/next_mortar_scan = 0
+	var/turf/mortar_mission
+	var/mortar_mission_shells = 0
+	var/next_mortar_mission = 0
+	var/mortar_shells_fired = 0
 	var/hazard_detours = 0
 	var/hazard_waits = 0
 	var/gas_masks = 0

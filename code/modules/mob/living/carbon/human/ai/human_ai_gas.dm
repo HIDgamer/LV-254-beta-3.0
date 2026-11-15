@@ -24,6 +24,9 @@ GLOBAL_LIST_INIT(human_ai_burning_gases, typecacheof(list(
 /// Turfs whose fire or gas was reported to the native pathfinder lately, so a cloud of thirty tiles is not reported thirty times by every brain around it
 GLOBAL_LIST_EMPTY(human_ai_hazard_marks)
 
+/// When the list of reported turfs is next cleaned of the ones that went stale
+GLOBAL_VAR_INIT(human_ai_hazard_prune_at, 0)
+
 /// Whether what the body wears keeps nerve gas, tear gas and the like out of its lungs
 /datum/human_ai_brain/proc/gas_protected()
 	var/obj/item/mask = body.wear_mask
@@ -113,7 +116,8 @@ GLOBAL_LIST_EMPTY(human_ai_hazard_marks)
 	var/last_told = GLOB.human_ai_hazard_marks[hazard]
 	if(last_told && world.time < last_told + HAI_HAZARD_REPORT_GAP)
 		return
-	if(length(GLOB.human_ai_hazard_marks) > 400)
+	if(length(GLOB.human_ai_hazard_marks) > 400 && world.time >= GLOB.human_ai_hazard_prune_at)
+		GLOB.human_ai_hazard_prune_at = world.time + HAI_HAZARD_REPORT_GAP
 		for(var/turf/old as anything in GLOB.human_ai_hazard_marks)
 			if(world.time >= GLOB.human_ai_hazard_marks[old] + HAI_HAZARD_REPORT_GAP)
 				GLOB.human_ai_hazard_marks -= old

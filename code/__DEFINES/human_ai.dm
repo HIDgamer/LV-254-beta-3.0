@@ -465,6 +465,22 @@
 
 /// Sheets one metal barricade costs, deciseconds it takes to build, free turfs the builder must keep around it, mines laid per order.
 #define HAI_BARRICADE_COST 4
+/// Walling up the openings of a held area: how long the list of openings is kept, how far from itself a unit breaks up furniture and how long that takes, how long it waits before it tries again with nothing to build from, and how many openings it walls up.
+#define HAI_OPENING_CACHE (5 SECONDS)
+#define HAI_SCRAP_RANGE 7
+#define HAI_SCRAP_TIME (3 SECONDS)
+#define HAI_FORTIFY_RETRY (30 SECONDS)
+#define HAI_OPENINGS_MAX 6
+/// Mortar crews: how far a man looks for a mortar and how often, how near to the gun an enemy may be and how near to a friend before a shell is not fired at it, how old a sighting may be,
+/// the wait between two fire missions, the shells of one, and how close an enemy has to be for the crewman to deal with it himself.
+#define HAI_MORTAR_RANGE 14
+#define HAI_MORTAR_SCAN_GAP (4 SECONDS)
+#define HAI_MORTAR_MIN_DISTANCE 8
+#define HAI_MORTAR_SAFE_RADIUS 6
+#define HAI_MORTAR_SPOT_AGE (8 SECONDS)
+#define HAI_MORTAR_COOLDOWN (25 SECONDS)
+#define HAI_MORTAR_SHELLS 3
+#define HAI_MORTAR_SELF_DEFENSE 6
 #define HAI_BUILD_TIME 40
 #define HAI_ROOM_NEEDED 14
 #define HAI_MAX_MINES 3
@@ -555,6 +571,20 @@
 #define HAI_DETOUR_MEMORY (12 SECONDS)
 #define HAI_VAULT_COOLDOWN (6 SECONDS)
 #define HAI_CLIMB_DETOURS 2
+/// Climbs a brain makes in HAI_CLIMB_WINDOW before it stays on its side of the next ledge for HAI_CLIMB_REST, unless it is running for its life.
+#define HAI_CLIMB_BURST 4
+#define HAI_CLIMB_WINDOW (40 SECONDS)
+#define HAI_CLIMB_REST (20 SECONDS)
+/// Mounted machineguns: how far a unit looks for one, the time between looks, how long it stays on the gun with nothing to shoot at, the rounds and time of a burst, how old a sighting may be for the gun to be worth manning,
+/// how close an enemy may be before the unit stays with its own weapon, and the share of its health a gun must have left to be worth going to.
+#define HAI_EMPLACEMENT_RANGE 7
+#define HAI_EMPLACEMENT_SCAN_GAP (3 SECONDS)
+#define HAI_EMPLACEMENT_IDLE (20 SECONDS)
+#define HAI_EMPLACEMENT_BURST 6
+#define HAI_EMPLACEMENT_BURST_TIME (4 SECONDS)
+#define HAI_EMPLACEMENT_TARGET_AGE (10 SECONDS)
+#define HAI_EMPLACEMENT_MIN_ENEMY 2
+#define HAI_EMPLACEMENT_MIN_HEALTH 0.3
 /// How many times a brain looks for a way round strung barbed wire before it goes through or cuts it, and how long the cutting takes.
 #define HAI_WIRE_DETOURS 2
 #define HAI_WIRE_CUT_TIME (4 SECONDS)
@@ -650,6 +680,9 @@
 
 /// Tiles from the enemy at which a suicider arms its grenade, and the tiles from which a stealth unit that has not been found opens fire.
 #define HAI_BOMBER_RANGE 7
+/// A suicider in an explosive vest sets it off when the enemy is this close, and nobody it fights for may stand this close to the body or to the enemy when it does.
+#define HAI_VEST_RANGE 5
+#define HAI_VEST_SAFE_RADIUS 4
 #define HAI_AMBUSH_RANGE 7
 
 /// The stages of forcing a door with a charge: none under way, planting it, backing off and waiting for it to go off.
