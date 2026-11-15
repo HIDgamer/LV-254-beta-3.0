@@ -17,6 +17,8 @@
 	item_state = "welding"
 	matter = list("metal" = 3000, "glass" = 1000)
 	var/up = 0
+	/// Whether the mask has a hinge to flip it up with, the reinforced ones do not and have no sprite for it
+	var/can_flip = TRUE
 	armor_melee = CLOTHING_ARMOR_LOW
 	armor_bullet = CLOTHING_ARMOR_NONE
 	armor_laser = CLOTHING_ARMOR_NONE
@@ -42,6 +44,10 @@
 	set category = "Object"
 	set name = "Adjust welding mask"
 	set src in usr
+
+	if(!can_flip)
+		to_chat(usr, SPAN_WARNING("[src] has no hinge, it cannot be flipped up."))
+		return
 
 	if(usr.is_mob_incapacitated())
 		return
@@ -84,6 +90,7 @@
 	armor_bullet = CLOTHING_ARMOR_ULTRAHIGH
 	armor_internaldamage = CLOTHING_ARMOR_ULTRAHIGH
 	flags_inv_hide = HIDEEARS|HIDEALLHAIR|HIDEEYES
+	can_flip = FALSE
 	actions_types = list()
 	vision_impair = VISION_IMPAIR_MIN
 
@@ -96,6 +103,7 @@
 	armor_bullet = CLOTHING_ARMOR_ULTRAHIGH
 	armor_internaldamage = CLOTHING_ARMOR_ULTRAHIGH
 	flags_inv_hide = HIDEEARS|HIDEALLHAIR|HIDEEYES
+	can_flip = FALSE
 	actions_types = list()
 	vision_impair = VISION_IMPAIR_MED
 

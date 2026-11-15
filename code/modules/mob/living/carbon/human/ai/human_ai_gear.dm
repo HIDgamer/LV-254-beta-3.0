@@ -111,7 +111,9 @@ GLOBAL_LIST_EMPTY(human_ai_lit_lamps)
 /datum/human_ai_brain/proc/weld_gear()
 	RETURN_TYPE(/obj/item)
 	if(istype(body.head, /obj/item/clothing/head/welding))
-		return body.head
+		var/obj/item/clothing/head/welding/mask = body.head
+		if(mask.can_flip)
+			return mask
 	if(istype(body.glasses, /obj/item/clothing/glasses/welding))
 		return body.glasses
 	if(istype(body.head, /obj/item/clothing/head/helmet/marine))

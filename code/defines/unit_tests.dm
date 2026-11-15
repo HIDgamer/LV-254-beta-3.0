@@ -89,6 +89,7 @@
 #include "..\modules\unit_tests\emote_panels.dm"
 #include "..\modules\unit_tests\gunpoint_button.dm"
 #include "..\modules\unit_tests\missing_icons.dm"
+#include "..\modules\unit_tests\welding_mask_flip.dm"
 #include "..\modules\unit_tests\movement_golden.dm"
 #include "..\modules\unit_tests\human_ai_aid.dm"
 #include "..\modules\unit_tests\human_ai_basics.dm"
