@@ -242,6 +242,34 @@
 	var/mortar_mission_shells = 0
 	var/next_mortar_mission = 0
 	var/mortar_shells_fired = 0
+	/// Riding in a vehicle: which one, whether the body drives it or only sits in it, where it is going and the route there, and when the ride began
+	var/datum/weakref/ride_ref
+	var/ride_role
+	var/turf/ride_goal
+	var/list/ride_path
+	var/ride_path_at = 0
+	var/ride_blocked = 0
+	var/ride_started = 0
+	var/ride_wait_until = 0
+	var/ride_orphaned_since = 0
+	var/next_ride_alarm = 0
+	/// Looking for a vehicle: when it looked last, the one it found and what it would do in it, when it may look again after a ride and the vehicles it has left alone
+	var/next_ride_scan = 0
+	var/datum/weakref/ride_pick_ref
+	var/ride_pick_role
+	var/ride_cooldown_until = 0
+	var/list/ride_skipped
+	var/rides = 0
+	var/drive_steps = 0
+	/// An enemy seen on the level below through a gap in the floor: who, the gap it is seen through, where it stood, when, when to look again and how long the hunt for it goes on
+	var/datum/weakref/below_ref
+	var/turf/below_gap
+	var/turf/below_turf
+	var/below_seen_time = 0
+	var/next_below_scan = 0
+	var/below_hunt_until = 0
+	var/below_blocked_until = 0
+	var/plunges = 0
 	var/hazard_detours = 0
 	var/hazard_waits = 0
 	var/gas_masks = 0
@@ -419,6 +447,14 @@
 	last_cover_object = null
 	hazard_turf = null
 	escape_goal = null
+	ride_ref = null
+	ride_goal = null
+	ride_path = null
+	ride_pick_ref = null
+	ride_skipped = null
+	below_ref = null
+	below_gap = null
+	below_turf = null
 	target_memo = null
 	hive_cache = null
 	cover_memo_here = null
@@ -589,6 +625,10 @@
 		return
 	if(body.is_mob_incapacitated())
 		return
+	// A man in a vehicle has nothing to do but ride it and drive it, what is outside is not his to see
+	if(ride_ref)
+		ride_think()
+		return
 	validate_target()
 	check_order()
 	tidy_hands()
@@ -631,7 +671,7 @@
 
 /datum/human_ai_brain/proc/update_tier()
 	var/wanted = HAI_TIER_IDLE
-	if(get_target() || waypoint || investigate_turf || (follow_ref && move_state == HAI_MOVE_WALKING) || (current_order && move_state == HAI_MOVE_WALKING) || hazard_turf)
+	if(ride_ref || get_target() || waypoint || investigate_turf || (follow_ref && move_state == HAI_MOVE_WALKING) || (current_order && move_state == HAI_MOVE_WALKING) || hazard_turf)
 		wanted = HAI_TIER_ENGAGED
 	else if(follow_ref || current_order || alert_until > world.time)
 		wanted = HAI_TIER_ALERT

@@ -4,17 +4,15 @@
  */
 GLOBAL_LIST_INIT(human_ai_squad_templates, list(
 	"uscm_fireteam" = list("name" = "USCM fireteam", "members" = list(
-		list("job" = "USCM Squad Leader (Equipped)", "count" = 1),
-		list("job" = "USCM Squad Rifleman (Equipped)", "count" = 3),
-		list("job" = "USCM Squad Smartgunner (Equipped)", "count" = 1),
-		list("job" = "USCM Squad Hospital Corpsman (Equipped)", "count" = 1),
+		list("job" = "Falling Falcons Squad Leader (Equipped)", "count" = 1),
+		list("job" = "Falling Falcons Squad Rifleman (Equipped)", "count" = 4),
+		list("job" = "Falling Falcons Squad Hospital Corpsman (Equipped)", "count" = 1),
 	)),
 	"uscm_heavy" = list("name" = "USCM heavy section", "members" = list(
-		list("job" = "USCM Squad Leader (Equipped)", "count" = 1),
-		list("job" = "USCM Squad Rifleman (Equipped)", "count" = 2),
-		list("job" = "USCM Squad Weapons Specialist (Equipped)", "count" = 1),
-		list("job" = "USCM Squad Smartgunner (Equipped)", "count" = 1),
-		list("job" = "USCM Squad Combat Technician (Equipped)", "count" = 1),
+		list("job" = "Falling Falcons Squad Leader (Equipped)", "count" = 1),
+		list("job" = "Falling Falcons Squad Rifleman (Equipped)", "count" = 3),
+		list("job" = "Falling Falcons Squad Weapons Specialist (Equipped)", "count" = 1),
+		list("job" = "Falling Falcons Squad Combat Technician (Equipped)", "count" = 1),
 	)),
 	"upp_squad" = list("name" = "UPP rifle squad", "members" = list(
 		list("job" = "UPP Squad Leader", "count" = 1),
@@ -31,14 +29,55 @@ GLOBAL_LIST_INIT(human_ai_squad_templates, list(
 		list("job" = "Weyland-Yutani PMC (Corporate Medic)", "count" = 1),
 	)),
 	"clf_cell" = list("name" = "CLF cell", "members" = list(
-		list("job" = "CLF Leader", "count" = 1),
-		list("job" = "CLF Soldier", "count" = 4),
-		list("job" = "CLF Specialist", "count" = 1),
-		list("job" = "CLF Engineer", "count" = 1),
-		list("job" = "CLF Medic", "count" = 1),
+		list("job" = "Insurgent Leader", "count" = 1),
+		list("job" = "Insurgent Soldier", "count" = 4),
+		list("job" = "Insurgent Field Specialist", "count" = 1),
+		list("job" = "Insurgent Engineer", "count" = 1),
+		list("job" = "Insurgent Medic", "count" = 1),
 	)),
 	"colony_security" = list("name" = "Colony security detail", "members" = list(
 		list("job" = "Colonist - Security", "count" = 4),
+	)),
+	"gangster_crew" = list("name" = "Gangster crew", "members" = list(
+		list("job" = "Gangster Leader(generic)", "count" = 1),
+		list("job" = "Gangster(generic)", "count" = 3),
+		list("job" = "Gangster elite(generic)", "count" = 1),
+	)),
+	"clown_gang" = list("name" = "Clown gang", "members" = list(
+		list("job" = "Gangster Leader(clown !!silly!!)", "count" = 1),
+		list("job" = "Gangster(clown)", "count" = 3),
+		list("job" = "Gangster(clown !!silly!!)", "count" = 1),
+	)),
+	"biker_gang" = list("name" = "Backbiters biker gang", "members" = list(
+		list("job" = "Gangster Leader(Backbiter)", "count" = 1),
+		list("job" = "Gangster(Backbiter)", "count" = 3),
+		list("job" = "Gangster elite(Backbiter)", "count" = 1),
+	)),
+	"yakuza_clan" = list("name" = "Yakuza clan", "members" = list(
+		list("job" = "Gangster Leader(Yakuza)", "count" = 1),
+		list("job" = "Gangster(Yakuza)", "count" = 3),
+		list("job" = "Gangster elite(Yakuza)", "count" = 1),
+	)),
+	"dionysus_cult" = list("name" = "Children of Dionysus", "members" = list(
+		list("job" = "Gangster Leader(Dionysus-Male)", "count" = 1),
+		list("job" = "Gangster(Dionysus-Male)", "count" = 2),
+		list("job" = "Gangster(Dionysus-Female)", "count" = 2),
+		list("job" = "Gangster elite(Dionysus-Female)", "count" = 1),
+	)),
+	"syndicate_cell" = list("name" = "Syndicate cell", "members" = list(
+		list("job" = "Syndicate Operative", "count" = 4),
+	)),
+	"scav_pack" = list("name" = "Scav pack", "members" = list(
+		list("job" = "S.T.A.L.K.E.R.", "count" = 1),
+		list("job" = "S.T.A.L.K.E.R. Elite", "count" = 3),
+	)),
+	"iron_bear_team" = list("name" = "Iron Bear team", "members" = list(
+		list("job" = "Iron Bear PMC", "count" = 1),
+		list("job" = "Iron Bear PMC 2", "count" = 4),
+	)),
+	"diamond_dogs" = list("name" = "Diamond Dogs", "members" = list(
+		list("job" = "Diamond Dogs - Snake(Warlord)", "count" = 1),
+		list("job" = "Diamond Dogs PMC", "count" = 4),
 	)),
 ))
 

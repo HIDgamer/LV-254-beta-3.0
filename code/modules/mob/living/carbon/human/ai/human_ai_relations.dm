@@ -6,6 +6,17 @@ GLOBAL_LIST_INIT(human_ai_sides, list(
 	"wy" = list(FACTION_PMC, FACTION_WY, FACTION_HYPERDYNE),
 	"deathsquad" = list(FACTION_WY_DEATHSQUAD),
 	"pirate" = list(FACTION_PIRATE),
+	// The gangs each stand alone, they do not stand with each other
+	"gangster" = list(FACTION_GANGSTER),
+	"clown" = list(FACTION_CLOWN_GANG),
+	"biker" = list(FACTION_BIKER_GANG),
+	"yakuza" = list(FACTION_YAKUZA),
+	"dionysus" = list(FACTION_DIONYSUS),
+	"syndicate" = list(FACTION_SYNDICATE),
+	// The scavs and the warlords who run them
+	"scav" = list(FACTION_SCAV, FACTION_WARLORD),
+	"iron_bear" = list(FACTION_WAGNER),
+	"diamond_dogs" = list(FACTION_DIAMOND_DOG),
 ))
 
 /// Pairs of sides that shoot at each other
@@ -20,6 +31,23 @@ GLOBAL_LIST_INIT(human_ai_hostile_sides, list(
 	list("deathsquad", "clf"),
 	list("pirate", "uscm"),
 	list("pirate", "upp"),
+	// Crooks have no friends among the army and the law, and the Syndicate has none among the corporations either
+	list("gangster", "uscm"),
+	list("clown", "uscm"),
+	list("biker", "uscm"),
+	list("yakuza", "uscm"),
+	list("dionysus", "uscm"),
+	list("syndicate", "uscm"),
+	list("syndicate", "wy"),
+	// The scavs shoot at anyone who walks into their ground, and at the Iron Bears first. The UPP is left alone, Crazy Ivan is its own warlord (see init_human_ai_relations)
+	list("scav", "uscm"),
+	list("scav", "wy"),
+	list("scav", "deathsquad"),
+	list("scav", "iron_bear"),
+	list("iron_bear", "uscm"),
+	list("iron_bear", "clf"),
+	list("iron_bear", "diamond_dogs"),
+	list("diamond_dogs", "deathsquad"),
 ))
 
 /// Faction to the faction to how the first regards the second, only pairs that are not neutral are stored
@@ -46,6 +74,10 @@ GLOBAL_LIST_INIT(human_ai_faction_roe, list(
 	for(var/civilian_faction in list(FACTION_COLONIST, FACTION_SURVIVOR))
 		for(var/protector in GLOB.human_ai_sides["uscm"])
 			set_human_ai_relation(relations, civilian_faction, protector, HAI_REL_FRIENDLY)
+	// Crazy Ivan is a warlord of the scavs and an armsmaster of the UPP at once, so the UPP stands with him
+	for(var/upp_faction in GLOB.human_ai_sides["upp"])
+		set_human_ai_relation(relations, FACTION_WARLORD, upp_faction, HAI_REL_FRIENDLY)
+		set_human_ai_relation(relations, upp_faction, FACTION_WARLORD, HAI_REL_FRIENDLY)
 	for(var/list/pair in GLOB.human_ai_hostile_sides)
 		for(var/faction in GLOB.human_ai_sides[pair[1]])
 			for(var/other in GLOB.human_ai_sides[pair[2]])

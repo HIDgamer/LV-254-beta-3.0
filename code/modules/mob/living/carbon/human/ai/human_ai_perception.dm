@@ -45,6 +45,7 @@
 	decay_contacts(seconds)
 	prune_watch()
 	select_target()
+	scan_below(here)
 
 /// Updates what the body knows about a subject in view, false when it has no room to remember a new one
 /datum/human_ai_brain/proc/note_candidate(mob/living/candidate, turf/here, seconds, datum/ai_contact/contact)

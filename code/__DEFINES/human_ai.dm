@@ -815,3 +815,32 @@
 #define NPC_AI_HUMAN "human"
 #define NPC_AI_ZOMBIE "zombie"
 #define NPC_AI_XENO "xeno"
+
+/// Riding and driving: how far a goal has to be for a vehicle to be worth it, how far a unit looks for one, how often, and how near the enemy a ride ends.
+#define HAI_RIDE_MIN_DISTANCE 28
+#define HAI_RIDE_SCAN_RANGE 12
+#define HAI_RIDE_SCAN_GAP (3 SECONDS)
+#define HAI_RIDE_CONTACT_RANGE 10
+#define HAI_RIDE_ALARM_GAP (1 SECONDS)
+#define HAI_RIDE_ARRIVE 5
+/// How many times in a row the way is blocked before the driver gives the vehicle up
+#define HAI_RIDE_STUCK 5
+#define HAI_RIDE_MAX_TIME (4 MINUTES)
+#define HAI_RIDE_WAIT (12 SECONDS)
+#define HAI_RIDE_ORPHAN (5 SECONDS)
+#define HAI_RIDE_UNLOAD_TIME (15 SECONDS)
+#define HAI_RIDE_PATH_AGE (15 SECONDS)
+/// How long after a ride the unit does not look for another, and how long the vehicle it left is not taken again
+#define HAI_RIDE_REBOARD (30 SECONDS)
+#define HAI_RIDE_SKIP (2 MINUTES)
+/// The share of its health a vehicle has to be left with for its riders to stay in it
+#define HAI_RIDE_WRECK 0.35
+
+/// Enemies on the level below, seen through a gap in the floor: how far a gap is looked through, how often, how long a sighting is believed, how long a hunt for it lasts, and how near a friend may be to what is dropped on it.
+#define HAI_BELOW_RANGE 8
+#define HAI_BELOW_SCAN_GAP (2 SECONDS)
+#define HAI_BELOW_MEMORY (12 SECONDS)
+#define HAI_BELOW_FRESH (4 SECONDS)
+#define HAI_BELOW_HUNT_TIME (30 SECONDS)
+#define HAI_BELOW_SAFE_RADIUS 3
+#define HAI_BELOW_GRENADE_MIN 2

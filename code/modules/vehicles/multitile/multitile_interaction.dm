@@ -393,8 +393,13 @@
 	hardpoint.start_fire(source, object, location, control, params)
 
 /obj/vehicle/multitile/proc/handle_player_entrance(mob/M)
-	if(!M || M.client == null)
+	if(!M)
 		return
+	if(M.client == null)
+		// A man with an AI of his own climbs in as well as one at a keyboard does
+		var/mob/living/carbon/human/rider = M
+		if(!istype(rider) || !rider.ai_brain)
+			return
 
 	var/mob_x = M.x - src.x
 	var/mob_y = M.y - src.y

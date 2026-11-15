@@ -144,6 +144,10 @@
 	var/direction = get_dir(here, next_turf)
 	if(!direction)
 		return FALSE
+	// A gap in the floor is a fall to the level below, which is not a way to anywhere
+	if(istype(next_turf, /turf/open_space))
+		remember_blocked(next_turf, "a drop")
+		return FALSE
 	body.set_step_glide(body.move_delay)
 	if(!step(body, direction))
 		return FALSE

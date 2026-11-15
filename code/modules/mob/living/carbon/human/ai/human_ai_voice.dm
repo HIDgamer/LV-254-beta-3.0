@@ -22,8 +22,14 @@ GLOBAL_LIST_INIT(human_ai_voices, init_human_ai_voices())
 			voice_id = "upp"
 		if(FACTION_PMC, FACTION_WY, FACTION_HYPERDYNE, FACTION_WY_DEATHSQUAD, FACTION_CONTRACTOR)
 			voice_id = "corporate"
-		if(FACTION_CLF, FACTION_PIRATE, FACTION_MERCENARY, FACTION_FREELANCER, FACTION_DUTCH)
+		if(FACTION_CLF, FACTION_PIRATE)
 			voice_id = "rebel"
+		if(FACTION_MERCENARY, FACTION_FREELANCER, FACTION_DUTCH, FACTION_PINKERTON, FACTION_WAGNER, FACTION_DIAMOND_DOG)
+			voice_id = "mercenary"
+		if(FACTION_GANGSTER, FACTION_CLOWN_GANG, FACTION_BIKER_GANG, FACTION_YAKUZA, FACTION_DIONYSUS, FACTION_SYNDICATE)
+			voice_id = "underworld"
+		if(FACTION_SCAV, FACTION_WARLORD)
+			voice_id = "scav"
 		if(FACTION_MARSHAL, FACTION_NSPA, FACTION_PAP)
 			voice_id = "police"
 		if(FACTION_COLONIST, FACTION_SURVIVOR, FACTION_NEUTRAL)
@@ -193,6 +199,73 @@ GLOBAL_LIST_INIT(human_ai_voices, init_human_ai_voices())
 	convos = list(
 		list("Think we'll win this?", "We'd better, we've got nowhere else to go."),
 		list("Got any smokes left?", "Last pack went three days ago."),
+	)
+
+/datum/human_ai_voice/mercenary
+	id = "mercenary"
+	lines = list(
+		"contact" = list("Contact, %dir%!", "Hostiles, %dir%! Weapons free!", "Movement %dir%, get ready!"),
+		"reload" = list("Reloading, cover me!", "Mag change!", "Dry, reloading!"),
+		"frag" = list("Frag out!", "Grenade, get down!", "Fire in the hole!"),
+		"man_down" = list("Merc down!", "We've got a casualty!", "Man down, I need cover!"),
+		"medic" = list("Medic! Somebody!", "I'm hit, patch me up!", "Medic, over here!"),
+		"fall_back" = list("Fall back, this isn't worth the pay!", "Pull back, regroup!", "Break contact, move!"),
+		"challenge" = list("Stop right there!", "Hands up, slowly!", "Weapons down, now!"),
+		"kill" = list("Contract's a contract.", "Target down.", "That's one."),
+		"ack" = list("Copy.", "On it.", "Understood."),
+	)
+	flavor = list(
+		"professional" = list("taunt" = list("Nothing personal.", "It's just business.")),
+		"ruthless" = list("taunt" = list("Pay's better when you don't make it.", "Should've asked for more money.")),
+	)
+	convos = list(
+		list("Is the contract worth it?", "Ask me again when I'm alive tomorrow."),
+		list("When do we get paid?", "After we're out of here, so move."),
+	)
+
+/datum/human_ai_voice/underworld
+	id = "underworld"
+	lines = list(
+		"contact" = list("Someone's on our turf, %dir%!", "Got company, %dir%!", "Heads up, %dir%!"),
+		"reload" = list("Reloading!", "Empty, hold on!", "Need a sec, reloading!"),
+		"frag" = list("Eat this!", "Grenade out!", "Boom, baby!"),
+		"man_down" = list("They got one of ours!", "We got a man down!", "Boss, they got one of us!"),
+		"medic" = list("I'm bleeding here!", "Somebody patch me up!", "I need a doc, now!"),
+		"fall_back" = list("Scatter! Scatter!", "Get out of here, move it!", "Run for it!"),
+		"challenge" = list("Hey! Hands where I can see 'em!", "This is our turf, back off!", "Not another step!"),
+		"kill" = list("That's what you get.", "Nobody crosses us.", "Sleep tight."),
+		"ack" = list("Sure thing, boss.", "Got it.", "Yeah, yeah."),
+	)
+	flavor = list(
+		"reckless" = list("battle_cry" = list("Let's get 'em!", "Take 'em down!", "Nobody leaves!")),
+		"hostile" = list("taunt" = list("You picked the wrong street.", "Nobody here to save you.")),
+		"zealot" = list("battle_cry" = list("For the cause!", "Give them to the god!", "Blood for the clan!")),
+	)
+	convos = list(
+		list("Think the boss'll pay out for this?", "If we live to see Friday."),
+		list("Who's buying after this?", "Not me."),
+	)
+
+/datum/human_ai_voice/scav
+	id = "scav"
+	lines = list(
+		"contact" = list("Movement, %dir%. Eyes up!", "Outsiders, %dir%!", "Got something, %dir%!"),
+		"reload" = list("Changing mag.", "Dry, reloading.", "Mag out, cover me."),
+		"frag" = list("Grenade!", "Pineapple out!", "Take cover!"),
+		"man_down" = list("Stalker down!", "They got one of us!", "Man down, man down!"),
+		"medic" = list("Need a bandage!", "I'm hit, anyone got a medkit?", "Bleeding out here!"),
+		"fall_back" = list("Back to the zone, move!", "Fall back, fall back!", "Pull out, pull out!"),
+		"challenge" = list("Stop right there, stranger.", "Drop it, outsider!", "Not another step, stalker."),
+		"kill" = list("Another one for the zone.", "Down.", "The zone takes another."),
+		"ack" = list("Yeah.", "Got it.", "Moving."),
+	)
+	flavor = list(
+		"paranoid" = list("taunt" = list("I knew somebody was out there.", "Told you I heard something.")),
+		"hostile" = list("taunt" = list("Nobody walks through here.", "This is our ground.")),
+	)
+	convos = list(
+		list("Did you hear that?", "Just the wind. Keep your eyes open."),
+		list("Found anything out here?", "Nothing but rust."),
 	)
 
 /datum/human_ai_voice/police

@@ -154,7 +154,8 @@ SUBSYSTEM_DEF(xeno_pathfinding)
  * check below since an unslashable door is a door, but the AI must treat it like a wall instead.
  */
 /datum/controller/subsystem/xeno_pathfinding/proc/turf_cell_code(turf/scanned)
-	if(!scanned || scanned.density)
+	// A gap in the floor is a drop to the level below, nothing a route is to lead across
+	if(!scanned || scanned.density || istype(scanned, /turf/open_space))
 		return "1"
 	var/has_obstacle = FALSE
 	var/has_border = FALSE

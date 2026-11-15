@@ -53,7 +53,7 @@
 	name = "Iron Bear PMC 2"
 	paygrades = list(PAY_SHORT_STLK = JOB_PLAYTIME_TIER_0)
 	flags = EQUIPMENT_PRESET_EXTRA
-	assignment = "Iron Bear
+	assignment = "Iron Bear"
 	skills = /datum/skills/freelancer
 	languages = list(LANGUAGE_RUSSIAN, LANGUAGE_ENGLISH)
 	faction = FACTION_WAGNER
