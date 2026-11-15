@@ -42,6 +42,10 @@
 	set name = "Hold Up"
 	set category = "IC"
 
+	hold_up_prompt()
+
+/// Asks who in sight to hold at gunpoint with the gun in the active hand
+/mob/living/carbon/human/proc/hold_up_prompt()
 	if(!istype(get_active_hand(), /obj/item/weapon/gun))
 		to_chat(src, SPAN_WARNING("You need a gun in your active hand to hold someone up."))
 		return
@@ -71,3 +75,18 @@
 		to_chat(src, SPAN_WARNING("You are not holding anyone at gunpoint."))
 		return
 	lower_aim()
+
+/// The button on the HUD for the Hold Up verb, pressed again while someone is held it lowers the aim
+/datum/action/human_action/hold_up
+	name = "Hold Up"
+	action_icon_state = "spotter_target"
+
+/datum/action/human_action/hold_up/action_activate()
+	. = ..()
+	var/mob/living/carbon/human/holder = owner
+	if(!istype(holder))
+		return
+	if(holder.GetComponent(/datum/component/gunpoint))
+		holder.lower_aim()
+		return
+	holder.hold_up_prompt()
