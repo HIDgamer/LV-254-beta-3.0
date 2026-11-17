@@ -14,15 +14,37 @@
 	var/obj/vehicle/multitile/vehicle = ride_ref?.resolve()
 	return (vehicle && !QDELETED(vehicle)) ? vehicle : null
 
-/// Whether the body is inside the interior of the vehicle
-/datum/human_ai_brain/proc/is_inside(obj/vehicle/multitile/vehicle)
-	var/turf/here = get_turf(body)
-	if(!here || !vehicle.interior?.reservation)
+/// Whether the thing, a man or anything else, is inside the interior of this vehicle
+/obj/vehicle/multitile/proc/ai_contains(atom/movable/thing)
+	var/turf/there = get_turf(thing)
+	if(!there || !interior?.reservation)
 		return FALSE
-	var/list/bounds = vehicle.interior.get_bound_turfs()
+	var/list/bounds = interior.get_bound_turfs()
 	var/turf/low = bounds[1]
 	var/turf/high = bounds[2]
-	return here.z == low.z && here.x >= low.x && here.x <= high.x && here.y >= low.y && here.y <= high.y
+	return there.z == low.z && there.x >= low.x && there.x <= high.x && there.y >= low.y && there.y <= high.y
+
+/// The vehicle somebody is inside of, null when they are in none
+/proc/human_ai_vehicle_of(atom/movable/thing)
+	RETURN_TYPE(/obj/vehicle/multitile)
+	if(!thing || !length(GLOB.all_multi_vehicles))
+		return null
+	for(var/obj/vehicle/multitile/vehicle as anything in GLOB.all_multi_vehicles)
+		if(!QDELETED(vehicle) && vehicle.ai_contains(thing))
+			return vehicle
+	return null
+
+/// Whether the body is inside the interior of the vehicle
+/datum/human_ai_brain/proc/is_inside(obj/vehicle/multitile/vehicle)
+	return vehicle.ai_contains(body)
+
+/// Whoever the body follows, a player or another unit, null when it follows nobody
+/datum/human_ai_brain/proc/followed_mob()
+	RETURN_TYPE(/mob/living)
+	var/atom/movable/leader = get_follow_target()
+	if(!leader && current_order?.id == "follow" && current_order.status == HAI_ORDER_ACTIVE)
+		leader = current_order.get_target()
+	return (isliving(leader) && !QDELETED(leader)) ? leader : null
 
 /// The turf outside the vehicle at the way in that is nearest to the body, where it has to stand to get in
 /datum/human_ai_brain/proc/entrance_turf_of(obj/vehicle/multitile/vehicle)
@@ -76,14 +98,16 @@
 	return TRUE
 
 /// Whether the vehicle is one this body may take a place in
-/datum/human_ai_brain/proc/ride_allowed(obj/vehicle/multitile/vehicle)
+/datum/human_ai_brain/proc/ride_allowed(obj/vehicle/multitile/vehicle, following = FALSE)
 	if(QDELETED(vehicle) || vehicle.health <= 0 || vehicle.z != body.z || !vehicle.interior?.ready || vehicle.towed_by || vehicle.door_locked)
 		return FALSE
-	// A vehicle without wheels or tracks is a box, nobody gets anywhere in it
-	if(vehicle.move_delay >= VEHICLE_SPEED_STATIC)
-		return FALSE
-	if(ride_skipped?[REF(vehicle)] > world.time)
-		return FALSE
+	// Whoever follows somebody in goes wherever that one does, wheels or not, and is not put off by having got out of it before
+	if(!following)
+		// A vehicle without wheels or tracks is a box, nobody gets anywhere in it
+		if(vehicle.move_delay >= VEHICLE_SPEED_STATIC)
+			return FALSE
+		if(ride_skipped?[REF(vehicle)] > world.time)
+			return FALSE
 	return !vehicle_is_enemy(vehicle)
 
 /**
@@ -93,11 +117,18 @@
 /datum/human_ai_brain/proc/find_ride(turf/goal)
 	if(world.time < next_ride_scan)
 		return !!ride_pick_ref?.resolve()
-	next_ride_scan = world.time + HAI_RIDE_SCAN_GAP
+	var/mob/living/leader = followed_mob()
+	next_ride_scan = world.time + (leader ? HAI_RIDE_FOLLOW_SCAN_GAP : HAI_RIDE_SCAN_GAP)
 	ride_pick_ref = null
 	ride_pick_role = null
 	if(!length(GLOB.all_multi_vehicles))
 		return FALSE
+	// The one being followed got into a vehicle: that is where the way on goes, whether the leader drives it or not
+	var/obj/vehicle/multitile/leader_ride = leader ? human_ai_vehicle_of(leader) : null
+	if(leader_ride && get_dist(body, leader_ride) <= HAI_RIDE_SCAN_RANGE && ride_allowed(leader_ride, TRUE) && leader_ride.interior.passengers_taken_slots < leader_ride.interior.passengers_slots)
+		ride_pick_ref = WEAKREF(leader_ride)
+		ride_pick_role = "passenger"
+		return TRUE
 	var/far_goal = goal && goal.z == body.z && get_dist(body, goal) >= HAI_RIDE_MIN_DISTANCE
 	var/obj/vehicle/multitile/best
 	var/best_role
@@ -188,6 +219,10 @@
 	ride_started = world.time
 	ride_orphaned_since = 0
 	ride_wait_until = (driving && squad) ? world.time + HAI_RIDE_WAIT : 0
+	// Somebody who follows a man into a vehicle rides for as long as that man does
+	var/mob/living/leader = followed_mob()
+	ride_leader_ref = (!driving && leader && vehicle.ai_contains(leader)) ? WEAKREF(leader) : null
+	ride_rejoin = FALSE
 	rides++
 	reset_progress()
 	log_decision("got into [vehicle] as [ride_role]")
@@ -211,14 +246,17 @@
 
 /// The ride is over, nothing is left of it but the memory that the vehicle is not worth getting back into for a while
 /datum/human_ai_brain/proc/end_ride(obj/vehicle/multitile/vehicle)
-	if(vehicle)
+	// Getting out because the one being followed did is no reason to leave that vehicle alone, the leader may get back in
+	if(vehicle && !ride_rejoin)
 		LAZYSET(ride_skipped, REF(vehicle), world.time + HAI_RIDE_SKIP)
 	ride_ref = null
+	ride_leader_ref = null
 	ride_role = null
 	ride_goal = null
 	ride_path = null
 	ride_blocked = 0
-	ride_cooldown_until = world.time + HAI_RIDE_REBOARD
+	ride_cooldown_until = world.time + (ride_rejoin ? HAI_RIDE_REJOIN : HAI_RIDE_REBOARD)
+	ride_rejoin = FALSE
 	next_step_time = 0
 	reset_progress()
 
@@ -241,6 +279,13 @@
 	if(vehicle.health <= 0 || vehicle.health < initial(vehicle.health) * HAI_RIDE_WRECK)
 		return "the vehicle is falling apart"
 	if(ride_role != "driver")
+		// Along with somebody being followed, the ride is over when that one's is
+		if(ride_leader_ref)
+			var/mob/living/leader = ride_leader_ref.resolve()
+			if(!leader || QDELETED(leader) || leader.stat == DEAD || !vehicle.ai_contains(leader))
+				ride_rejoin = TRUE
+				return "the one being followed got out"
+			return null
 		var/mob/living/pilot = vehicle.seats[VEHICLE_DRIVER]
 		if(!pilot || pilot.stat != CONSCIOUS)
 			if(!ride_orphaned_since)

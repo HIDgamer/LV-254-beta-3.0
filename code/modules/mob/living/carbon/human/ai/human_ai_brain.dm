@@ -244,6 +244,9 @@
 	var/mortar_shells_fired = 0
 	/// Riding in a vehicle: which one, whether the body drives it or only sits in it, where it is going and the route there, and when the ride began
 	var/datum/weakref/ride_ref
+	/// Who the body is riding along with, set when it got in because somebody it follows did, and whether it got out because that one did
+	var/datum/weakref/ride_leader_ref
+	var/ride_rejoin = FALSE
 	var/ride_role
 	var/turf/ride_goal
 	var/list/ride_path
@@ -447,6 +450,7 @@
 	last_cover_object = null
 	hazard_turf = null
 	escape_goal = null
+	ride_leader_ref = null
 	ride_ref = null
 	ride_goal = null
 	ride_path = null

@@ -264,6 +264,10 @@
 
 /// Keeps the body in its formation slot behind the leader
 /datum/human_ai_brain/proc/follow_leader(atom/leader, slot = 0)
+	// A leader inside a vehicle is on a level of its own, the way on is to get in after them, which is what the board action is for
+	var/turf/leader_turf = get_turf(leader)
+	if(isliving(leader) && leader_turf && leader_turf.z != body.z && human_ai_vehicle_of(leader))
+		return FALSE
 	var/turf/slot_turf = formation_turf(leader, slot)
 	if(!slot_turf)
 		return FALSE

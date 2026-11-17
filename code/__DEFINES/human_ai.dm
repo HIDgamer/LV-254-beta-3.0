@@ -852,3 +852,7 @@
 #define HAI_SIGNAL_LEADER 0.75
 #define HAI_SIGNAL_OFFICER 0.9
 #define HAI_SIGNAL_ANSWERS 10
+
+/// Following somebody into a vehicle: how often the one who follows looks for the vehicle the leader got into, and how long before it gets in again after the leader got out and in
+#define HAI_RIDE_FOLLOW_SCAN_GAP (1 SECONDS)
+#define HAI_RIDE_REJOIN (3 SECONDS)

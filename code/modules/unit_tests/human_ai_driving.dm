@@ -149,3 +149,76 @@
 	brain.ride_cooldown_until = world.time + 1 MINUTES
 	TEST_ASSERT(!brain.ride_ready(), "A man who has just got out got back in at once")
 	detach_human_ai(soldier)
+
+/// A unit that follows a man into a vehicle, as one follows a player, gets in after him, rides for as long as he does and gets out when he does
+/datum/unit_test/human_ai_follow_into_vehicle
+	var/datum/human_ai_brain/follower_brain
+	var/obj/vehicle/multitile/van/truck
+
+/datum/unit_test/human_ai_follow_into_vehicle/Destroy()
+	follower_brain = null
+	truck = null
+	return ..()
+
+/datum/unit_test/human_ai_follow_into_vehicle/proc/van_ready()
+	return truck.interior?.ready
+
+/datum/unit_test/human_ai_follow_into_vehicle/proc/riding()
+	return !!follower_brain.ride_ref
+
+/datum/unit_test/human_ai_follow_into_vehicle/proc/got_out()
+	return follower_brain.rides > 0 && !follower_brain.ride_ref
+
+/datum/unit_test/human_ai_follow_into_vehicle/proc/beside(mob/living/carbon/human/leader)
+	return get_dist(follower_brain.body, leader) <= 5
+
+/datum/unit_test/human_ai_follow_into_vehicle/Run()
+	TEST_ASSERT(SSxeno_pathfinding.available, "The native pathfinder is not available, this scenario needs it")
+	var/datum/human_ai_arena/road = new(list(
+		"##############################",
+		"#............................#",
+		"#............................#",
+		"#............................#",
+		"#............................#",
+		"#............................#",
+		"##############################",
+	), run_loc_floor_bottom_left)
+	truck = allocate(/obj/vehicle/multitile/van, locate(road.origin_x + 4, road.origin_y + 2, road.z))
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(van_ready)), 30), "The interior of the van never came up")
+
+	// The leader stands for a player: a man with no brain who climbs in by the way a player does
+	var/mob/living/carbon/human/leader = allocate(/mob/living/carbon/human, locate(road.origin_x + 10, road.origin_y + 2, road.z))
+	leader.faction = FACTION_MARINE
+	var/mob/living/carbon/human/follower = make_soldier(locate(road.origin_x + 9, road.origin_y + 4, road.z), FACTION_MARINE, FALSE)
+	follower_brain = follower.ai_brain
+	follower_brain.suppress_error_log = TRUE
+	var/datum/npc_order/follow/go = new
+	go.set_target(leader)
+	TEST_ASSERT(follower_brain.give_order(go), "The follow order was refused")
+	sleep(2 SECONDS)
+	TEST_ASSERT_NULL(follower_brain.ride_ref, "The follower got into the van with nobody in it")
+
+	var/list/names = truck.entrances
+	var/entrance_name = names[1]
+	var/list/offset = truck.entrances[entrance_name]
+	var/turf/doorstep = locate(truck.x + offset[1], truck.y + offset[2], truck.z)
+	TEST_ASSERT(truck.interior.enter(leader, entrance_name), "The leader could not get into the van")
+	TEST_ASSERT_EQUAL(human_ai_vehicle_of(leader), truck, "The van does not know the leader is inside")
+	TEST_ASSERT_NULL(human_ai_vehicle_of(follower), "The follower is thought to be in the van")
+
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(riding)), 30), "The follower never got into the van after the leader: [follower_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(follower_brain.ride_role, "passenger", "The follower did not ride along")
+	TEST_ASSERT_EQUAL(follower_brain.ride_leader_ref?.resolve(), leader, "The follower does not know who it rides with")
+	TEST_ASSERT(truck.ai_contains(follower), "The follower is not inside the van")
+
+	// For as long as the leader stays, the follower does
+	sleep(8 SECONDS)
+	TEST_ASSERT(follower_brain.ride_ref, "The follower got out of the van with the leader still in it: [follower_brain.decision_log.Join(" | ")]")
+
+	TEST_ASSERT(truck.interior.exit(leader, doorstep), "The leader could not get out of the van")
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(got_out)), 20), "The follower stayed in the van after the leader got out: [follower_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT(!truck.ai_contains(follower), "The follower is still inside the van")
+	TEST_ASSERT_NULL(follower_brain.ride_leader_ref, "The follower still rides with somebody")
+	TEST_ASSERT(ai_wait(CALLBACK(src, PROC_REF(beside), leader), 25), "The follower did not go back to following the leader on foot: [follower_brain.decision_log.Join(" | ")]")
+	TEST_ASSERT_EQUAL(follower_brain.error_total, 0, "The follower threw errors: [follower_brain.decision_log.Join(" | ")]")
+	detach_human_ai(follower)
