@@ -52,6 +52,9 @@ GLOBAL_LIST_INIT(human_ai_roles, init_human_ai_roles())
 			found_mg = TRUE
 		else if(istype(gun, /obj/item/weapon/gun/launcher/grenade))
 			found_launcher = TRUE
+	// A cloak on the back makes a scout, unless the gun in the hands says a gunner
+	if(istype(human.back, /obj/item/storage/backpack/marine/satchel/scout_cloak) && !found_mg && !found_launcher)
+		return "scout"
 	if(found_mg)
 		return "machinegunner"
 	if(found_launcher)
@@ -156,6 +159,12 @@ GLOBAL_LIST_INIT(human_ai_roles, init_human_ai_roles())
 	id = "sniper"
 	name = "Sniper"
 	nests = TRUE
+	covert = TRUE
+
+/datum/human_ai_role/scout
+	id = "scout"
+	name = "Scout"
+	flanks = TRUE
 	covert = TRUE
 
 /datum/human_ai_role/machinegunner

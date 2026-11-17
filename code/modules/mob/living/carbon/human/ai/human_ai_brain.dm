@@ -326,6 +326,15 @@
 	var/revives = 0
 	/// When it may rig a ghillie suit up again and how often it has
 	var/next_camo_time = 0
+	/// When the cloak is looked at again, when it was last found to be of no use and how often one was put on or off
+	var/next_cloak_time = 0
+	var/cloak_idle_since = 0
+	var/cloak_uses = 0
+	var/next_slip_time = 0
+	/// Smartgun: when the gun is looked at next, how many jobs were done on it and how many batteries were swapped
+	var/next_service_time = 0
+	var/sg_services = 0
+	var/sg_battery_swaps = 0
 	var/camo_uses = 0
 	/// Hits from its own side by shooter reference text, calls for backup made and answered
 	var/list/tolerance = list()

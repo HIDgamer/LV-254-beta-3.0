@@ -1,23 +1,38 @@
+/// Whether the item is made for hitting with, a blade or a club and not a gun: the weapons, and the bayonet that rides in a boot
+/proc/human_ai_is_melee_item(obj/item/candidate)
+	if(istype(candidate, /obj/item/weapon/gun))
+		return FALSE
+	return istype(candidate, /obj/item/weapon) || istype(candidate, /obj/item/attachable/bayonet)
+
 /// The best thing to hit with that the body carries, a blade or a club and not a gun
 /datum/human_ai_brain/proc/find_melee_weapon()
 	var/obj/item/best
-	for(var/obj/item/weapon/candidate in body.get_contents())
-		if(istype(candidate, /obj/item/weapon/gun) || candidate.force < HAI_MELEE_MIN_FORCE || (candidate.flags_item & (NODROP|ITEM_ABSTRACT)))
+	for(var/obj/item/candidate in body.get_contents())
+		if(!human_ai_is_melee_item(candidate) || candidate.force < HAI_MELEE_MIN_FORCE || (candidate.flags_item & (NODROP|ITEM_ABSTRACT)))
 			continue
 		if(lethal_forbidden() && !istype(candidate, /obj/item/weapon/baton))
 			continue
 		if(!best || candidate.force > best.force || (role?.id == "security" && istype(candidate, /obj/item/weapon/baton)))
 			best = candidate
+	// With nothing to hit hard with the last thing left is any blade, the knife in the boot or the one on the belt, which is better than fists
+	if(!best && !lethal_forbidden())
+		for(var/obj/item/candidate in body.get_contents())
+			if(istype(candidate, /obj/item/weapon/gun) || !candidate.sharp || candidate.force <= 0 || (candidate.flags_item & (NODROP|ITEM_ABSTRACT)))
+				continue
+			if(!best || candidate.force > best.force)
+				best = candidate
 	return best
 
 /// True when a melee weapon is in the active hand
 /datum/human_ai_brain/proc/holding_melee_weapon()
 	var/obj/item/held = body.get_active_hand()
-	return held && !istype(held, /obj/item/weapon/gun) && held.force >= HAI_MELEE_MIN_FORCE && (!lethal_forbidden() || istype(held, /obj/item/weapon/baton))
+	return held && !istype(held, /obj/item/weapon/gun) && (held.force >= HAI_MELEE_MIN_FORCE || (held.sharp && held.force > 0)) && (!lethal_forbidden() || istype(held, /obj/item/weapon/baton))
 
 /// Puts the weapon in the active hand, putting the gun aside in the other hand
 /datum/human_ai_brain/proc/draw_melee_weapon(obj/item/weapon)
 	var/obj/item/weapon/gun/gun = peek_gun()
+	if(istype(gun, /obj/item/weapon/gun/smartgun))
+		smartgun_release(gun)
 	if(gun && (gun.flags_item & WIELDED))
 		gun.unwield(body)
 	if(weapon == body.get_active_hand())
@@ -75,7 +90,9 @@
 	intents = list(HAI_INTENT_ENGAGE)
 
 /datum/human_ai_action/draw_melee/get_weight(datum/human_ai_brain/brain)
-	if(brain.is_acting() || !brain.target_adjacent() || brain.holding_melee_weapon() || brain.reload_phase != HAI_RELOAD_NONE)
+	// The blade comes out a step before the enemy is on the unit, when everything that shoots is empty
+	var/mob/living/enemy = brain.get_target()
+	if(brain.is_acting() || !enemy || get_dist(brain.body, enemy) > 2 || brain.holding_melee_weapon() || brain.reload_phase != HAI_RELOAD_NONE)
 		return 0
 	var/obj/item/weapon/gun/gun = brain.peek_gun()
 	if(gun && !brain.gun_unusable(gun))

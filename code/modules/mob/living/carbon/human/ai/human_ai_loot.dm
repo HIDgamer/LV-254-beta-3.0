@@ -33,6 +33,9 @@
 		if(has_usable_gun() || gun_rounds(gun) <= 0)
 			return FALSE
 		return get_human_ai_gun_appraisal(gun).feed != HAI_FEED_NONE && (!lethal_forbidden() || gun_is_nonlethal(gun))
+	if(istype(thing, /obj/item/heavygun_battery))
+		var/obj/item/weapon/gun/smartgun/powered = held_smartgun()
+		return powered && powered.requires_battery && !find_spare_battery(powered)
 	if(istype(thing, /obj/item/ammo_magazine))
 		var/obj/item/ammo_magazine/mag = thing
 		var/obj/item/weapon/gun/held = peek_gun()
@@ -60,19 +63,42 @@
 		return grenade_kind != HAI_GRENADE_NONE && !find_grenade(grenade_kind)
 	return FALSE
 
-/// The closest loose item worth picking up that the brain can see, null when there is none. Looks only now and then.
+/// Whether the thing is a container that may be searched for loot: a bag, a box or a medkit lying about that nobody carries. Lockers and crates spill what is in them when they are opened, so what they hold is loose to begin with.
+/datum/human_ai_brain/proc/is_lootable_container(obj/thing)
+	if(!istype(thing, /obj/item/storage))
+		return FALSE
+	var/obj/item/storage/box = thing
+	return isturf(box.loc) && !box.anchored && !(box.flags_item & NODROP)
+
+/// The first thing in the container that the brain is short of, null when there is nothing in it for it
+/datum/human_ai_brain/proc/container_loot(obj/container)
+	RETURN_TYPE(/obj/item)
+	for(var/obj/item/thing in container.contents)
+		if(loot_wanted(thing))
+			return thing
+	return null
+
+/// Whether what the brain meant to pick up is still worth it: a loose item it is short of, or a container that has something in it for it
+/datum/human_ai_brain/proc/loot_still_wanted(obj/thing)
+	if(istype(thing, /obj/item/storage))
+		return is_lootable_container(thing) && !!container_loot(thing)
+	return loot_wanted(thing)
+
+/// The closest loose item worth picking up, or container with something worth taking in it, that the brain can see, null when there is none. Looks only now and then.
 /datum/human_ai_brain/proc/find_loot()
-	var/obj/item/kept = loot_ref?.resolve()
-	if(kept && !QDELETED(kept) && isturf(kept.loc) && get_dist(body, kept) <= HAI_LOOT_RANGE + 2 && loot_wanted(kept))
+	var/obj/kept = loot_ref?.resolve()
+	if(kept && !QDELETED(kept) && isturf(kept.loc) && get_dist(body, kept) <= HAI_LOOT_RANGE + 2 && loot_still_wanted(kept))
 		return kept
 	loot_ref = null
-	var/obj/item/closest
+	var/obj/closest
 	var/closest_distance = INFINITY
 	for(var/obj/item/thing in view(HAI_LOOT_RANGE, body))
 		if(!isturf(thing.loc))
 			continue
 		var/distance = get_dist(body, thing)
-		if(distance < closest_distance && loot_wanted(thing))
+		if(distance >= closest_distance)
+			continue
+		if(istype(thing, /obj/item/storage) ? loot_still_wanted(thing) : loot_wanted(thing))
 			closest = thing
 			closest_distance = distance
 	if(!closest)
@@ -82,12 +108,24 @@
 	return closest
 
 /// Picks the item up: guns stay in the hand, everything else is put away. True when it was picked up.
-/datum/human_ai_brain/proc/pick_up(obj/item/thing)
+/datum/human_ai_brain/proc/pick_up(obj/thing)
 	if(QDELETED(thing) || !isturf(thing.loc))
 		return FALSE
 	loot_ref = null
 	next_loot_time = world.time + HAI_LOOT_GAP
 	body.face_atom(thing)
+	// A container is searched and what the brain is short of is taken out of it onto the floor beside it, to be picked up like anything else
+	if(istype(thing, /obj/item/storage))
+		var/obj/item/storage/container = thing
+		var/obj/item/found = container_loot(container)
+		if(!found)
+			return FALSE
+		take_out_of_holder(found)
+		if(found.loc != body.loc)
+			loot_count += 3
+			return FALSE
+		log_decision("took [found] out of [container]")
+		thing = found
 	if(istype(thing, /obj/item/clothing/suit))
 		// Armor is put on and not carried
 		if(!body.equip_to_slot_if_possible(thing, WEAR_JACKET))
@@ -121,7 +159,7 @@
 	return brain.find_loot() ? 24 : 0
 
 /datum/human_ai_action/loot/trigger(datum/human_ai_brain/brain)
-	var/obj/item/thing = brain.find_loot()
+	var/obj/thing = brain.find_loot()
 	if(!thing)
 		return FALSE
 	if(get_dist(brain.body, thing) > 1)

@@ -24,6 +24,12 @@
 		return TRUE
 	if(lethal_forbidden() && !gun_is_nonlethal(gun))
 		return TRUE
+	// An empty gun that takes longer to load than another takes to bring up is not reloaded with the enemy in sight, the other one is fired meanwhile
+	if(weapon_state(gun) == HAI_WEAPON_EMPTY && in_contact() && sidearm_beats_reload(gun))
+		return TRUE
+	// A smartgun that its man is not trained for, has no harness for or has no power for is only a weight to carry
+	if(istype(gun, /obj/item/weapon/gun/smartgun) && smartgun_unusable(gun))
+		return TRUE
 	var/datum/human_ai_gun_appraisal/appraisal = get_human_ai_gun_appraisal(gun)
 	if(target_adjacent() && (appraisal.family == HAI_GUN_SNIPER || appraisal.area_effect))
 		return TRUE
@@ -52,6 +58,8 @@
 			continue
 		if(target_adjacent() && (appraisal.family == HAI_GUN_SNIPER || appraisal.area_effect))
 			score -= 60
+		// Of the guns that work the stronger one is the one to take
+		score += appraisal.power * 2
 		if(candidate.loc == body)
 			score += 5
 		if(score > best_score)
@@ -63,6 +71,8 @@
 /// Puts the other gun in hand, drawing it from its holster when it is not in a hand already
 /datum/human_ai_brain/proc/switch_to(obj/item/weapon/gun/other)
 	var/obj/item/weapon/gun/current = peek_gun()
+	if(istype(current, /obj/item/weapon/gun/smartgun) && current != other)
+		smartgun_release(current)
 	if(current && (current.flags_item & WIELDED))
 		current.unwield(body)
 	if(other == body.get_inactive_hand())
@@ -106,3 +116,44 @@
 /// Whether an enemy was in sight in the last few seconds
 /datum/human_ai_brain/proc/in_contact()
 	return get_target() && world.time <= target_seen_time + HAI_CONTACT_COOLDOWN
+
+/// Deciseconds it takes to get the gun loaded from what the body carries, nothing to it when it holds rounds already and for ever when there is nothing to load it with
+/datum/human_ai_brain/proc/reload_cost(obj/item/weapon/gun/gun)
+	if(weapon_state(gun) != HAI_WEAPON_EMPTY)
+		return 0
+	var/datum/human_ai_gun_appraisal/appraisal = get_human_ai_gun_appraisal(gun)
+	var/obj/item/ammo_magazine/spare = find_spare_ammo(gun)
+	if(!spare)
+		return INFINITY
+	if(appraisal.feed == HAI_FEED_INTERNAL || appraisal.cylinder || appraisal.break_action)
+		var/missing = max(min(gun_capacity(gun) - gun_rounds(gun), spare.current_rounds), 1)
+		return missing * HAI_RELOAD_ROUND_TIME + HAI_CYCLE_TIME
+	return max(spare.reload_delay, HAI_RELOAD_MIN_TIME)
+
+/// Whether another gun the body has is loaded and can be brought up faster than this empty one can be loaded
+/datum/human_ai_brain/proc/sidearm_beats_reload(obj/item/weapon/gun/gun)
+	// Out of a fight there is time to load it
+	if(!in_contact())
+		return FALSE
+	var/obj/item/weapon/gun/other = find_other_gun(gun)
+	if(!other || weapon_state(other) == HAI_WEAPON_EMPTY)
+		return FALSE
+	return reload_cost(gun) > HAI_SWITCH_COOLDOWN
+
+/// The strongest gun the body has that works, loaded or with something to load it with, null when it has none
+/datum/human_ai_brain/proc/strongest_gun()
+	RETURN_TYPE(/obj/item/weapon/gun)
+	var/obj/item/weapon/gun/best
+	var/best_score = -1
+	for(var/obj/item/weapon/gun/candidate in body.get_contents())
+		var/datum/human_ai_gun_appraisal/appraisal = get_human_ai_gun_appraisal(candidate)
+		if(appraisal.feed == HAI_FEED_NONE || (lethal_forbidden() && !gun_is_nonlethal(candidate)))
+			continue
+		var/loaded = weapon_state(candidate) != HAI_WEAPON_EMPTY
+		if(!loaded && !has_spare_ammo(candidate))
+			continue
+		var/score = appraisal.power * 10 + (loaded ? 5 : 0)
+		if(score > best_score)
+			best_score = score
+			best = candidate
+	return best

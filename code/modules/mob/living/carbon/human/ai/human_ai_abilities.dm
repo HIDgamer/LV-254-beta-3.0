@@ -29,7 +29,7 @@
 		return 0
 	if(brain.is_acting() || brain.get_target() || brain.suppressed() || brain.is_civilian() || brain.surrendered || brain.broken_kind)
 		return 0
-	if(brain.body.body_position != STANDING_UP || !brain.is_settled() || !brain.can_use_ghillie())
+	if(brain.body.body_position != STANDING_UP || !(brain.is_settled() || brain.still_for(HAI_CAMO_STILL)) || !brain.can_use_ghillie())
 		return 0
 	return 26
 

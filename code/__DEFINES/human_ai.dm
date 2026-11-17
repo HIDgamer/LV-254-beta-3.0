@@ -856,3 +856,17 @@
 /// Following somebody into a vehicle: how often the one who follows looks for the vehicle the leader got into, and how long before it gets in again after the leader got out and in
 #define HAI_RIDE_FOLLOW_SCAN_GAP (1 SECONDS)
 #define HAI_RIDE_REJOIN (3 SECONDS)
+
+/// Cloaks and ghillie suits: the share of its health a body is hurt to before it wants out of a fight, how far an enemy has to be for a scout to close in on it unseen, how often a cloak is looked at, how long it is left on once there is nothing to hide from, and how long a sniper stands still before it hides.
+#define HAI_CLOAK_ESCAPE_HEALTH 0.6
+#define HAI_CLOAK_AMBUSH_RANGE 8
+#define HAI_CLOAK_GAP (6 SECONDS)
+#define HAI_CLOAK_IDLE (20 SECONDS)
+#define HAI_CAMO_STILL (6 SECONDS)
+
+/// Smartgunners: the charge left in a battery below which a spare one is put in, how long without a shot before the arm and the stabilizer are taken off, how long a toggle and the opening or closing of the feed cover take, and how long a job on the gun is left alone after it failed.
+#define HAI_SG_LOW_BATTERY 0.12
+#define HAI_SG_STAND_DOWN (15 SECONDS)
+#define HAI_SG_TOGGLE_TIME (1 SECONDS)
+#define HAI_SG_COVER_TIME (1 SECONDS)
+#define HAI_SG_RETRY (8 SECONDS)

@@ -102,6 +102,7 @@
 #include "..\modules\unit_tests\human_ai_engineer.dm"
 #include "..\modules\unit_tests\human_ai_expression.dm"
 #include "..\modules\unit_tests\human_ai_garbage.dm"
+#include "..\modules\unit_tests\human_ai_gear_use.dm"
 #include "..\modules\unit_tests\human_ai_joe.dm"
 #include "..\modules\unit_tests\human_ai_lifecycle.dm"
 #include "..\modules\unit_tests\human_ai_load.dm"

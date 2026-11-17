@@ -1004,19 +1004,23 @@ GLOBAL_LIST_EMPTY_TYPED(radio_packs, /obj/item/storage/backpack/marine/satchel/r
 
 /obj/item/storage/backpack/marine/satchel/scout_cloak/attack_self(mob/user)
 	..()
-	camouflage()
+	try_camouflage(user)
 
 /obj/item/storage/backpack/marine/satchel/scout_cloak/verb/camouflage()
 	set name = "Activate Cloak"
 	set desc = "Activate your cloak's camouflage."
 	set category = "Scout"
 	set src in usr
-	if(!usr || usr.is_mob_incapacitated(TRUE))
+	try_camouflage(usr)
+
+/// Switches the cloak on or off for the one wearing it, whoever works the verb, the action button or the brain of an AI wearer, none of whom has a usr to speak of
+/obj/item/storage/backpack/marine/satchel/scout_cloak/proc/try_camouflage(mob/user)
+	if(!user || user.is_mob_incapacitated(TRUE))
 		return
 
-	if(!ishuman(usr))
+	if(!ishuman(user))
 		return
-	var/mob/living/carbon/human/H = usr
+	var/mob/living/carbon/human/H = user
 	if(!skillcheck(H, SKILL_SPEC_WEAPONS, SKILL_SPEC_ALL) && H.skills.get_skill_level(SKILL_SPEC_WEAPONS) != SKILL_SPEC_SCOUT)
 		to_chat(H, SPAN_WARNING("You don't seem to know how to use [src]..."))
 		return
@@ -1135,7 +1139,7 @@ GLOBAL_LIST_EMPTY_TYPED(radio_packs, /obj/item/storage/backpack/marine/satchel/r
 /datum/action/item_action/specialist/toggle_cloak/action_activate()
 	. = ..()
 	var/obj/item/storage/backpack/marine/satchel/scout_cloak/SC = holder_item
-	SC.camouflage()
+	SC.try_camouflage(owner)
 
 /obj/item/storage/backpack/marine/satchel/scout_cloak/invis
 	full_camo_alpha = FULL_CAMO_ALPHA

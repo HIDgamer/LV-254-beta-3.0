@@ -43,6 +43,9 @@
 	if(!gun)
 		return 0
 	if(brain.reload_phase != HAI_RELOAD_NONE)
+		// A reload begun before the enemy was in sight, of a gun that has not taken a round yet, gives way to a loaded gun that is quicker to bring up
+		if(brain.reload_rounds_loaded <= 0 && brain.in_contact() && brain.sidearm_beats_reload(gun))
+			return 0
 		return 100
 	// The gun stays down while a grenade is being drawn and thrown
 	if(world.time < brain.hands_busy_until)
@@ -57,7 +60,8 @@
 		if(HAI_WEAPON_CYCLE)
 			return brain.get_target() ? 92 : 50
 		if(HAI_WEAPON_EMPTY)
-			if(brain.target_adjacent() || !brain.has_spare_ammo(gun))
+			// Another gun that is ready and quicker to bring up than this one is to be loaded is taken up instead, see gun_unusable
+			if(brain.target_adjacent() || !brain.has_spare_ammo(gun) || brain.sidearm_beats_reload(gun))
 				return 0
 			return 95
 		if(HAI_WEAPON_READY)
@@ -96,7 +100,10 @@
 	intents = list(HAI_INTENT_ENGAGE, HAI_INTENT_ALERT, HAI_INTENT_ADVANCE, HAI_INTENT_HOLD, HAI_INTENT_FALLBACK)
 
 /datum/human_ai_action/switch_weapon/get_weight(datum/human_ai_brain/brain)
-	if(brain.is_acting() || brain.reload_phase != HAI_RELOAD_NONE || world.time < brain.next_switch_time)
+	if(brain.is_acting() || world.time < brain.next_switch_time)
+		return 0
+	// A reload that has not got a round in yet is given up for a gun that is ready, which is only so when the gun being loaded is no use with the enemy near
+	if(brain.reload_phase != HAI_RELOAD_NONE && (brain.reload_rounds_loaded > 0 || !brain.in_contact()))
 		return 0
 	var/obj/item/weapon/gun/gun = brain.peek_gun()
 	if(!gun)
@@ -111,7 +118,31 @@
 	brain.next_switch_time = world.time + HAI_SWITCH_COOLDOWN
 	if(!other)
 		return FALSE
+	if(brain.reload_phase != HAI_RELOAD_NONE)
+		brain.cancel_reload("another gun is ready")
 	return brain.switch_to(other)
+
+/// Out of a fight the strongest gun the body has is the one it holds: a man who fell back on his sidearm goes back to his rifle and loads it
+/datum/human_ai_action/ready_best_gun
+	id = "ready_best_gun"
+	conflicts = HAI_LIMB_HANDS
+	intents = list(HAI_INTENT_IDLE, HAI_INTENT_ALERT, HAI_INTENT_HOLD, HAI_INTENT_ORDERED)
+
+/datum/human_ai_action/ready_best_gun/get_weight(datum/human_ai_brain/brain)
+	if(brain.is_acting() || brain.reload_phase != HAI_RELOAD_NONE || brain.in_contact() || world.time < brain.next_switch_time || world.time < brain.hands_busy_until || brain.is_civilian())
+		return 0
+	var/obj/item/weapon/gun/held = brain.peek_gun()
+	if(!held)
+		return 0
+	var/obj/item/weapon/gun/best = brain.strongest_gun()
+	if(!best || best == held || get_human_ai_gun_appraisal(best).power <= get_human_ai_gun_appraisal(held).power)
+		return 0
+	return 45
+
+/datum/human_ai_action/ready_best_gun/trigger(datum/human_ai_brain/brain)
+	var/obj/item/weapon/gun/best = brain.strongest_gun()
+	brain.next_switch_time = world.time + HAI_SWITCH_COOLDOWN
+	return best ? brain.switch_to(best) : FALSE
 
 /datum/human_ai_action/melee
 	id = "melee"

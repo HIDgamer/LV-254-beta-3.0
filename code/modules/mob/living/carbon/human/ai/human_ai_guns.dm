@@ -27,6 +27,8 @@ GLOBAL_LIST_EMPTY(human_ai_gun_appraisals)
 	var/area_effect = FALSE
 	/// Rounds that kill by volume get spent faster, used to pick long or short bursts
 	var/suppressive = FALSE
+	/// How strong the gun is next to the others a man may carry, the strongest is the one he holds when he is free to choose
+	var/power = 2
 
 /proc/get_human_ai_gun_appraisal(obj/item/weapon/gun/gun)
 	RETURN_TYPE(/datum/human_ai_gun_appraisal)
@@ -92,6 +94,16 @@ GLOBAL_LIST_EMPTY(human_ai_gun_appraisals)
 		cycle = HAI_CYCLE_MANUAL
 	break_action = istype(gun, /obj/item/weapon/gun/shotgun/double)
 	cylinder = istype(gun, /obj/item/weapon/gun/revolver)
+
+	switch(family)
+		if(HAI_GUN_HEAVY, HAI_GUN_SNIPER)
+			power = 5
+		if(HAI_GUN_RIFLE, HAI_GUN_SHOTGUN)
+			power = 4
+		if(HAI_GUN_SMG, HAI_GUN_LAUNCHER, HAI_GUN_FLAMER)
+			power = 3
+		if(HAI_GUN_PISTOL)
+			power = 1
 
 	switch(family)
 		if(HAI_GUN_PISTOL)
