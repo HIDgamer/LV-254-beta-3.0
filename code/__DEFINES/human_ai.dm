@@ -270,6 +270,8 @@
 /// How an order reaches the brain: forced, or a request that goes through the compliance roll.
 #define HAI_DELIVERY_COMMAND 1
 #define HAI_DELIVERY_REQUEST 2
+/// A hand signal anybody can make, heeded as far as the one who made it is respected.
+#define HAI_DELIVERY_SIGNAL 3
 /// Where an order stands.
 #define HAI_ORDER_ACTIVE 1
 #define HAI_ORDER_DONE 2
@@ -844,3 +846,9 @@
 #define HAI_BELOW_HUNT_TIME (30 SECONDS)
 #define HAI_BELOW_SAFE_RADIUS 3
 #define HAI_BELOW_GRENADE_MIN 2
+
+/// Hand signals (the follow me and hold position emotes): how far a signal from somebody with no proper rank, a leader and an officer is heeded, at best, and how many units answer one signal.
+#define HAI_SIGNAL_UNRANKED 0.55
+#define HAI_SIGNAL_LEADER 0.75
+#define HAI_SIGNAL_OFFICER 0.9
+#define HAI_SIGNAL_ANSWERS 10

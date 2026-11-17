@@ -2227,6 +2227,7 @@
 #include "code\modules\mob\living\carbon\human\ai\human_ai_role.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_scaling.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_security.dm"
+#include "code\modules\mob\living\carbon\human\ai\human_ai_signals.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_spacing.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_specialists.dm"
 #include "code\modules\mob\living\carbon\human\ai\human_ai_squad.dm"

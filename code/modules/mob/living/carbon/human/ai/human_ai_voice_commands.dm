@@ -145,7 +145,7 @@ GLOBAL_LIST_EMPTY(human_ai_voice_batches)
 	return !human_ai_holds_gun(other) && other.stat != DEAD
 
 /// Turns a spoken command into the order or the action it asks for, true when the unit took it up
-/datum/human_ai_brain/proc/obey_voice(command, mob/living/carbon/human/commander)
+/datum/human_ai_brain/proc/obey_voice(command, mob/living/carbon/human/commander, delivery = HAI_DELIVERY_REQUEST)
 	var/turf/there = get_turf(commander)
 	// Where trouble is thought to be: where the unit's own enemy stands, or a stretch ahead of the one who spoke
 	var/turf/threat = get_target() ? get_turf(get_target()) : human_ai_turf_ahead(commander, 6)
@@ -210,7 +210,8 @@ GLOBAL_LIST_EMPTY(human_ai_voice_batches)
 	if(!order)
 		return FALSE
 	order.issuer = commander.real_name
-	if(!give_order(order, HAI_DELIVERY_REQUEST))
+	order.authority = (delivery == HAI_DELIVERY_SIGNAL) ? human_ai_authority(commander) : 1
+	if(!give_order(order, delivery))
 		return FALSE
 	voice_orders++
 	return TRUE

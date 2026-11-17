@@ -115,6 +115,7 @@
 #include "..\modules\unit_tests\human_ai_regression.dm"
 #include "..\modules\unit_tests\human_ai_roles.dm"
 #include "..\modules\unit_tests\human_ai_security.dm"
+#include "..\modules\unit_tests\human_ai_signals.dm"
 #include "..\modules\unit_tests\human_ai_soak.dm"
 #include "..\modules\unit_tests\human_ai_squads.dm"
 #include "..\modules\unit_tests\human_ai_stairs.dm"
